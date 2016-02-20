@@ -88,5 +88,5 @@ def run_tests(test = None):
     suite = unittest.TestLoader().loadTestsFromTestCase(ParserTesting)
     testResult = unittest.TextTestRunner(verbosity=2).run(test if test else suite)
 
-if __name__ == "__man__":
+if __name__ == "__main__":
     run_tests()
