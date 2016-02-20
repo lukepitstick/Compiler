@@ -64,7 +64,7 @@ def PROGRAM(current, G):
 	if current.name == "BEGIN":
 		current = STATEMENT_LIST(next(G), G)
 		if current.name == "END":
-			return '$'
+			return next(G) # This will generate $ I guess
 		raise ParserError("No 'end' at line: " + current.line)
 	raise ParserError("No 'begin' at line: " + current.line)
 	
@@ -89,6 +89,104 @@ def STATEMENT(current, G):
 		current = WRITE(next(G), G)
 	else:
 		current = ASSIGNMENT(current, G)
+	return current
+
+@add_debug
+def READ(current, G):
+	if current.name != "LPAREN":
+		raise ParserError("Expected lparen is missing: " + current.line)
+	current = ID_LIST(next(G), G)
+	if current.name != "RPAREN":
+		raise ParserError("Expected rparen is missing: " + current.line)
+	return next(G)
+
+@add_debug
+def WRITE(current, G):
+	if current.name != "LPAREN":
+		raise ParserError("Expected lparen is missing: " + current.line)
+	current = EXPR_LIST(next(G), G)
+	if current.name != "RPAREN":
+		raise ParserError("Expected rparen is missing: " + current.line)
+	return next(G)
+
+@add_debug
+def ASSIGNMENT(current, G):
+	current = IDENT(current, G)
+	if current.name != "ASSIGNOP":
+		raise ParserError("Expected assignop is missing: " + current.line)
+	current = EXPRESSION(next(G), G)
+	return current
+
+"""
+Maybe we can also try this way...
+
+@add_debug
+def ID_EXPR_LIST(current, G, Fn): # Fn can be either IDENT or EXPRESSION
+	if Fn != IDENT or Fn != EXPRESSION:
+		raise P
+	current = Fn(current, G)
+	while True:
+		if current.name == 'COMMA':
+			current = next(G)
+		current = Fn(current, G)
+		if current.name != 'COMMA':
+			break;
+	return current
+
+"""
+
+@add_debug
+def ID_LIST(current, G):
+	current = IDENT(current, G)
+	while True:
+		if current.name == 'COMMA':
+			current = next(G)
+		current = IDENT(current, G)
+		if current.name != 'COMMA':
+			break
+	return current
+
+@add_debug
+def EXPR_LIST(current, G):
+	current = EXPRESSION(current, G)
+	while True:
+		if current.name = 'COMMA':
+			current = next(G)
+		current = EXPRESSION(current, G)
+		if current.name != 'COMMA':
+			break;
+	return current
+
+@add_debug
+def EXPRESSION(current, G):
+	current = PRIMARY(current, G)
+	while True:
+		if ARITHOP(current, G).name != 'PLUS' or 'MINUS': # ????
+			break
+		current = PRIMARY(next(G), G)
+	return current
+
+@add_debug
+def PRIMARY(current, G):
+	if current.name == 'INTLITERAL':
+		return next(G)
+	if current.name == 'LPAREN':
+		current = EXPRESSION(current, G)
+		if current.name != 'RPAREN':
+			raise ParserError("Expected rparen is missing: " + current.line)
+		return next(G)
+	current = IDENT(current, G)
+	return current
+
+@add_debug
+def IDENT(current, G):
+	if current.name != 'IDENT':
+		raise ParserError("Error when parsing IDENT: " + current.line)
+	return next(G)
+
+@add_debug
+def ARITHOP(current, G):
+	pass
 	
 if __name__ == "__main__":
     print(parser('test.txt', 'tokens.txt'))
