@@ -1,3 +1,0 @@
-begin
-write(x+y, (2-x)+y, (aa+bb)-(cc+dd));
-end
