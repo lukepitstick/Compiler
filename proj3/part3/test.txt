@@ -1,4 +1,0 @@
-begin
-x := y;
-begin := 2;
-end

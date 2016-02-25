@@ -1,6 +1,0 @@
-begin
-    read(i, j) # read ANY SINGLE COMMENT WILL BE GONE!!! tokentoken
-    i := i 0 6 read
-    j := j / 2
-    write(x, y)
-end

@@ -1,7 +1,0 @@
-6 begin
-  read(i, j)
-  k := i + j;
-  44 amigo
-  3 ** 5
-  write(x, y)
-end

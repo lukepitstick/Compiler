@@ -1,7 +1,0 @@
-begin
-  read (i, j)
-  iDenTiFier3 := i + j;
-  IdEnTiFIER4 := i - j;
-  5dentifier := i + j - k;
-  write (x, y)
-end
