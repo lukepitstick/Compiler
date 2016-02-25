@@ -19,7 +19,7 @@ Grammar:
 
 from lexer_sol import lexer
 
-debug = True
+debug = False
 recursion_level = 0
 
 def add_debug(fn):
