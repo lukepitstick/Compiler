@@ -12,10 +12,11 @@ Grammar:
    <ident> -> ID
    <arith_op> -> + | -
 """
-#Luke Pitstick
-#Christopher Dieter
-#Kwangju Kang
-#Julius Ware
+# Compiler Design Group 7
+# Luke Pitstick
+# Christopher Dieter
+# Kwangju Kim
+# Julius Ware
 
 from lexer_sol import lexer
 
