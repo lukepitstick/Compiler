@@ -19,6 +19,8 @@ Grammar:
 # Julius Ware
 
 from lexer_sol import lexer
+import tree
+
 
 debug = False
 recursion_level = 0
@@ -45,14 +47,19 @@ class ParserError(Exception):
 
 #######################################
 # Parsing code
+dict = {None:None}; #instantiate symbol table
+del dict[None]
 def parser(source_file, token_file):	
-    # print("hey")
     """
     source_file: A program written in the ML langauge.
     returns True if the code is syntactically correct.
     Throws a ParserError otherwise.
     """
+    dict.clear() #clear dict
     G = lexer(source_file, token_file)
+
+    t=1; #this should be changed to the tree
+
     try:
         current = PROGRAM(next(G), G)
     except StopIteration:
@@ -61,12 +68,11 @@ def parser(source_file, token_file):
     try:
         next(G)
     except StopIteration:
-        return True
+        return t,dict #return tree and symbol table
     raise ParserError("File did not end after 'end'")
 
 @add_debug	
 def PROGRAM(current, G):
-    # print(current.pattern)
     if current.name == "BEGIN":
         current = STATEMENT_LIST(next(G), G)
         if current.name == "END":
@@ -195,6 +201,7 @@ def PRIMARY(current, G):
 def IDENT(current, G):
     if current.name != 'ID':
         raise ParserError("Error when parsing IDENT: " + current.line)
+    dict[current.pattern] = -1; #add symbol to symbol table, will use different values later.
     return next(G)
 
 # @add_debug
