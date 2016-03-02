@@ -67,9 +67,6 @@ def parser(source_file, token_file):
 
     if current != '$':
         raise ParserError("File did not end after 'end'")
-    print('\n')
-    print(repr(t))
-    print('\n')
     # print(dict)
     return t, dict #return tree and symbol table
 
@@ -100,6 +97,7 @@ def STATEMENT_LIST(current, G):
                 #t.append(tree('END'))
                 return t, current
             t2, current = STATEMENT(current, G)
+            t.append(t2)
         else:
             raise ParserError("no semicolon at line: " + current.line)
     return t, current
@@ -110,13 +108,16 @@ def STATEMENT(current, G):
     if current.name == "READ":
         t.append(tree("READ"))
         t1, current = READ(next(G), G)
+        # print("READ" + str(type(current)))
         t.append(t1)
     elif current.name == "WRITE":
         t.append(tree("WRITE"))
         t2, current = WRITE(next(G), G)
+        # print("WRITE" + str(type(current)))
         t.append(t2)
     else:
         t3, current = ASSIGNMENT(current, G)
+        # print("ASSIGNMENT" + str(type(current)))
         t.append(t3)
     return t, current
 
@@ -150,8 +151,9 @@ def ASSIGNMENT(current, G):
     if current.name != "ASSIGNOP":
         raise ParserError("Expected assignop is missing: " + current.line)
     # t.append(tree("ASSIGNOP"))
-    current = EXPRESSION(next(G), G)
-    return current
+    texpr, current = EXPRESSION(next(G), G)
+    t.append(texpr)
+    return t, current
 
 """
 Maybe we can also try this way...
