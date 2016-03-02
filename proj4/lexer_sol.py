@@ -102,6 +102,7 @@ def lexer(source_file, token_file):
 
             line = fp.readline()
             line_num += 1;
+    yield '$'
 
     
 

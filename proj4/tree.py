@@ -84,6 +84,9 @@ class tree:
         """
         return len(self.children) == 0
 
+    def append(self, t):
+        self.children.append(t)
+
 
 
 class ParserException(Exception):
