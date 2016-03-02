@@ -65,9 +65,8 @@ def parser(source_file, token_file):
     except StopIteration:
         raise ParserError("File finished before end")
 
-    if current != '$':
+    if current.name != '$':
         raise ParserError("File did not end after 'end'")
-    # print(dict)
     return t, dict #return tree and symbol table
 
 @add_debug	
@@ -246,7 +245,7 @@ def IDENT(current, G):
     if current.name != 'ID':
         raise ParserError("Error when parsing IDENT: " + current.line)
     t.append(tree('ID'))
-    dict[current.pattern] = -1; #add symbol to symbol table, will use different values later.
+    dict[current.pattern] = current.line; #add symbol to symbol table, will use different values later.
     return t, next(G)
 
 # @add_debug
