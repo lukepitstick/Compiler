@@ -67,8 +67,10 @@ def parser(source_file, token_file):
 
     if current != '$':
         raise ParserError("File did not end after 'end'")
+    print('\n')
     print(repr(t))
-    print(dict)
+    print('\n')
+    # print(dict)
     return t, dict #return tree and symbol table
 
 @add_debug	
