@@ -1,6 +1,3 @@
 begin
-   read(i,j)
-   i := i * 5;
-   j := (i+3) - (i   + 6)
-   write(x,y);
+  read(x,y,z);
 end

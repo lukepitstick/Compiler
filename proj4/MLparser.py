@@ -20,7 +20,7 @@ Grammar:
 
 from lexer_sol import lexer
 from tree import tree
-
+from traceback import print_exc
 
 debug = False
 recursion_level = 0
@@ -253,4 +253,34 @@ def IDENT(current, G):
 #     pass
 
 if __name__ == "__main__":
-    print(parser('sample1.txt', 'tokens.txt'))
+    try:
+        test_case = ['begin', 'read(x,y,z);', 'end']
+        with open("own_test.txt", "w") as fp:
+            fp.write("\n".join(test_case) + "\n")
+        try:
+            print('Test case: ' + str(test_case))
+            sampt, tokk = parser('own_test.txt', 'tokens.txt')
+            newk = '(BEGIN,((READ,((ID)IDENT,(ID)IDENT,(ID)IDENT)ID_LIST)STATEMENT)STATEMENT_LIST,END)PROGRAM;'
+            if str(sampt) != newk:
+                raise Exception('An internal error occured. Recheck the source code.')
+            print('Test case successful: \n' + str(sampt) + '\nIS\n' + newk)
+        except ParserError:
+            print_exc()
+            print('Test case failed.')
+        finally:
+            print('=========================================================================')
+        for i in range(1, 7):
+            fname = 'sample' + str(i) + '.txt'
+            print("Parsing " + fname)
+            try:
+                parser(fname, 'tokens.txt')
+                print('The source file is following a valid syntax.')
+            except ParserError:
+                print_exc()
+                print('The source file is not following a valid syntax.')
+            finally:
+                 print('=========================================================================')
+    except ImportError:
+        print('The sample file does not exist.')
+    finally:
+        print('Personal tester is over.')
