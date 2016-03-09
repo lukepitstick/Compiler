@@ -1,4 +1,6 @@
-class inst:
+# MIPS Instruction module
+
+class MIPSinstruction:
 
     def __init__(self, inst_type, inst_name, opcode, reg1, reg2, reg3):
         self.inst_type = inst_type

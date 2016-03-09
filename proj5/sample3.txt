@@ -1,0 +1,5 @@
+begin
+read(x);
+x := x+3;
+write(x);
+end

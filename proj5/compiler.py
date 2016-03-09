@@ -11,8 +11,18 @@ import argparse
 import tree
 import lexer_sol
 import MLparser
+import codegenerator
 
 def compiler(source, tokens, output):
+    mlp = MLparser.parser(source, tokens)
+    # mlp will have tree struct and dict
+
+    codegnerator.findGenerateMIPSCode(mlp[0], mlp[1])
+    
+    pass
+
+# This method should be deprecated before submission
+def compilerTest(source, tokens, output):
     mlp = MLparser.parser(source, tokens)
     outf = open(output, 'w')
     outf.write(repr(mlp[0]))
