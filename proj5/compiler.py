@@ -1,17 +1,40 @@
+"""
+Compiler Design Group 7
+Kwangju Kim
+Julius Ware
+Chris Dieter
+Luke Pitstick
+"""
+
 import sys
 import argparse
 import tree
 import lexer_sol
 import MLparser
+import codegenerator
 
 def compiler(source, tokens, output):
+    mlp = MLparser.parser(source, tokens)
+    # mlp will have tree struct and dict
+
+    codegnerator.findGenerateMIPSCode(mlp[0], mlp[1])
+    
     pass
+
+# This method should be deprecated before submission
+def compilerTest(source, tokens, output):
+    mlp = MLparser.parser(source, tokens)
+    outf = open(output, 'w')
+    outf.write(repr(mlp[0]))
+    outf.write('\n')
+    outf.write(repr(mlp[1]))
+    outf.close()
 
  
 if __name__ == "__main__":  # Only true if program invoked from the command line
 
     # Use the argparse library to parse the commandline arguments
-    parser = argparse.ArgumentParser(description = "GroupX micro-language compiler")
+    parser = argparse.ArgumentParser(description = "Group7 micro-language compiler")
     parser.add_argument('-t', type = str, dest = 'token_file',
                        help = "Token file", default = 'tokens.txt')
     parser.add_argument('source_file', type = str,
