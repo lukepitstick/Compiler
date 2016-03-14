@@ -121,7 +121,7 @@ def findGenerateMIPSCode(t, dictionary):
         elif i.children[0].label == "READ":
             READ_IDS(i)
 
-        FINISH()
+    FINISH()
 
     # if t.label != "PROGRAM":
     #     raise CompilerError("bad tree, no program");
