@@ -63,10 +63,10 @@ def parser(source_file, token_file):
     try:
         t, current = PROGRAM(next(G), G)
     except StopIteration:
-        raise ParserError("File finished before end")
+        raise ParserError("Syntax Error: File finished before end")
 
     if current.name != '$':
-        raise ParserError("File did not end after 'end'")
+        raise ParserError("Syntax Error: File did not end after 'end'")
     return t, dict #return tree and symbol table
 
 @add_debug	
@@ -80,8 +80,8 @@ def PROGRAM(current, G):
         if current.name == "END":
             t.append(tree("END"))
             return t, next(G)
-        raise ParserError("No 'end' at line: " + current.line)
-    raise ParserError("No 'begin' at line: " + current.line)
+        raise ParserError("Syntax Error: No 'end' at line: " + current.line)
+    raise ParserError("Syntax Error: No 'begin' at line: " + current.line)
 
 @add_debug
 def STATEMENT_LIST(current, G):
@@ -98,7 +98,7 @@ def STATEMENT_LIST(current, G):
             t2, current = STATEMENT(current, G)
             t.append(t2)
         else:
-            raise ParserError("no semicolon at line: " + current.line)
+            raise ParserError("Syntax Error: no semicolon at line: " + current.line)
     return t, current
 
 @add_debug
@@ -123,22 +123,22 @@ def STATEMENT(current, G):
 @add_debug
 def READ(current, G):
     if current.name != "LPAREN":
-        raise ParserError("Expected lparen is missing: " + current.line)
+        raise ParserError("Syntax Error: Expected lparen is missing: " + current.line)
     # t.append(tree("LPAREN"))
     t, current = ID_LIST(next(G), G)
     if current.name != "RPAREN":
-        raise ParserError("Expected rparen is missing: " + current.line)
+        raise ParserError("Syntax Error: Expected rparen is missing: " + current.line)
     # t.append(tree("RPAREN"))
     return t, next(G)
 
 @add_debug
 def WRITE(current, G):
     if current.name != "LPAREN":
-        raise ParserError("Expected lparen is missing: " + current.line)
+        raise ParserError("Syntax Error: Expected lparen is missing: " + current.line)
     # t.append(tree("LPAREN"))
     t, current = EXPR_LIST(next(G), G)
     if current.name != "RPAREN":
-        raise ParserError("Expected rparen is missing: " + str(current.line_num) + current.pattern)
+        raise ParserError("Syntax Error: Expected rparen is missing: " + str(current.line_num) + current.pattern)
     # t.append(tree("RPAREN"))
     return t, next(G)
 
@@ -148,7 +148,7 @@ def ASSIGNMENT(current, G):
     tident, current = IDENT(current, G)
     t.append(tident)
     if current.name != "ASSIGNOP":
-        raise ParserError("Expected assignop is missing: " + current.line)
+        raise ParserError("Syntax Error: Expected assignop is missing: " + current.line)
     # t.append(tree("ASSIGNOP"))
     texpr, current = EXPRESSION(next(G), G)
     t.append(texpr)
@@ -160,7 +160,7 @@ Maybe we can also try this way...
 @add_debug
 def ID_EXPR_LIST(current, G, Fn): # Fn can be either IDENT or EXPRESSION
     if Fn != IDENT or Fn != EXPRESSION:
-        raise P
+        raise ParserError("Syntax Error: ")
     current = Fn(current, G)
     while True:
         if current.name == 'COMMA':
@@ -234,7 +234,7 @@ def PRIMARY(current, G):
         # t.append(tree('LPAREN'))
         t1, current = EXPRESSION(next(G), G)
         if current.name != 'RPAREN':
-            raise ParserError("Expected rparen is missing: " + current.line)
+            raise ParserError("Syntax Error: Expected rparen is missing: " + current.line)
         t.append(t1)
         return t, next(G)
     t2, current = IDENT(current, G)
@@ -245,7 +245,7 @@ def PRIMARY(current, G):
 def IDENT(current, G):
     t = tree('IDENT')
     if current.name != 'ID':
-        raise ParserError("Error when parsing IDENT: " + current.line)
+        raise ParserError("Syntax Error: Error when parsing IDENT: " + current.line)
     tmp = tree('ID')
     tmp.val = current.pattern
     t.append(tmp)
@@ -266,7 +266,7 @@ if __name__ == "__main__":
             sampt, tokk = parser('own_test.txt', 'tokens.txt')
             newk = '(BEGIN,((READ,((ID)IDENT,(ID)IDENT,(ID)IDENT)ID_LIST)STATEMENT)STATEMENT_LIST,END)PROGRAM;'
             if str(sampt) != newk:
-                raise Exception('An internal error occured. Recheck the source code.')
+                raise Exception('Syntax Error: An internal error occured. Recheck the source code.')
             print('Test case successful: \n' + str(sampt) + '\nIS\n' + newk)
         except ParserError:
             print_exc()

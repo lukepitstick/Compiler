@@ -97,7 +97,7 @@ def lexer(source_file, token_file):
                     yield Token(token_hash[key][0], token_hash[key][1], r.group(1), line, line_num, col)
                     col += len(r.group(1))
                 else:
-                    msg = "Bad token (line %d, column %d): %s" % (line_num, col, line[col:])
+                    msg = "Lexical error: Bad token (line %d, column %d): %s" % (line_num, col, line[col:])
                     raise LexerError(msg)
 
             line = fp.readline()

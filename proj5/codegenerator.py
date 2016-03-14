@@ -67,7 +67,7 @@ def WRITE_IDS(t):
         varList = INFIX(i)
         for v in varList:
             if dict[v] != True:
-                raise CompilerError("Syntax Error: cannot write unnassigned variable")
+                raise CompilerError("Semantic Error: cannot write unnassigned variable")
         pass
     # """
     # Here, we are printing data to the CMD
