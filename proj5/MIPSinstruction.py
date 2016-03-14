@@ -11,4 +11,4 @@ class MIPSinstruction:
         self.reg3 = reg3
 
     def __str__(self):
-        return str(inst_name) + " " + str(reg1) + " " + str(reg2) + " " + str(reg3)
+        return str(self.inst_name) + " " + str(self.reg1) + " " + str(self.reg2) + " " + str(self.reg3)

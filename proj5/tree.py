@@ -8,10 +8,11 @@ class tree:
     with zero or more trees as children
     """
 
-    def __init__(self, label, children = None):
+    def __init__(self, label,val = None, children = None ):
         """
         Tree constructor
         """
+        self.val = val
         self.label = label
         self.children = children if children != None else []
 

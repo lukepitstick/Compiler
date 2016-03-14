@@ -226,7 +226,9 @@ def EXPRESSION(current, G):
 def PRIMARY(current, G):
     t = tree('PRIMARY')
     if current.name == 'INTLIT':
-        t.append(tree('INTLIT'))
+        tmp = tree('INTLIT')
+        tmp.val = current.pattern
+        t.append(tmp)
         return t, next(G)
     if current.name == 'LPAREN':
         # t.append(tree('LPAREN'))
@@ -244,7 +246,9 @@ def IDENT(current, G):
     t = tree('IDENT')
     if current.name != 'ID':
         raise ParserError("Error when parsing IDENT: " + current.line)
-    t.append(tree('ID'))
+    tmp = tree('ID')
+    tmp.val = current.pattern
+    t.append(tmp)
     dict[current.pattern] = current.line; #add symbol to symbol table, will use different values later.
     return t, next(G)
 
