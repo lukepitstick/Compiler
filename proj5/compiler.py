@@ -17,7 +17,7 @@ def compiler(source, tokens, output):
     mlp = MLparser.parser(source, tokens)
     # mlp will have tree struct and dict
 
-    codegenerator.findGenerateMIPSCode(mlp[0], mlp[1])
+    codegenerator.findGenerateMIPSCode(mlp[0], mlp[1], output)
     
     pass
 

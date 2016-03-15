@@ -1,10 +1,10 @@
 #import MIPSinstruction
 from tree import tree
 import treetraverse
+import re
 
 toWrite = [] # initialize what to write
-dict = {None:None}
-
+dict1 = {}
 # After the code generation has been done
 # We will write everything inside 'toWrite' into
 # output.asm file.
@@ -14,12 +14,7 @@ def PushCodes(InstToken):
 
 #Write beginning of MIPS
 def START():
-    global dict
-    toWrite.append(".data\n")
 
-    # Generate data section from dict
-    for var in dict:
-        pass
     pass
 
 # If reaching this function,
@@ -35,52 +30,24 @@ def FINISH():
     pass
 
 # Syscall the KeyboardInput (Equivalent to Java's Scanner.next())
-def READ_IDS(t):
-
-    #for each IDENT in ID_LIST
-    for i in t.children[1].children:
-        pass
-
-    # """
-    # Here, we are receiving data so...
-    # (Maybe integer value?)
-    # Syscall integers:
-    # 5 - read integer
-    # 8 - read string
-    # At this point we are not likely to use 6, 7 which is
-    # read float and double respectively.
-    #
-    # Ex)
-    # li $v0, 5;
-    # syscall
-    #
-    # Loads whatsoever value you type to $vx register
-    # """
-    pass
+def READ_IDS(args = []):
+	for var in args:
+		dict1[var] = "true"
+		toWrite.append("li $v0, 5\nsyscall\n")
+		toWrite.append("la $t0, %s\n" % var)
+		toWrite.append("sw $v0, 0($t0)\n\n")
 
 # Syscall the Print (Equivalent to Java's System.out.println())
-def WRITE_IDS(t):
-    global dict
-
-    #for each expression in expression_list
-    for i in t.children[1].children:
-        varList = INFIX(i)
-        for v in varList:
-            if dict[v] != True:
-                raise CompilerError("Semantic Error: cannot write unnassigned variable")
-        pass
-    # """
-    # Here, we are printing data to the CMD
-    #
-    # Ex)
-    # li $v0, 1
-    # li $a0, 5
-    # syscall
-    #
-    # Prints 5
-    # """
-    pass
-
+def WRITE_IDS(args = []):
+	for var in args:
+		if re.match("\d", var):
+			toWrite.append("li $a0, %s\n" % var)
+			toWrite.append("li $v0, 1\nsyscall\n\n")
+		elif dict1[var] is "true":
+			toWrite.append("lw $a0, %s\n" % var)
+			toWrite.append("li $v0, 1\nsyscall\n\n")
+		else:
+			raise Exception("Variable not yet initialized!")
 # Defines what #assign does
 def ASSIGN(t):
     global dict
@@ -102,48 +69,43 @@ def INFIX(t):
     pass
 
 # Defines what #process does
+
 def PROCESS(t):
     pass
 
-def findGenerateMIPSCode(t, dictionary):
-    global dict
-    dict = dictionary
-    START()
+def postOrderDFS(tree):
+	if tree.isLeaf():
+		pass
+	if tree.label is "STATEMENT":
+		if tree.children[0].label is "READ":
+			arguments = []
+			for child in tree.children[1].children:
+				if child.children[0].label is "ID":
+					arguments.append(child.children[0].val)
+			READ_IDS(arguments)
+		if tree.children[0].label is "WRITE":
+			arguments = []
+			for child in tree.children[1].children:
+				if child.children[0].children[0].label is "INTLIT":
+					arguments.append(child.children[0].children[0].val)
+				elif child.children[0].children[0].children[0].label is "ID":
+					arguments.append(child.children[0].children[0].children[0].val)
+			WRITE_IDS(arguments)
+	for child in tree.children:
+		postOrderDFS(child)
 
-    toWrite.append(".main\n") #beginning of .main in MIPS
-
-    #for each statement in statement list
-    for i in t.children[1].children:
-        if i.children[0].label == "ASSIGNMENT":
-            ASSIGN(i.children[0])
-        elif i.children[0].label == "WRITE":
-            WRITE_IDS(i)
-        elif i.children[0].label == "READ":
-            READ_IDS(i)
-
-    FINISH()
-
-    # if t.label != "PROGRAM":
-    #     raise CompilerError("bad tree, no program");
-    # if t.children[0].label != "BEGIN":
-    #     raise CompilerError("bad tree, no begin");
-    # if t.children[1].label == "STATEMENT_LIST":
-    #
-    # else:
-    #     raise CompilerError("bad tree, no statement list");
-    # if t.isLeaf():
-    #     return None # Stop iteration, return to the parent node
-    # for i in t.children:
-    #     pass
-    #     # After traversing the nodes, we invoke certain functions
-
-    PushCodes(None)
-
-    pass
-
-class CompilerError(Exception):
-    def __init__(self, msg):
-        self.msg = msg
-
-    def __str__(self):
-        return self.msg
+def findGenerateMIPSCode(t, dict, fname):
+	outFile = open(fname, "w")
+	toWrite.append(".data\n") #beginning of our MIPS
+	#Generate data section from dict
+	for var in dict:
+		dict1[var] = ""
+		toWrite.append("%s: .word 4\n" % var) 
+	toWrite.append(".text\nmain:\n")
+	#initiate the actual traversal
+	postOrderDFS(t)
+	#write the array to the file
+	for line in toWrite:
+		outFile.write(line)
+	# After traversing the nodes, we invoke certain functions
+	pass
