@@ -258,13 +258,13 @@ def IDENT(current, G):
 
 if __name__ == "__main__":
     try:
-        test_case = ['begin', 'read(x,y,z);', 'end']
+        test_case = ['begin', 'read(x);', 'end']
         with open("own_test.txt", "w") as fp:
             fp.write("\n".join(test_case) + "\n")
         try:
             print('Test case: ' + str(test_case))
             sampt, tokk = parser('own_test.txt', 'tokens.txt')
-            newk = '(BEGIN,((READ,((ID)IDENT,(ID)IDENT,(ID)IDENT)ID_LIST)STATEMENT)STATEMENT_LIST,END)PROGRAM;'
+            newk = '(BEGIN,((READ,((ID)IDENT)ID_LIST)STATEMENT)STATEMENT_LIST,END)PROGRAM;'
             if str(sampt) != newk:
                 raise Exception('An internal error occured. Recheck the source code.')
             print('Test case successful: \n' + str(sampt) + '\nIS\n' + newk)
