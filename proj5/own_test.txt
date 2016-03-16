@@ -1,3 +1,12 @@
 begin
-read(x);
+#read(x);
+#write(x+1);
+
+#x := 5-1;
+#write(x);
+x := 1;
+x := 5+(8+x)-1;
+y := 2;
+write(x,y-1);
+
 end
