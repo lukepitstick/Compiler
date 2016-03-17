@@ -1,0 +1,10 @@
+begin
+read(x,y,z);
+write(x,y,z);
+read(x,y,z);
+write(x,y,z);
+x := y + 3;
+y := z + 6;
+z := x + 8;
+write(x,y,z);
+end

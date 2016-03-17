@@ -1,6 +1,5 @@
 .data
 x: .word 4
-y: .word 4
 .text
 main:
 li $v0, 5
@@ -8,14 +7,18 @@ syscall
 la $t0, x
 sw $v0, 0($t0)
 
-li $t1, 3
 la $s0, x
-lw $t2, ($s0)
-add $t0,$t1,$t2
-la   $s0, y
-sw   $t0, ($s0)
+lw $t0, ($s0)
+add $a0, $t0,0
+li $v0, 1
+syscall
 
-la $s0, y
+li $v0, 5
+syscall
+la $t0, x
+sw $v0, 0($t0)
+
+la $s0, x
 lw $t0, ($s0)
 add $a0, $t0,0
 li $v0, 1

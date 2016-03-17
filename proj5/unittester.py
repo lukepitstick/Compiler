@@ -63,9 +63,12 @@ if __name__ == "__main__":
     goodbad = 0
     badbad = 0
     errbad = 0
+
+    start = 1
+    end = 21
     
     print('Test for good..')
-    for i in range(1, 16):#15):
+    for i in range(start, end):#15):
         try:
             print('Test ' + str(i))
             source = 'sample' + str(i) + '.txt'
@@ -92,7 +95,11 @@ if __name__ == "__main__":
 
     print('\n\n==================================')
     print('\n\nTest for bad..')
-    for i in range(1, 8):#15):
+
+    start = 1
+    end = 8
+    
+    for i in range(start, end):#15):
         try:
             print('Test ' + str(i))
             source = 'semanticerror' + str(i) + '.txt'
