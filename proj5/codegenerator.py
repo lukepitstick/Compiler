@@ -40,7 +40,7 @@ def WRITE_IDS(t):
 
 def DOINFIX(s):
     vs = []
-    print(str(s))
+    # print(str(s))
     firstFlag = True;
     while s.__len__() != 0:
         elem = s.pop(0)
@@ -52,7 +52,7 @@ def DOINFIX(s):
                 if (a1 != "$t0") & (a2 != "$t0"):
                     reg = "$t3"
 
-            print("plus a2: " +  a2 + "a1: " + a1)
+            # print("plus a2: " +  a2 + "a1: " + a1)
             d1 = "$t1"
             d2 = "$t2"
             if re.match("\d",a1):
@@ -82,7 +82,7 @@ def DOINFIX(s):
             if not firstFlag:
                 if (a1 != "$t0") & (a2 != "$t0"):
                     reg = "$t3"
-            print("plus a2: " +  a2 + "a1: " + a1)
+            # print("plus a2: " +  a2 + "a1: " + a1)
             d1 = "$t1"
             d2 = "$t2"
             if re.match("\d",a1):
