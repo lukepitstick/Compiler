@@ -1,7 +1,7 @@
 .data
-z: .word 4
 y: .word 4
 x: .word 4
+z: .word 4
 .text
 main:
 li $v0, 5

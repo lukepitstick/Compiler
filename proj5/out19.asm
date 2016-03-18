@@ -1,9 +1,9 @@
 .data
+y: .word 4
 x: .word 4
 aa: .word 4
 z: .word 4
 ab: .word 4
-y: .word 4
 .text
 main:
 li $t0, 4

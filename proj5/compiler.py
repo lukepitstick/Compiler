@@ -12,14 +12,22 @@ import tree
 import lexer_sol
 import MLparser
 import codegenerator
+import traceback
 
 def compiler(source, tokens, output):
     mlp = MLparser.parser(source, tokens)
     # mlp will have tree struct and dict
-
-    codegenerator.findGenerateMIPSCode(mlp[0], mlp[1], output)
+    MIPScodes = []
+    try:
+        MIPScodes = codegenerator.findGenerateMIPSCode(mlp[0], mlp[1])
+    except Exception:
+        traceback.print_exc()
+        return False
     
-    pass
+    outFile = open(output, 'w')
+    for line in MIPScodes:
+        outFile.write(line)
+    return True
 
 # This method should be deprecated before submission
 def compilerTest(source, tokens, output):

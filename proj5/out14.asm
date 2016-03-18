@@ -1,6 +1,6 @@
 .data
-ba: .word 4
 aa: .word 4
+ba: .word 4
 .text
 main:
 li $v0, 5

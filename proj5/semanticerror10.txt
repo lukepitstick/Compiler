@@ -1,0 +1,4 @@
+begin
+read(ba);
+write(ab);
+end

@@ -1,0 +1,5 @@
+begin
+read(x,y,aa);
+read(cc);
+write(x+y, (2-x)+y, (aa+bb)-(cc+dd));
+end

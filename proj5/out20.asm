@@ -1,10 +1,10 @@
 .data
 a: .word 4
-e: .word 4
-b: .word 4
-f: .word 4
-d: .word 4
 c: .word 4
+b: .word 4
+e: .word 4
+d: .word 4
+f: .word 4
 .text
 main:
 li $t1, 2

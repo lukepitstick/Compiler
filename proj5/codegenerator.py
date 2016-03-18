@@ -196,8 +196,8 @@ def postOrderDFS(tree):
         postOrderDFS(child)
 
 
-def findGenerateMIPSCode(t, dict, fname):
-    outFile = open(fname, "w")
+def findGenerateMIPSCode(t, dict): #, fname):
+    # outFile = open(fname, "w")
     toWrite.append(".data\n") #beginning of our MIPS
     #Generate data section from dict
     for var in dict:
@@ -213,8 +213,7 @@ def findGenerateMIPSCode(t, dict, fname):
     toWrite.append("li   $v0, 10\nsyscall")
 
     #write the array to the file
-    for line in toWrite:
-        outFile.write(line)
+    return toWrite
 
 class CompilerError(Exception):
     def __init__(self, msg):
