@@ -1,3 +1,0 @@
-begin
-x := (y + 10)-z;
-end

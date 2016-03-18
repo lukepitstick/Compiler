@@ -1,4 +1,0 @@
-begin
-read(x);
-read(x);
-end
