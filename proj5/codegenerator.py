@@ -37,20 +37,30 @@ def WRITE_IDS(t):
     #     # else:
     #     #     raise Exception("Variable not yet initialized!")
 
+
 def DOINFIX(s):
     vs = []
-    # print(str(s))
+    print(str(s))
+    firstFlag = True;
     while s.__len__() != 0:
         elem = s.pop(0)
         if elem is "-":
+            reg = "$t0"
             a2 = vs.pop()
             a1 = vs.pop()
+            if not firstFlag:
+                if (a1 != "$t0") & (a2 != "$t0"):
+                    reg = "$t3"
+
+            print("plus a2: " +  a2 + "a1: " + a1)
             d1 = "$t1"
             d2 = "$t2"
             if re.match("\d",a1):
                 toWrite.append("li $t1, %s\n" % a1)
             elif a1 == "$t0":
                 d1 = "$t0"
+            elif a1 == "$t3":
+                d1 = "$t3"
             else:
                 toWrite.append("la $s0, %s\nlw $t1, ($s0)\n" %a1)
 
@@ -58,19 +68,29 @@ def DOINFIX(s):
                 toWrite.append("li $t2, %s\n" % a2)
             elif a2 == "$t0":
                 d2 = "$t0"
+            elif a2 == "$t3":
+                d2 = "$t3"
             else:
                 toWrite.append("la $s0, %s\nlw $t2, ($s0)\n" %a2)
-            toWrite.append("sub $t0,%s,%s\n"%(d1,d2))
-            vs.append("$t0")
+            toWrite.append("sub %s,%s,%s\n"%(reg,d1,d2))
+            vs.append(reg)
+            firstFlag = False
         elif elem is "+":
+            reg = "$t0"
             a1 = vs.pop()
             a2 = vs.pop()
+            if not firstFlag:
+                if (a1 != "$t0") & (a2 != "$t0"):
+                    reg = "$t3"
+            print("plus a2: " +  a2 + "a1: " + a1)
             d1 = "$t1"
             d2 = "$t2"
             if re.match("\d",a1):
                 toWrite.append("li $t1, %s\n" % a1)
             elif a1 == "$t0":
                 d1 = "$t0"
+            elif a1 == "$t3":
+                d1 = "$t3"
             else:
                 toWrite.append("la $s0, %s\nlw $t1, ($s0)\n" %a1)
 
@@ -78,10 +98,13 @@ def DOINFIX(s):
                 toWrite.append("li $t2, %s\n" % a2)
             elif a2 == "$t0":
                 d2 = "$t0"
+            elif a2 == "$t3":
+                d2 = "$t3"
             else:
                 toWrite.append("la $s0, %s\nlw $t2, ($s0)\n" %a2)
-            toWrite.append("add $t0,%s,%s\n"%(d1,d2))
-            vs.append("$t0")
+            toWrite.append("add %s,%s,%s\n"%(reg,d1,d2))
+            vs.append(reg)
+            firstFlag = False;
         else:
             vs.append(elem)
 
