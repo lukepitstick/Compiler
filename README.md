@@ -30,9 +30,6 @@ Note the following semantic rules:
 * The read function cannot take string or a bool as an argument.
 * The write function should be able to take int, string, and bool types as arguments.
 
-~CSE 574 only (not for us):~
-~Your variable declarations should allow for (optional) initialization for all types (e.g. “int x := 10;”) Add a (32-bit) float type and float literal, and make it work with all arithmetic operators, relational operators, and the read and write Allow for mixed-type arithmetic expressions, implicitly casting int to float when necessary.~
-
 # Submission
 Standard submission instructions, using part6 for both directory and tag name. 
 
