@@ -1,0 +1,10 @@
+begin
+int x;
+x := 7;
+x := x % 2;
+write(x);
+write(True != FALSE);
+write(2 > 1);
+write(2 < 1);
+write("hey !@#$%^&*()_+-=`~;:'/?,.<>|   ");
+end
