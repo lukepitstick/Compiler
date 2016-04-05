@@ -145,7 +145,7 @@ def WRITE(current, G):
 @add_debug
 def ASSIGNMENT(current, G):
     t = tree("ASSIGNMENT")
-    tident, current = IDENT(current, G)
+    tident, current = FACT4(current, G)
     t.append(tident)
     if current.name != "ASSIGNOP":
         raise ParserError("Syntax Error: Expected assignop is missing: " + current.line)
@@ -154,34 +154,16 @@ def ASSIGNMENT(current, G):
     t.append(texpr)
     return t, current
 
-"""
-Maybe we can also try this way...
-
-@add_debug
-def ID_EXPR_LIST(current, G, Fn): # Fn can be either IDENT or EXPRESSION
-    if Fn != IDENT or Fn != EXPRESSION:
-        raise ParserError("Syntax Error: ")
-    current = Fn(current, G)
-    while True:
-        if current.name == 'COMMA':
-            current = next(G)
-        current = Fn(current, G)
-        if current.name != 'COMMA':
-            break;
-    return current
-
-"""
-
 @add_debug
 def ID_LIST(current, G):
     t = tree("ID_LIST")
-    t1, current = IDENT(current, G)
+    t1, current = FACT4(current, G)
     t.append(t1)
     while True:
         if current.name == 'COMMA':
             # t.append(tree('COMMA'))
             current = next(G)
-            t2, current = IDENT(current, G)
+            t2, current = FACT4(current, G)
             t.append(t2)
         if current.name != 'COMMA':
             break
@@ -205,58 +187,151 @@ def EXPR_LIST(current, G):
 @add_debug
 def EXPRESSION(current, G):
     t = tree("EXPRESSION")
-    t1, current = PRIMARY(current, G)
+    t1, current = TERM1(current, G)
     t.append(t1)
 
     while True:
-        if (current.name == 'PLUS') | (current.name == 'MINUS'): #May have to add ARITHOP in future
+        if (current.name == 'OR'): #May have to add ARITHOP in future
             t.append(tree(current.name))
             current = next(G)
-            t2, current = PRIMARY(current, G)
+            t2, current = TERM1(current, G)
             t.append(t2)
-        if (current.name != 'PLUS') & (current.name != 'MINUS'):
+        if (current.name != 'OR'):
             return t, current
-    # while True:
-    #     if ARITHOP(current, G).name != 'PLUS' or 'MINUS': # ????
-    #         break
-    #     current = PRIMARY(next(G), G)
-    # return current
 
 @add_debug
-def PRIMARY(current, G):
-    t = tree('PRIMARY')
-    if current.name == 'INTLIT':
-        tmp = tree('INTLIT')
-        tmp.val = current.pattern
-        t.append(tmp)
-        return t, next(G)
-    if current.name == 'LPAREN':
-        # t.append(tree('LPAREN'))
-        t1, current = EXPRESSION(next(G), G)
-        if current.name != 'RPAREN':
-            raise ParserError("Syntax Error: Expected rparen is missing: " + current.line)
-        t.append(t1)
-        return t, next(G)
-    else:
-		raise(ParserError("Syntax Error: Invalid Primary: " + current.line)
-    t2, current = IDENT(current, G)
-    t.append(t2)
-    return t, current
-
+def TERM1(current, G):
+	t = tree("TERM1")
+	t1, current = FACT1(current, G)
+	t.append(t1)
+	
+	while True:
+		if (current.name == 'AND'): #May have to add ARITHOP in future
+			t.append(tree(current.name))
+			current = next(G)
+			t2, current = FACT1(current, G)
+			t.append(t2)
+		if (current.name != 'AND'):
+			return t, current
+			
 @add_debug
-def IDENT(current, G):
-    t = tree('IDENT')
-    if current.name != 'ID':
-        raise ParserError("Syntax Error: Error when parsing IDENT: " + current.line)
-    tmp = tree('ID')
-    tmp.val = current.pattern
-    t.append(tmp)
-    dict[current.pattern] = ""; #add symbol to symbol table, will use different values later.
-    return t, next(G)
-
-# @add_debug
-# def ARITHOP(current, G):
-#     pass
+def FACT1(current, G):
+	t = tree("FACT1")
+	t1, current = EXP2(current, G)
+	t.append(t1)
+	t2, current = R(current, G)
+	t.append(t2)
+	return t, current
+	
+@add_debug
+def R(current, G):
+	t = tree("R")
+	if(current.name == 'SYMBOL'):
+		t.append(tree(current.name))
+		current = next(G)
+		t2, current = EXP2(current, G)
+		t.append(t2)
+	else:
+		return t, current
+		
+@add_debug
+def EXP2(current, G):
+	t = tree("EXP2")
+	t1, current = TERM2(current, G)
+	t.append(t1)
+	
+	while True:
+		if (current.name == 'PLUS'): #May have to add ARITHOP in future
+			t.append(tree(current.name))
+			current = next(G)
+			t2, current = TERM2(current, G)
+			t.append(t2)
+		if (current.name != 'PLUS'):
+			return t, current
+			
+@add_debug
+def TERM2(current, G):
+	t = tree("TERM2")
+	t1, current = TERM3(current, G)
+	t.append(t1)
+	
+	while True:
+		if (current.name == 'MINUS'): #May have to add ARITHOP in future
+			t.append(tree(current.name))
+			current = next(G)
+			t2, current = TERM3(current, G)
+			t.append(t2)
+		if (current.name != 'MINUS'):
+			return t, current
+			
+@add_debug
+def TERM3(current, G):
+	t = tree("TERM3")
+	t1, current = FACT2(current, G)
+	t.append(t1)
+	
+	while True:
+		if (current.name == 'MULTIPLICATION'): #May have to add ARITHOP in future
+			t.append(tree(current.name))
+			current = next(G)
+			t2, current = FACT2(current, G)
+			t.append(t2)
+		if (current.name != 'MULTIPLICATION'):
+			return t, current
+			
+@add_debug
+def FACT2(current, G):
+	t = tree("FACT2")
+	t1, current = FACT3(current, G)
+	t.append(t1)
+	
+	while True:
+		if (current.name == 'DIVISION'): #May have to add ARITHOP in future
+			t.append(tree(current.name))
+			current = next(G)
+			t2, current = FACT3(current, G)
+			t.append(t2)
+		if (current.name != 'DIVISION'):
+			return t, current
+			
+@add_debug
+def FACT3(current, G):
+	t = tree("FACT3")
+	t1, current = FACT4(current, G)
+	t.append(t1)
+	
+	while True:
+		if (current.name == 'REMAINDER'): #May have to add ARITHOP in future
+			t.append(tree(current.name))
+			current = next(G)
+			t2, current = FACT4(current, G)
+			t.append(t2)
+		if (current.name != 'REMAINDER'):
+			return t, current
+			
+@add_debug
+def FACT4(current, G):
+	t = tree('FACT2')
+	if current.name == 'ID':
+		tmp = tree('ID')
+		tmp.val = current.pattern
+		t.append(tmp)
+		dict[current.pattern] = ""
+	elif current.name == 'INTLIT':
+		tmp = tree('INTLIT')
+		tmp.val = current.pattern
+		t.append(tmp)
+		dict[current.pattern] = ""
+	elif current.name == 'BOOLLIT':
+		tmp = tree('BOOLLIT')
+		tmp.val = current.pattern
+		t.append(tmp)
+		dict[current.pattern] = ""
+	elif current.name == 'LPAREN':
+		t, current = EXP1(current, G)
+		if current.name != "RPAREN":
+			raise ParserError("Syntax Error: Expected rparen is missing: " + current.line)
+	return t, next(G)
 
 if __name__ == "__main__":
     try:
