@@ -237,6 +237,8 @@ def PRIMARY(current, G):
             raise ParserError("Syntax Error: Expected rparen is missing: " + current.line)
         t.append(t1)
         return t, next(G)
+    else:
+		raise(ParserError("Syntax Error: Invalid Primary: " + current.line)
     t2, current = IDENT(current, G)
     t.append(t2)
     return t, current
