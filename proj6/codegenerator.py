@@ -1,6 +1,6 @@
 #import MIPSinstruction
 from tree import tree
-import treetraverse
+# import treetraverse
 import re
 
 toWrite = [] # initialize what to write

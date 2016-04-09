@@ -1,0 +1,6 @@
+begin
+int x;
+x := 16;
+x := 23;
+write(x);
+end 
