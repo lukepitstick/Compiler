@@ -170,14 +170,15 @@ def READ(current, G):
 
 @add_debug
 def WRITE(current, G):
-    if current.name != "LPAREN":
-        raise ParserError("Syntax Error: Expected lparen is missing: " + current.line)
-    # t.append(tree("LPAREN"))
-    t, current = EXPR_LIST(next(G), G)
-    if current.name != "RPAREN":
-        raise ParserError("Syntax Error: Expected rparen is missing: " + str(current.line_num) + current.pattern)
-    # t.append(tree("RPAREN"))
-    return t, next(G)
+	if current.name != "LPAREN":
+		raise ParserError("Syntax Error: Expected lparen is missing: " + current.line)
+	# t.append(tree("LPAREN"))
+	t, current = EXPR_LIST(next(G), G)
+	print(current.name)
+	if current.name != "RPAREN":
+		raise ParserError("Syntax Error: Expected rparen is missing: " + str(current.line_num) + current.pattern)
+	# t.append(tree("RPAREN"))
+	return t, next(G)
 
 @add_debug
 def ASSIGNMENT(current, G):
@@ -261,11 +262,12 @@ def FACT1(current, G):
 @add_debug
 def R(current, G):
 	t = tree("R")
-	if(current.name == 'SYMBOL'):
+	if(current.name == 'GREATEREQUAL') | (current.name == 'LESSEQUAL') | (current.name == 'EQUAL') | (current.name == 'LESSTHAN') | (current.name == 'GREATERTHAN') | (current.name == 'NOTEQUAL'):
 		t.append(tree(current.name))
 		current = next(G)
 		t2, current = EXP2(current, G)
 		t.append(t2)
+		return t, current
 	else:
 		return t, current
 		

@@ -1,6 +1,3 @@
 begin
-write(True or True);
-write(True and False);
-write(False or True);
-write(False and False);
+write(3 < 5);
 end
