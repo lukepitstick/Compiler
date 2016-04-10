@@ -1,5 +1,6 @@
 begin
-string s := "I never could get the hang of Thursdays.";
-string s2 := s;
-write(s2);
+write(True or True);
+write(True and False);
+write(False or True);
+write(False and False);
 end
