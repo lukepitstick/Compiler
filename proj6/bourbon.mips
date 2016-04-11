@@ -1,0 +1,9 @@
+.data
+y: .word 4
+.text
+main:
+la   $s0, y
+sw   $t0, ($s0)
+
+li   $v0, 10
+syscall

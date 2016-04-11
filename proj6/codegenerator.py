@@ -220,23 +220,35 @@ def postOrderDFS(tree):
 
 
 def findGenerateMIPSCode(t, dict): #, fname):
-    # outFile = open(fname, "w")
-    toWrite.append(".data\n") #beginning of our MIPS
-    #Generate data section from dict
-    for var in dict:
-        dict1[var] = ""
-        toWrite.append("%s: .word 4\n" % var)
+	# outFile = open(fname, "w")
+	toWrite.append(".data\n") #beginning of our MIP
+	#Generate data section from dict
+	for var in dict:
+		print(var)
+		print(dict[var])
+		if dict[var][1] == 'STRING':
+			toWrite.append("%s: .asciiz " % var)
+			toWrite.append(dict[var][0])
+			toWrite.append("\n")
+		elif dict[var][1] == 'BOOL':
+			if 'True' in dict[var] or 'False' in dict[var]:
+				toWrite.append("%s: .word 4\n" % var)
+			else:
+				raise CompilerError("Variable not declared correctly!")
+		elif dict[var][1] == 'INT':
+			toWrite.append("%s: .word 4\n" % var)
+		dict1[var] = ""
 
-    toWrite.append(".text\nmain:\n")
+	toWrite.append(".text\nmain:\n")
 
-    #initiate the actual traversal
-    postOrderDFS(t)
+	#initiate the actual traversal
+	postOrderDFS(t)
 
-    #gracefully exit
-    toWrite.append("li   $v0, 10\nsyscall")
+	#gracefully exit
+	toWrite.append("li   $v0, 10\nsyscall")
 
-    #write the array to the file
-    return toWrite
+	#write the array to the file
+	return toWrite
 
 class CompilerError(Exception):
     def __init__(self, msg):

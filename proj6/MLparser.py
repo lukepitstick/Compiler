@@ -51,7 +51,9 @@ class ParserError(Exception):
 # Parsing code
 dict = {None:None}; #instantiate symbol table
 del dict[None]
-typeOfVar = "placeholder"
+typeOfVar = ""
+valOfVar = ""
+varName1 = ""
 
 def parser(source_file, token_file):	
     """
@@ -149,18 +151,20 @@ def STATEMENT(current, G):
 
 @add_debug
 def ASSIGNMENTSTR(current, G):
-    t = tree("ASSIGNMENTSTR")
-    if current.name != "ASSIGNOP":
-        return t, current
-    current = next(G)
-    if current.name == "STRING":
-        tstrlit = tree("STRING")
-        tstrlit.val = current.pattern
-        t.append(tstrlit)
-        return t, next(G)
-    tident2, current = IDENT(current, G)
-    t.append(tident2)
-    return t, current
+	t = tree("ASSIGNMENTSTR")
+	if current.name != "ASSIGNOP":
+		return t, current
+	current = next(G)
+	if current.name == "STRING":
+		tstrlit = tree("STRING")
+		tstrlit.val = current.pattern
+		tuple1 = (current.pattern, typeOfVar)
+		dict[varName1] = tuple1
+		t.append(tstrlit)
+		return t, next(G)
+	tident2, current = IDENT(current, G)
+	t.append(tident2)
+	return t, current
     
 
 @add_debug
@@ -357,11 +361,15 @@ def PRIMARY(current, G):
 	if current.name == 'INTLIT':
 		tmp = tree('INTLIT')
 		tmp.val = current.pattern
+		tuple1 = (current.pattern, typeOfVar)
+		dict[varName1] = tuple1
 		t.append(tmp)
 		return t, next(G)
 	if current.name == 'BOOLLIT':
 		tmp = tree('BOOLLIT')
 		tmp.val = current.pattern
+		tuple1 = (current.pattern, typeOfVar)
+		dict[varName1] = tuple1
 		t.append(tmp)
 		return t, next(G)
 	if current.name == 'LPAREN':
@@ -376,13 +384,15 @@ def PRIMARY(current, G):
 
 @add_debug
 def IDENT(current, G):
+	global varName1
 	t = tree('IDENT')
 	if current.name != 'ID':
 		raise ParserError("Syntax Error: Error when parsing IDENT: " + current.line)
 	tmp = tree('ID')
 	tmp.val = current.pattern
 	t.append(tmp)
-	dict[current.pattern] = ("", typeOfVar); #add symbol to symbol table, will use different values later.
+	varName1 = current.pattern
+	dict[current.pattern] = (valOfVar, typeOfVar); #add symbol to symbol table, will use different values later.
 	return t, next(G)
 
 if __name__ == "__main__":

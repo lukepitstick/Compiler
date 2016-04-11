@@ -1,3 +1,4 @@
 begin
-write(3 < 5);
+bool y;
+y := False;
 end
