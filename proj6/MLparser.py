@@ -51,6 +51,8 @@ class ParserError(Exception):
 # Parsing code
 dict = {None:None}; #instantiate symbol table
 del dict[None]
+typeOfVar = "placeholder"
+
 def parser(source_file, token_file):	
     """
     source_file: A program written in the ML langauge.
@@ -110,36 +112,40 @@ def SEMICOLON(current, G):
 
 @add_debug
 def STATEMENT(current, G):
-    t = tree("STATEMENT")
-    if current.name == "INTTYPE":
-        t.append(tree("INTTYPE"))
-        t1, current = IDENT(next(G), G)
-        t.append(t1)
-    elif current.name == "BOOLTYPE":
-        t.append(tree("BOOLTYPE"))
-        t1, current = IDENT(next(G), G)
-        t.append(t1)
-    elif current.name == "STRINGTYPE":
-        t.append(tree("STRINGTYPE"))
-        t1, current = IDENT(next(G), G)
-        t.append(t1)
-        t2, current = ASSIGNMENTSTR(current, G)
-        t.append(t2)
-    elif current.name == "READ":
-        t.append(tree("READ"))
-        t1, current = READ(next(G), G)
-        # print("READ" + str(type(current)))
-        t.append(t1)
-    elif current.name == "WRITE":
-        t.append(tree("WRITE"))
-        t2, current = WRITE(next(G), G)
-        # print("WRITE" + str(type(current)))
-        t.append(t2)
-    else:
-        t3, current = ASSIGNMENT(current, G)
-        # print("ASSIGNMENT" + str(type(current)))
-        t.append(t3)
-    return t, current
+	t = tree("STATEMENT")
+	global typeOfVar
+	if current.name == "INTTYPE":
+		typeOfVar = "INT"
+		t.append(tree("INTTYPE"))
+		t1, current = IDENT(next(G), G)
+		t.append(t1)
+	elif current.name == "BOOLTYPE":
+		typeOfVar = "BOOL"
+		t.append(tree("BOOLTYPE"))
+		t1, current = IDENT(next(G), G)
+		t.append(t1)
+	elif current.name == "STRINGTYPE":
+		typeOfVar = "STRING"
+		t.append(tree("STRINGTYPE"))
+		t1, current = IDENT(next(G), G)
+		t.append(t1)
+		t2, current = ASSIGNMENTSTR(current, G)
+		t.append(t2)
+	elif current.name == "READ":
+		t.append(tree("READ"))
+		t1, current = READ(next(G), G)
+		# print("READ" + str(type(current)))
+		t.append(t1)
+	elif current.name == "WRITE":
+		t.append(tree("WRITE"))
+		t2, current = WRITE(next(G), G)
+		# print("WRITE" + str(type(current)))
+		t.append(t2)
+	else:
+		t3, current = ASSIGNMENT(current, G)
+		# print("ASSIGNMENT" + str(type(current)))
+		t.append(t3)
+	return t, current
 
 @add_debug
 def ASSIGNMENTSTR(current, G):
@@ -174,7 +180,6 @@ def WRITE(current, G):
 		raise ParserError("Syntax Error: Expected lparen is missing: " + current.line)
 	# t.append(tree("LPAREN"))
 	t, current = EXPR_LIST(next(G), G)
-	print(current.name)
 	if current.name != "RPAREN":
 		raise ParserError("Syntax Error: Expected rparen is missing: " + str(current.line_num) + current.pattern)
 	# t.append(tree("RPAREN"))
@@ -371,14 +376,14 @@ def PRIMARY(current, G):
 
 @add_debug
 def IDENT(current, G):
-    t = tree('IDENT')
-    if current.name != 'ID':
-        raise ParserError("Syntax Error: Error when parsing IDENT: " + current.line)
-    tmp = tree('ID')
-    tmp.val = current.pattern
-    t.append(tmp)
-    dict[current.pattern] = ""; #add symbol to symbol table, will use different values later.
-    return t, next(G)
+	t = tree('IDENT')
+	if current.name != 'ID':
+		raise ParserError("Syntax Error: Error when parsing IDENT: " + current.line)
+	tmp = tree('ID')
+	tmp.val = current.pattern
+	t.append(tmp)
+	dict[current.pattern] = ("", typeOfVar); #add symbol to symbol table, will use different values later.
+	return t, next(G)
 
 if __name__ == "__main__":
 	try:
