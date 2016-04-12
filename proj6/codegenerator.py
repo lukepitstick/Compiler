@@ -180,16 +180,43 @@ def postOrderDFS(tree):
             WRITE_IDS(tree.children[1])
         elif tree.children[0].label is "ASSIGNMENT":
             ASSIGN(tree.children[0])
+        elif tree.children[0].label is "BOOLTYPE":
+            DEFTYPE(tree)
+        elif tree.children[0].label is "STRINGTYPE":
+            DEFSTRING(tree)
+        elif tree.children[0].label is "INTTYPE":
+            DEFTYPE(tree)
     for child in tree.children:
         postOrderDFS(child)
 
+def DEFTYPE(tree):
+    val = tree.children[1].children[0].val
+    if dict1[val] == "True":
+        raise SyntaxError("Define type twice")
+    else:
+        dict1[val] = "True"
+
+def DEFSTRING(tree):
+    var = tree.children[1].children[0].val
+    if dict1[var] == "True":
+        raise SyntaxError("Define type twice")
+    else:
+        dict1[var] = "True"
+    assignmentstr = tree.children[2].children[0].val
+
+
+    toWrite.append("la   $s0, %s\nsw   $t0, ($s0)\n\n" % var)  # store value from $t0 into var's address
+
 
 def findGenerateMIPSCode(t, dict): #, fname):
+    global dict1
     toWrite.append(".data\n") #beginning of our MIP
     #Generate data section from dict
     for var in dict:
-        print(var)
-        print(dict[var])
+        # print(var)
+        # print(dict[var])
+        if dict[var][0] == "" or dict[var][1] == "": #unsure
+            raise SyntaxError("Syntax error: Bad Dictionary")
         if dict[var][1] == 'STRING':
             toWrite.append("%s: .asciiz " % var)
             toWrite.append(dict[var][0])
@@ -201,7 +228,10 @@ def findGenerateMIPSCode(t, dict): #, fname):
                 raise CompilerError("Variable not declared correctly!")
         elif dict[var][1] == 'INT':
             toWrite.append("%s: .word 4\n" % var)
-        dict1[var] = ""
+        # dict1[var] = ""3
+
+    #sync dictionaries
+    dict1 = dict
 
     toWrite.append(".text\nmain:\n")
 

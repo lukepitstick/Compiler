@@ -35,7 +35,7 @@ class ParserError(Exception):
 
 #######################################
 # Parsing code
-dict = {None:None}; #instantiate symbol table
+dict = {None:None} #instantiate symbol table
 del dict[None]
 typeOfVar = ""
 valOfVar = ""
@@ -118,7 +118,6 @@ def STATEMENT(current, G):
     elif current.name == "BOOLTYPE":
         typeOfVar = "BOOL"
         t.append(tree("BOOLTYPE"))
-        print("yes" + varName1)
         current = next(G)
         varName1 = current.pattern
         try:
@@ -372,7 +371,6 @@ def PRIMARY(current, G):
         t.append(tmp)
         return t, next(G)
     if current.name == 'BOOLLIT':
-        print("Ddd" + varName1)
         tmp = tree('BOOLLIT')
         tmp.val = current.pattern
         tuple1 = (current.pattern, typeOfVar)
