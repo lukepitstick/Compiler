@@ -163,10 +163,12 @@ def ASSIGNMENTSTR(current, G):
     if current.name == "STRING":
         tstrlit = tree("STRING")
         tstrlit.val = current.pattern
-        tuple1 = (current.pattern, typeOfVar)
+        valOfVar = current.pattern
+        tuple1 = (valOfVar, typeOfVar)
         dict[varName1] = tuple1
         t.append(tstrlit)
         return t, next(G)
+
     tident2, current = IDENT(current, G)
     t.append(tident2)
     return t, current
@@ -233,7 +235,7 @@ def EXPR_LIST(current, G):
             t2, current = EXPRESSION(current, G)
             t.append(t2)
         if current.name != 'COMMA':
-            break;
+            break
     return t, current
 
 @add_debug
@@ -366,15 +368,15 @@ def PRIMARY(current, G):
     if current.name == 'INTLIT':
         tmp = tree('INTLIT')
         tmp.val = current.pattern
-        tuple1 = (current.pattern, typeOfVar)
-        dict[varName1] = tuple1
+        tuple1 = ("False", typeOfVar)
+        dict[varName1] = tuple1 #do we need this?
         t.append(tmp)
         return t, next(G)
     if current.name == 'BOOLLIT':
         tmp = tree('BOOLLIT')
         tmp.val = current.pattern
-        tuple1 = (current.pattern, typeOfVar)
-        dict[varName1] = tuple1
+        tuple1 = ("False", typeOfVar)
+        dict[varName1] = tuple1 #do we need this?
         t.append(tmp)
         return t, next(G)
     if current.name == 'LPAREN':
@@ -396,12 +398,22 @@ def IDENT(current, G,):
     tmp = tree('ID')
     tmp.val = current.pattern
     t.append(tmp)
-    dict[current.pattern] = (valOfVar, typeOfVar); #add symbol to symbol table, will use different values later.
+    g = ""
+    try:
+        g = dict[current.pattern][0]
+    except:
+        pass
+    gt = typeOfVar
+    try:
+        gt = dict[current.pattern][1]
+    except:
+        pass
+    dict[current.pattern] = (g, gt) #add symbol to symbol table, will use different values later.
     return t, next(G)
 
 if __name__ == "__main__":
     try:
-        fname = 'example1.txt'
+        fname = 'own_test.txt'
         print("Parsing " + fname)
         try:
             sampt, tokk = parser(fname, 'tokens.txt')
