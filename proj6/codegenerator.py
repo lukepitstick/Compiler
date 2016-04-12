@@ -1,6 +1,5 @@
 #import MIPSinstruction
-from tree import tree
-# import treetraverse
+import tree #from tree?
 import re
 
 toWrite = [] # initialize what to write
@@ -26,21 +25,10 @@ def WRITE_IDS(t):
         toWrite.append("add $a0, $t0,0\n")
         toWrite.append("li $v0, 1\nsyscall\n\n")
 
-    # for var in args:
-    #     pass
-    #     # if re.match("\d", var):
-    #     #     toWrite.append("li $a0, %s\n" % var)
-    #     #     toWrite.append("li $v0, 1\nsyscall\n\n")
-    #     # elif dict1[var] is "true":
-    #     #     toWrite.append("lw $a0, %s\n" % var)
-    #     #     toWrite.append("li $v0, 1\nsyscall\n\n")
-    #     # else:
-    #     #     raise Exception("Variable not yet initialized!")
 
 
 def DOINFIX(s):
     vs = []
-    # print(str(s))
     firstFlag = True;
     while s.__len__() != 0:
         elem = s.pop(0)
@@ -52,7 +40,6 @@ def DOINFIX(s):
                 if (a1 != "$t0") & (a2 != "$t0"):
                     reg = "$t3"
 
-            # print("plus a2: " +  a2 + "a1: " + a1)
             d1 = "$t1"
             d2 = "$t2"
             if re.match("\d",a1):
@@ -82,7 +69,6 @@ def DOINFIX(s):
             if not firstFlag:
                 if (a1 != "$t0") & (a2 != "$t0"):
                     reg = "$t3"
-            # print("plus a2: " +  a2 + "a1: " + a1)
             d1 = "$t1"
             d2 = "$t2"
             if re.match("\d",a1):
@@ -104,7 +90,7 @@ def DOINFIX(s):
                 toWrite.append("la $s0, %s\nlw $t2, ($s0)\n" %a2)
             toWrite.append("add %s,%s,%s\n"%(reg,d1,d2))
             vs.append(reg)
-            firstFlag = False;
+            firstFlag = False
         else:
             vs.append(elem)
 
@@ -139,7 +125,6 @@ def INFIX(t):
     #receives tree t with head as expression
     stack = []
     varList = []
-    # print(t)
     flag1 = False
     flag2 = False
     postfixFlag = False
@@ -150,10 +135,7 @@ def INFIX(t):
         except IndexError:
             CC = "-"
         if CC == "EXPRESSION":
-            # print("recurse")
             s,VV = INFIX(child.children[0])
-            # print("stack: " + str(s))
-            # print(str(VV))
             varList = varList + VV
             stack = stack + s
         elif child.label == "PLUS":
@@ -175,24 +157,7 @@ def INFIX(t):
             if flag2:
                 stack.append("-")
                 flag2 = False
-    # print("varlist: " + str(varList))
     return stack, varList
-
-    # for child in t.children:
-    #         if child.children[0].label == "EXPRESSION":
-    #             s,VV = INFIX(child.children[0])
-    #             varList.append(VV)
-    #             stack.append(s)
-    #         elif child.children[0].label == "INTLIT":
-    #             stack.append(child.children[0].val)
-    #         elif child.children[0].label == "IDENT":
-    #             stack.append(child.children[0].children[0].val)
-    #             varList.append(child.children[0].children[0].val)
-    #         elif child.children[0].label == "PLUS":
-    #             stack.append("-")
-    #         elif child.children[0].label == "MINUS":
-    #             stack.append("+")
-    #     return stack, varList
 
 
 def postOrderDFS(tree):
@@ -220,35 +185,34 @@ def postOrderDFS(tree):
 
 
 def findGenerateMIPSCode(t, dict): #, fname):
-	# outFile = open(fname, "w")
-	toWrite.append(".data\n") #beginning of our MIP
-	#Generate data section from dict
-	for var in dict:
-		print(var)
-		print(dict[var])
-		if dict[var][1] == 'STRING':
-			toWrite.append("%s: .asciiz " % var)
-			toWrite.append(dict[var][0])
-			toWrite.append("\n")
-		elif dict[var][1] == 'BOOL':
-			if 'True' in dict[var] or 'False' in dict[var]:
-				toWrite.append("%s: .word 4\n" % var)
-			else:
-				raise CompilerError("Variable not declared correctly!")
-		elif dict[var][1] == 'INT':
-			toWrite.append("%s: .word 4\n" % var)
-		dict1[var] = ""
+    toWrite.append(".data\n") #beginning of our MIP
+    #Generate data section from dict
+    for var in dict:
+        print(var)
+        print(dict[var])
+        if dict[var][1] == 'STRING':
+            toWrite.append("%s: .asciiz " % var)
+            toWrite.append(dict[var][0])
+            toWrite.append("\n")
+        elif dict[var][1] == 'BOOL':
+            if 'True' in dict[var] or 'False' in dict[var]:
+                toWrite.append("%s: .word 4\n" % var)
+            else:
+                raise CompilerError("Variable not declared correctly!")
+        elif dict[var][1] == 'INT':
+            toWrite.append("%s: .word 4\n" % var)
+        dict1[var] = ""
 
-	toWrite.append(".text\nmain:\n")
+    toWrite.append(".text\nmain:\n")
 
-	#initiate the actual traversal
-	postOrderDFS(t)
+    #initiate the actual traversal
+    postOrderDFS(t)
 
-	#gracefully exit
-	toWrite.append("li   $v0, 10\nsyscall")
+    #gracefully exit
+    toWrite.append("li   $v0, 10\nsyscall")
 
-	#write the array to the file
-	return toWrite
+    #write the array to the file
+    return toWrite
 
 class CompilerError(Exception):
     def __init__(self, msg):
