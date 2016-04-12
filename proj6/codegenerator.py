@@ -146,9 +146,164 @@ def FACT1(t,reg): #Gets tree with FACT1 as head
     return (retType, varlist)
 
 def EXP2(t,reg):
+    regs = otherReg(reg)
+    opFlag = False
+    type1 = ""
+    type2 = ""
     varlist = []
     retType = "INT"
+
+    for child in t.children:
+        if child.label == "TERM2":
+            if not opFlag:
+                type1, varlist1 = TERM2(child, regs[0])
+                varlist += varlist1
+            if opFlag:
+                type2, varlist2 = TERM2(child, regs[1])
+                varlist += varlist2
+                if (type1 != "INT") or (type2 != "INT"):
+                    raise CompilerError("Semantic Error: Compare operand on non-int")
+                toWrite.append("add %s, %s, %s" % (regs[0], regs[0], regs[1]))
+                opFlag = False
+
+        if child.label == "PLUS":
+            opFlag = True
+
+    toWrite.append("lw %s, %s" % (reg, regs[0]))
     return (retType, varlist)
+
+def TERM2(t, reg):
+    regs = otherReg(reg)
+    opFlag = False
+    type1 = ""
+    type2 = ""
+    varlist = []
+    retType = "INT"
+
+    for child in t.children:
+        if child.label == "TERM3":
+            if not opFlag:
+                type1, varlist1 = TERM3(child, regs[0])
+                varlist += varlist1
+            if opFlag:
+                type2, varlist2 = TERM3(child, regs[1])
+                varlist += varlist2
+                if (type1 != "INT") or (type2 != "INT"):
+                    raise CompilerError("Semantic Error: Compare operand on non-int")
+                toWrite.append("sub %s, %s, %s" % (regs[0], regs[0], regs[1]))
+                opFlag = False
+
+        if child.label == "MINUS":
+            opFlag = True
+
+    toWrite.append("lw %s, %s" % (reg, regs[0]))
+    return (retType, varlist)
+
+def TERM3(t, reg):
+    regs = otherReg(reg)
+    opFlag = False
+    type1 = ""
+    type2 = ""
+    varlist = []
+    retType = "INT"
+
+    for child in t.children:
+        if child.label == "FACT2":
+            if not opFlag:
+                type1, varlist1 = FACT2(child, regs[0])
+                varlist += varlist1
+            if opFlag:
+                type2, varlist2 = FACT2(child, regs[1])
+                varlist += varlist2
+                if (type1 != "INT") or (type2 != "INT"):
+                    raise CompilerError("Semantic Error: Compare operand on non-int")
+                toWrite.append("mul %s, %s, %s" % (regs[0], regs[0], regs[1]))
+                opFlag = False
+
+        if child.label == "MULTIPLICATION":
+            opFlag = True
+
+    toWrite.append("lw %s, %s" % (reg, regs[0]))
+    return (retType, varlist)
+
+def FACT2(t, reg):
+    regs = otherReg(reg)
+    opFlag = False
+    type1 = ""
+    type2 = ""
+    varlist = []
+    retType = "INT"
+
+    for child in t.children:
+        if child.label == "FACT3":
+            if not opFlag:
+                type1, varlist1 = FACT3(child, regs[0])
+                varlist += varlist1
+            if opFlag:
+                type2, varlist2 = FACT3(child, regs[1])
+                varlist += varlist2
+                if (type1 != "INT") or (type2 != "INT"):
+                    raise CompilerError("Semantic Error: Compare operand on non-int")
+                toWrite.append("div %s, %s, %s" % (regs[0], regs[0], regs[1]))
+                opFlag = False
+
+        if child.label == "DIVISION":
+            opFlag = True
+
+    toWrite.append("lw %s, %s" % (reg, regs[0]))
+    return (retType, varlist)
+
+def FACT3(t, reg):
+    regs = otherReg(reg)
+    opFlag = False
+    type1 = ""
+    type2 = ""
+    varlist = []
+    retType = "INT"
+
+    for child in t.children:
+        if child.label == "PRIMARY":
+            if not opFlag:
+                type1, varlist1 = PRIMARY(child, regs[0])
+                varlist += varlist1
+            if opFlag:
+                type2, varlist2 = PRIMARY(child, regs[1])
+                varlist += varlist2
+                if (type1 != "INT") or (type2 != "INT"):
+                    raise CompilerError("Semantic Error: Compare operand on non-int")
+                toWrite.append("rem %s, %s, %s" % (regs[0], regs[0], regs[1]))
+                opFlag = False
+
+        if child.label == "REMAINDER":
+            opFlag = True
+
+    toWrite.append("lw %s, %s" % (reg, regs[0]))
+    return (retType, varlist)
+
+def PRIMARY(t,reg):
+    regs = otherReg(reg)
+    varlist = []
+    retType = ""
+
+    child = t.children[0]
+    if child.label == "EXPRESSION":
+        retType, varlist = EXPRESSION(child,regs[0])
+        toWrite.append("lw %s, %s"%(reg,regs[0]))
+    elif child.label == "INTLIT":
+        retType = "INT"
+        toWrite.append("li %s, %s"%(reg,child.val))
+    elif child.label == "BOOLLIT":
+        retType = "BOOL"
+        if child.val == "True":
+            toWrite.append("li %s, %s" % (reg, "1"))
+        else:
+            toWrite.append("li %s, %s" % (reg, "0"))
+    elif child.label == "IDENT":
+        var = child.children[0].val
+        retType = dict1[var][1]
+        varlist.append(var)
+    return retType,varlist
+
 
 def DOINFIX(s):
     vs = []
