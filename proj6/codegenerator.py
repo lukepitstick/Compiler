@@ -43,7 +43,9 @@ def otherReg(reg):
     if reg == "$t2":
         return ("$t0", "$t1")
 
-registers = {"$t0":False, "$t1":False, "$t2":False, "$t3":False, "$t4":False, "$t5":False, "$t6":False, "$t7":False, "$t8":False, "$t9":False}
+registers = {"$t0":False, "$t1":False, "$t2":False, "$t3":False, "$t4":False, "$t5":False, "$t6":False, "$t7":False, 
+             "$t8":False, "$t9":False, "$s1":False, "$s2":False, "$s3":False, "$s4":False, "$s5":False, "$s6":False,
+             "$s7":False}
 
 def EXPRESSION(t): #Gets tree with EXPRESSION as head
     #Temporary
