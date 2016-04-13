@@ -8,17 +8,13 @@ class tree:
     with zero or more trees as children
     """
 
-    def __init__(self, label, val = None, children = None, num = None, \
-                 inh = None, syn = None):
+    def __init__(self, label,val = None, children = None ):
         """
         Tree constructor
         """
         self.val = val
         self.label = label
         self.children = children if children != None else []
-        self.num = num 
-        self.inh = inh
-        self.syn = syn
 
     def __str__(self):
         """

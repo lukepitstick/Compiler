@@ -1,0 +1,10 @@
+begin
+bool x;
+x := True;
+y := "hey";
+if x then
+begin
+write(y);
+end
+write("DONE\n");
+end
