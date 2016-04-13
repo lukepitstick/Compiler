@@ -413,7 +413,7 @@ def IDENT(current, G,):
 
 if __name__ == "__main__":
     try:
-        fname = 'own_test.txt'
+        fname = 'example1.txt'
         print("Parsing " + fname)
         try:
             sampt, tokk = parser(fname, 'tokens.txt')
