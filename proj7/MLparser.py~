@@ -130,8 +130,7 @@ def STATEMENT(current, G):
             raise SyntaxError("Syntax error: must have then")
         current = next(G)
         t1, current = PROGRAM(current, G)
-        print("back")
-        print(current.name)
+        print(current)
     elif current.name == "BOOLTYPE":
         typeOfVar = "BOOL"
         t.append(tree("BOOLTYPE"))
@@ -208,10 +207,14 @@ def WRITE(current, G):
         raise ParserError("Syntax Error: Expected lparen is missing: " + current.line)
     # t.append(tree("LPAREN"))
     t, current = EXPR_LIST(next(G), G)
+    print("lolol")
+    #print(current.name)
     if current.name != "RPAREN":
         raise ParserError("Syntax Error: Expected rparen is missing: " + str(current.line_num) + current.pattern)
     # t.append(tree("RPAREN"))
-    return t, next(G)
+    xs = next(G)
+    print(xs)
+    return t, xs
 
 @add_debug
 def ASSIGNMENT(current, G):
@@ -403,6 +406,8 @@ def PRIMARY(current, G):
         t.append(t1)
         return t, next(G)
     t2, current = IDENT(current, G)
+    print("heym")
+    print(current)
     t.append(t2)
     return t, current
 
@@ -415,8 +420,8 @@ def IDENT(current, G,):
         t.append(tree("STRING"))
         strLitCounter = strLitCounter + 1
         dict[current.pattern] = (current.pattern, current.name)
-        ct = next(G)
-        return t, next(G)       
+        current = next(G)
+        return t, current       
     if current.name != 'ID':
         raise ParserError("Syntax Error: Error when parsing IDENT: " + current.line)
     tmp = tree('ID')

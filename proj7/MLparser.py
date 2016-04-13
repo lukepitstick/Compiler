@@ -80,8 +80,10 @@ def PROGRAM(current, G):
 def STATEMENT_LIST(current, G):
     t = tree("STATEMENT_LIST")
     t1, current = STATEMENT(current, G)
+    
     t.append(t1)
     while True:
+        print(current)
         if current.name == 'SEMICOLON':
             # t.append(tree('SEMICOLON'))
             SEMICOLON(current, G)
@@ -130,8 +132,8 @@ def STATEMENT(current, G):
             raise SyntaxError("Syntax error: must have then")
         current = next(G)
         t1, current = PROGRAM(current, G)
-        print("back")
-        print(current.name)
+        t.append(t1)
+        return t, current
     elif current.name == "BOOLTYPE":
         typeOfVar = "BOOL"
         t.append(tree("BOOLTYPE"))
@@ -208,11 +210,14 @@ def WRITE(current, G):
         raise ParserError("Syntax Error: Expected lparen is missing: " + current.line)
     # t.append(tree("LPAREN"))
     t, current = EXPR_LIST(next(G), G)
-    print(current.name)
+#    print("lolol")
+    #print(current.name)
     if current.name != "RPAREN":
         raise ParserError("Syntax Error: Expected rparen is missing: " + str(current.line_num) + current.pattern)
     # t.append(tree("RPAREN"))
-    return t, next(G)
+    xs = next(G)
+#    print(xs)
+    return t, xs
 
 @add_debug
 def ASSIGNMENT(current, G):
@@ -416,6 +421,7 @@ def IDENT(current, G,):
         t.append(tree("STRING"))
         strLitCounter = strLitCounter + 1
         dict[current.pattern] = (current.pattern, current.name)
+        current = next(G)
         return t, current       
     if current.name != 'ID':
         raise ParserError("Syntax Error: Error when parsing IDENT: " + current.line)
