@@ -1,6 +1,7 @@
 #import MIPSinstruction
 import tree #from tree?
 import re
+import sys
 datatoWrite = [] #data write section
 toWrite = [] # initialize what to write
 dict1 = {}
@@ -31,6 +32,7 @@ def WRITE_IDS(t): #receives tree with head as expr_list
             registers[register] = False
         type, varlist, reg = EXPRESSION(child)
         for v in varlist:
+            print(str(ldict))
             if ldict[v] != "True":
                 if dict1[v][0] != "True":
                     raise CompilerError("Semantic Error: Write before a variable is instantiated")
@@ -500,7 +502,7 @@ def ASSIGN(t):
     else: #Integer/bool assign
         toWrite.append("la   $s0, %s\nsw %s, ($s0)\n\n" %(var,reg))  # store value from $t0 into var's address
 
-    dict1[var][0] = "True"
+    dict1[var] = ("True",dict1[var][1])
 
 # Defines what #infix does
 def INFIX(t):
@@ -573,23 +575,32 @@ def postOrderDFS(tree):
             if tree.children[2].label is "ASSIGNMENTSTR":
                 ASSIGNSTR(tree)
         except:
+            # print(sys.exc_info())
             pass
     for child in tree.children:
         postOrderDFS(child)
 
 def ASSIGNSTR(tree):
+    global dict1
     setMe = tree.children[1].children[0].val
-    to = tree.children[2].children[0].children[0].val
-    if strdict[setMe][1] is not "STRING" or strdict[to][1] is not "STRING":
-        raise CompilerError("mismatched types")
+
+    if tree.children[2].children[0].children != []:
+        to = tree.children[2].children[0].children[0].val
+        if strdict[setMe][1] is not "STRING" or strdict[to][1] is not "STRING":
+            raise CompilerError("Semantic Error: mismatched types")
+        # dict1[to][0] = "True"
+        # ldict[setMe] = "True"
+        ldict[to] = "True"
+        le = dict3[to]
+        ineff.append("la $t0, %s\n" % to)
+        ineff.append("la $t1, %s\n" % setMe)
+        for x in range(0, le):
+            ineff.append("lbu $t2, %d($t0)\n" % x)
+            ineff.append("sb $t2, %d($t1)\n" % x)
+
+    dict1[setMe] = ("True", dict1[setMe][1])
     ldict[setMe] = "True"
-    ldict[to] = "True"
-    le = dict3[to]
-    ineff.append("la $t0, %s\n" % to)
-    ineff.append("la $t1, %s\n" % setMe)
-    for x in range(0, le):
-        ineff.append("lbu $t2, %d($t0)\n" % x)
-        ineff.append("sb $t2, %d($t1)\n" % x)
+
 
 def DEFTYPE(tree):
     pass
