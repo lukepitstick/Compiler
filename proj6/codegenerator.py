@@ -4,12 +4,13 @@ import re
 import sys
 datatoWrite = [] #data write section
 toWrite = [] # initialize what to write
-dict1 = {}
+dict1 = {} #main dict (Initiated, type)
 dict2 = {} #string dict
 dict3 = {}
 strdict = {}
 ineff = []
 ldict = {}
+stringnum = 0
 
 
 def READ_IDS(args): #was args = []
@@ -22,27 +23,48 @@ def READ_IDS(args): #was args = []
             raise CompilerError("Semantic Error: Read on invalid type")
 
 def WRITE_IDS(t): #receives tree with head as expr_list
-    #for child in t.children:
+    global stringnum
     #    # reset registers
     #    for register in registers:
     #       registers[register] = False
     for child in t.children:
-        # reset registers
-        for register in registers:
-            registers[register] = False
-        type, varlist, reg = EXPRESSION(child)
-        for v in varlist:
-            print(str(ldict))
-            if ldict[v] != "True":
-                if dict1[v][0] != "True":
-                    raise CompilerError("Semantic Error: Write before a variable is instantiated")
-        if type is "BOOL" or type is "INT":
-            toWrite.append("add $a0, %s,0\n"% reg)
-            toWrite.append("li $v0, 1\nsyscall\n\n")
-        elif type is "STRING":
-            for x in ineff:
-                toWrite.append(x)
-            toWrite.append("la $a0, %s\nli $v0, 4\nsyscall\n\n"% varlist[0])
+        print(str(child))
+        if child.children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0].label == "STRING":
+            val = child.children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[
+                0].children[0].val
+            stringid = "stringtmptmp" + str(stringnum)
+            stringnum += 1
+            datatoWrite.append("%s: .asciiz %s\n" %(stringid, val))
+            toWrite.append("la $a0, %s\nli $v0, 4\nsyscall\n\n" % stringid)
+        else:
+
+            # reset registers
+            for register in registers:
+                registers[register] = False
+            type, varlist, reg = EXPRESSION(child)
+            v1 = ""
+            for v in varlist:
+                # print(str(ldict))
+                # if ldict[v] != "True":
+                v1 = v
+                if (v == "FALSE") or (v == "TRUE"):
+                    pass
+                else:
+                    if dict1[v][0] != "True":
+                        # print(str(child))
+                        raise CompilerError("Semantic Error: Write before a variable is instantiated")
+            if type is "BOOL" or type is "INT":
+                toWrite.append("add $a0, %s,0\n"% reg)
+                toWrite.append("li $v0, 1\nsyscall\n\n")
+            elif type is "STRING":
+                try:
+                    if ldict[v] != "True": ##unsure
+                        raise CompilerError("Semantic Error: String mismatch")
+                except:
+                    pass
+                for x in ineff:
+                    toWrite.append(x)
+                toWrite.append("la $a0, %s\nli $v0, 4\nsyscall\n\n"% varlist[0])
 
        # type, varlist, reg = EXPRESSION(child)
        # for v in varlist:

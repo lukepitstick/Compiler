@@ -385,9 +385,24 @@ def PRIMARY(current, G):
             raise ParserError("Syntax Error: Expected rparen is missing: " + current.line)
         t.append(t1)
         return t, next(G)
+    if current.name == "STRING": #unsure
+        tstrlit = tree("STRING")
+        tstrlit.val = current.pattern
+        t.append(tstrlit)
+        # valOfVar = current.pattern
+        # tuple1 = (valOfVar, typeOfVar)
+        # dict[varName1] = tuple1
+        return t, next(G)
     t2, current = IDENT(current, G)
     t.append(t2)
     return t, current
+
+# stringnum = 0
+# def STRINGNAME():
+#     global stringnum
+#     stringnum += 1
+#     return "Stringtmptmptmp" + stringnum
+
 
 @add_debug
 def IDENT(current, G,):
