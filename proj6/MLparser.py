@@ -41,7 +41,7 @@ typeOfVar = ""
 valOfVar = ""
 varName1 = ""
 
-def parser(source_file, token_file):	
+def parser(source_file, token_file):    
     """
     source_file: A program written in the ML langauge.
     returns True if the code is syntactically correct.
@@ -61,7 +61,7 @@ def parser(source_file, token_file):
         raise ParserError("Syntax Error: File did not end after 'end'")
     return t, dict #return tree and symbol table
 
-@add_debug	
+@add_debug  
 def PROGRAM(current, G):
     t = tree("PROGRAM")
     if current.name == "BEGIN":
