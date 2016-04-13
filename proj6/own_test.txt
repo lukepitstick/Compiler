@@ -1,6 +1,6 @@
 begin
 
-write(1 % (2));
+write(50 % (11));
 
 #int x;
 #int y;
