@@ -33,6 +33,8 @@ def WRITE_IDS(t): #receives tree with head as expr_list
         elif type is "STRING":
             toWrite.append("la $a0, %s\nli $v0, 4\nsyscall\n\n"% varlist[0])
 
+        print("done: " + str(registers))
+
 def otherReg(reg):
     if reg == "$t0":
         return ("$t1","$t2")
@@ -72,6 +74,8 @@ def EXPRESSION(t): #Gets tree with EXPRESSION as head
                 if (type1 != "BOOL") | (type2 != "BOOL"):
                     raise CompilerError("Semantic Error: 'or' operand on non-bool")
                 toWrite.append("or %s, %s, %s\n"%(reg1,reg1,reg2))
+                if reg2 != "":
+                    registers[reg2] = False
                 opFlag = False
         if child.label == "OR":
             retType = "BOOL"
@@ -101,6 +105,8 @@ def TERM1(t): #Gets tree with TERM1 as head
                 if (type1 != "BOOL") | (type2 != "BOOL"):
                     raise CompilerError("Semantic Error: 'and' operand on non-bool")
                 toWrite.append("and %s, %s, %s\n" % (reg1, reg1, reg2))
+                if reg2 != "":
+                    registers[reg2] = False
                 opFlag = False
         if child.label == "AND":
             retType = "BOOL"
@@ -131,6 +137,8 @@ def FACT1(t): #Gets tree with FACT1 as head
                 if (type1 != "INT") or (type2 != "INT"):
                     raise CompilerError("Semantic Error: Compare operand on non-int")
                 toWrite.append("%s %s, %s, %s\n" % (compareType, reg1, reg1, reg2))
+                if reg2 != "":
+                    registers[reg2] = False
                 opFlag = False
 
         if child.label == "R":
@@ -177,6 +185,8 @@ def EXP2(t):
                 if (type1 != "INT") or (type2 != "INT"):
                     raise CompilerError("Semantic Error: Compare operand on non-int")
                 toWrite.append("add %s, %s, %s\n" % (reg1, reg1, reg2))
+                if reg2 != "":
+                    registers[reg2] = False
                 opFlag = False
 
         if child.label == "PLUS":
@@ -206,6 +216,8 @@ def TERM2(t):
                 if (type1 != "INT") or (type2 != "INT"):
                     raise CompilerError("Semantic Error: Compare operand on non-int")
                 toWrite.append("sub %s, %s, %s\n" % (reg1, reg1, reg2))
+                if reg2 != "":
+                    registers[reg2] = False
                 opFlag = False
 
         if child.label == "MINUS":
@@ -235,6 +247,8 @@ def TERM3(t):
                 if (type1 != "INT") or (type2 != "INT"):
                     raise CompilerError("Semantic Error: Compare operand on non-int")
                 toWrite.append("mul %s, %s, %s\n" % (reg1, reg1, reg2))
+                if reg2 != "":
+                    registers[reg2] = False
                 opFlag = False
 
         if child.label == "MULTIPLICATION":
@@ -264,6 +278,8 @@ def FACT2(t):
                 if (type1 != "INT") or (type2 != "INT"):
                     raise CompilerError("Semantic Error: Compare operand on non-int")
                 toWrite.append("div %s, %s, %s\n" % (reg1, reg1, reg2))
+                if reg2 != "":
+                    registers[reg2] = False
                 opFlag = False
 
         if child.label == "DIVISION":
@@ -292,6 +308,8 @@ def FACT3(t):
                 if (type1 != "INT") or (type2 != "INT"):
                     raise CompilerError("Semantic Error: Compare operand on non-int")
                 toWrite.append("rem %s, %s, %s\n" % (reg1, reg1, reg2))
+                if reg2 != "":
+                    registers[reg2] = False
                 opFlag = False
 
         if child.label == "REMAINDER":
@@ -317,6 +335,7 @@ def PRIMARY(t):
         retType, varlist1, reg1 = EXPRESSION(child)
         varlist += varlist1
         toWrite.append("move %s, %s\n"%(reg,reg1))
+        registers[reg1] = False
     elif child.label == "INTLIT":
         retType = "INT"
         toWrite.append("li %s, %s\n"%(reg,child.val))
