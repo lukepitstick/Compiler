@@ -10,7 +10,7 @@ from lexer_sol import lexer
 from tree import tree
 from traceback import print_exc
 
-debug = False
+debug = True
 recursion_level = 0
 
 def add_debug(fn):
@@ -205,7 +205,14 @@ def WRITE(current, G):
         raise ParserError("Syntax Error: Expected lparen is missing: " + \
                           current.line)
     # t.append(tree("LPAREN"))
-    t, current = EXPR_LIST(next(G), G)
+    t = tree(None)
+    current = next(G)
+    if current.name == "STRING":
+        t = tree("STRING")
+        t.val = current.pattern
+        current = next(G)
+    else:
+        t, current = EXPR_LIST(current, G)
     if current.name != "RPAREN":
         raise ParserError("Syntax Error: Expected rparen is missing: " + \
                           str(current.line_num) + current.pattern)

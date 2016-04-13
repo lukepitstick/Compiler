@@ -1,31 +1,31 @@
 .data
 .text
 main:
-li $t6, 1
-li $s3, 1
-or $t6, $t6, $s3
-add $a0, $t6,0
+li $s1, 1
+li $t2, 1
+or $s1, $s1, $t2
+add $a0, $s1,0
 li $v0, 1
 syscall
 
-li $t6, 1
-li $s3, 0
-and $s3, $s3, 
-add $a0, $s3,0
+li $s1, 1
+li $t2, 0
+and $t2, $t2, 
+add $a0, $t2,0
 li $v0, 1
 syscall
 
-li $t6, 0
-li $s3, 1
-or $t6, $t6, $s3
-add $a0, $t6,0
+li $s1, 0
+li $t2, 1
+or $s1, $s1, $t2
+add $a0, $s1,0
 li $v0, 1
 syscall
 
-li $t6, 0
-li $s3, 0
-and $s3, $s3, 
-add $a0, $s3,0
+li $s1, 0
+li $t2, 0
+and $t2, $t2, 
+add $a0, $t2,0
 li $v0, 1
 syscall
 

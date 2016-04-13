@@ -1,6 +1,6 @@
 .data
-s2: .asciiz 
 s: .asciiz "I never could get the hang of Thursdays."
+s2: .asciiz 
 .text
 main:
 la $t0, s

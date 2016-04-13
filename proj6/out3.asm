@@ -1,24 +1,24 @@
 .data
 .text
 main:
-li $s6, 5
-li $s5, 10
-sge $s6, $s6, $s5
-add $a0, $s6,0
+li $t2, 5
+li $t1, 10
+sge $t2, $t2, $t1
+add $a0, $t2,0
 li $v0, 1
 syscall
 
-li $s6, 5
-li $s5, 10
-sle $s6, $s6, $s5
-add $a0, $s6,0
+li $t2, 5
+li $t1, 10
+sle $t2, $t2, $t1
+add $a0, $t2,0
 li $v0, 1
 syscall
 
-li $s6, 5
-li $s5, 10
-seq $s6, $s6, $s5
-add $a0, $s6,0
+li $t2, 5
+li $t1, 10
+seq $t2, $t2, $t1
+add $a0, $t2,0
 li $v0, 1
 syscall
 
