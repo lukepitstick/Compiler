@@ -1,16 +1,14 @@
-#import MIPSinstruction
 import tree #from tree?
 import re
 
-datatoWrite = [] #data write section
-toWrite = [] # initialize what to write
+datatoWrite = [] # data write section
+toWrite = [] # text write section
 dict1 = {}
 dict2 = {} #string dict
 dict3 = {}
 strdict = {}
 ineff = []
 ldict = {}
-
 
 def READ_IDS(args): #was args = []
     for var in args:
@@ -64,9 +62,10 @@ def otherReg(reg):
     if reg == "$t2":
         return ("$t0", "$t1")
 
-registers = {"$t0":False, "$t1":False, "$t2":False, "$t3":False, "$t4":False, "$t5":False, "$t6":False, "$t7":False,
-             "$t8":False, "$t9":False, "$s1":False, "$s2":False, "$s3":False, "$s4":False, "$s5":False, "$s6":False,
-             "$s7":False}
+registers = {"$t0":False, "$t1":False, "$t2":False, "$t3":False, "$t4":False, \
+             "$t5":False, "$t6":False, "$t7":False, "$t8":False, "$t9":False, \
+             "$s1":False, "$s2":False, "$s3":False, "$s4":False, "$s5":False, \
+             "$s6":False, "$s7":False}
 
 def EXPRESSION(t): #Gets tree with EXPRESSION as head
   #  #Temporary
@@ -77,8 +76,11 @@ def EXPRESSION(t): #Gets tree with EXPRESSION as head
   #  except:
   #     pass
     #Temporary
+    
     try:
-        isstring = t.children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0].val
+        isstring = t.children[0].children[0].children[0].children[0].\
+            children[0].children[0].children[0].children[0].children[0].\
+            children[0].val
         print("here")
         print(isstring)
         if dict1[isstring][1] is "STRING":
@@ -86,7 +88,10 @@ def EXPRESSION(t): #Gets tree with EXPRESSION as head
     except:
         pass
 
-
+    opFlag = False
+    varlist = []
+    reg1 = ""
+    reg2 = ""    
 
     for child in t.children:
         if child.label != "OR":
@@ -609,9 +614,24 @@ def DEFTYPE(tree):
     #     dict1[val] = ("True",b)
 
 def findGenerateMIPSCode(t, dict): #, fname):
-
+    global dataToWrite
+    global toWrite
     global dict1
+    global dict2
+    global dict3
     global strdict
+    global ineff
+    global ldict
+    
+    datatoWrite = [] # data write section
+    toWrite = [] # text write section
+    dict1 = {}
+    dict2 = {} #string dict
+    dict3 = {}
+    strdict = {}
+    ineff = []
+    ldict = {}    
+
     strdict = dict
     datatoWrite.append(".data\n") #beginning of our MIP
     #Generate data section from dict
