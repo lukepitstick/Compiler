@@ -28,7 +28,6 @@ def WRITE_IDS(t): #receives tree with head as expr_list
     #    for register in registers:
     #       registers[register] = False
     for child in t.children:
-        print(str(child))
         if child.children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0].label == "STRING":
             val = child.children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[
                 0].children[0].val
@@ -37,25 +36,25 @@ def WRITE_IDS(t): #receives tree with head as expr_list
             datatoWrite.append("%s: .asciiz %s\n" %(stringid, val))
             toWrite.append("la $a0, %s\nli $v0, 4\nsyscall\n\n" % stringid)
         else:
-
             # reset registers
             for register in registers:
                 registers[register] = False
             type, varlist, reg = EXPRESSION(child)
             v1 = ""
             for v in varlist:
-                # print(str(ldict))
                 # if ldict[v] != "True":
                 v1 = v
                 if (v == "FALSE") or (v == "TRUE"):
                     pass
                 else:
                     if dict1[v][0] != "True":
-                        # print(str(child))
                         raise CompilerError("Semantic Error: Write before a variable is instantiated")
-            if type is "BOOL" or type is "INT":
+            if type is "INT":
                 toWrite.append("add $a0, %s,0\n"% reg)
                 toWrite.append("li $v0, 1\nsyscall\n\n")
+            elif type is "BOOL":
+                toWrite.append("la $s0, False\nla $s1, True\nmovn $a0,$s1,%s\nmovz $a0,$s0,%s\nli $v0, 4\n"
+                               "syscall\n"%(reg,reg))
             elif type is "STRING":
                 try:
                     if ldict[v] != "True": ##unsure
@@ -105,6 +104,7 @@ def EXPRESSION(t): #Gets tree with EXPRESSION as head
     except:
         pass
     varlist = []
+    retType = "INT"
     type1 = ""
     type2 = ""
     reg1 = ""
@@ -132,7 +132,8 @@ def EXPRESSION(t): #Gets tree with EXPRESSION as head
 
     if reg2 != "":
         registers[reg2] = False
-    retType = type1
+    if retType != "BOOL":
+        retType = type1
     return (retType, varlist, reg1)
 
 def TERM1(t): #Gets tree with TERM1 as head
@@ -164,7 +165,8 @@ def TERM1(t): #Gets tree with TERM1 as head
 
     if reg2 != "":
         registers[reg2] = False
-    retType = type1
+    if retType != "BOOL":
+        retType = type1
     return (retType, varlist, reg1)
 
 def FACT1(t): #Gets tree with FACT1 as head
@@ -214,7 +216,8 @@ def FACT1(t): #Gets tree with FACT1 as head
 
     if reg2 != "":
         registers[reg2] = False
-    retType = type1
+    if retType != "BOOL":
+        retType = type1
     return (retType, varlist, reg1)
 
 def EXP2(t):
@@ -639,6 +642,8 @@ def findGenerateMIPSCode(t, dict): #, fname):
     global strdict
     strdict = dict
     datatoWrite.append(".data\n") #beginning of our MIP
+    datatoWrite.append('False: .asciiz "False"\n')
+    datatoWrite.append('True: .asciiz "True"\n')
     #Generate data section from dict
     for var in dict:
         # print(var)
@@ -666,8 +671,7 @@ def findGenerateMIPSCode(t, dict): #, fname):
 
     print(dict1)
     print(dict2)
-
-    toWrite.append(".text\nmain:\n")
+    toWrite.append("\n.text\nmain:\n")
     #initiate the actual traversal
     postOrderDFS(t)
     #gracefully exit
