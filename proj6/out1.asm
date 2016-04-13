@@ -1,22 +1,21 @@
 .data
-s2: .asciiz False
 .text
 main:
-li $s3, 5
-li $s5, 6
-li $t7, 2
-div $s5, $s5, $t7
-mul $s3, $s3, $s5
-add $a0, $s3,0
+li $t3, 5
+li $s1, 6
+li $t9, 2
+div $s1, $s1, $t9
+mul $t3, $t3, $s1
+add $a0, $t3,0
 li $v0, 1
 syscall
 
-li $s3, 6
-li $s5, 2
-div $s3, $s3, $s5
-li $s5, 5
-mul $s3, $s3, $s5
-add $a0, $s3,0
+li $t3, 6
+li $s1, 2
+div $t3, $t3, $s1
+li $s1, 5
+mul $t3, $t3, $s1
+add $a0, $t3,0
 li $v0, 1
 syscall
 

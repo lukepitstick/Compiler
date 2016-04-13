@@ -35,8 +35,7 @@ class ParserError(Exception):
 
 #######################################
 # Parsing code
-dict = {None:None} #instantiate symbol table
-del dict[None]
+dict = {} #instantiate symbol table
 typeOfVar = ""
 valOfVar = ""
 varName1 = ""
@@ -47,7 +46,16 @@ def parser(source_file, token_file):
     returns True if the code is syntactically correct.
     Throws a ParserError otherwise.
     """
+    global dict
+    global typeOfVar
+    global valOfVar
+    global varName1
+
     dict.clear() #clear dict
+    typeOfVar = ""
+    valOfVar = ""
+    varName1 = ""
+    
     G = lexer(source_file, token_file)
 
     t = None # this should be changed to the tree
@@ -59,6 +67,7 @@ def parser(source_file, token_file):
 
     if current.name != '$':
         raise ParserError("Syntax Error: File did not end after 'end'")
+    
     return t, dict #return tree and symbol table
 
 @add_debug  

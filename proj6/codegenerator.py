@@ -512,7 +512,9 @@ def ASSIGN(t):
     else: #Integer/bool assign
         toWrite.append("la   $s0, %s\nsw %s, ($s0)\n\n" %(var,reg))  # store value from $t0 into var's address
 
-    dict1[var][0] = "True"
+    tmpList = list(dict1[var])
+    tmpList[0] = "True"
+    dict1[var] = tuple(tmpList)
 
 # Defines what #infix does
 def INFIX(t):
