@@ -85,6 +85,7 @@ def EXPRESSION(t): #Gets tree with EXPRESSION as head
 
     if reg2 != "":
         registers[reg2] = False
+    retType = type1
     return (retType, varlist, reg1)
 
 def TERM1(t): #Gets tree with TERM1 as head
@@ -102,7 +103,7 @@ def TERM1(t): #Gets tree with TERM1 as head
                 type1, varlist1, reg1 = FACT1(child)
                 varlist += varlist1
             if opFlag:
-                type2, varlist2, reg1 = FACT1(child)
+                type2, varlist2, reg2 = FACT1(child)
                 varlist += varlist2
                 if (type1 != "BOOL") | (type2 != "BOOL"):
                     raise CompilerError("Semantic Error: 'and' operand on non-bool")
@@ -116,6 +117,7 @@ def TERM1(t): #Gets tree with TERM1 as head
 
     if reg2 != "":
         registers[reg2] = False
+    retType = type1
     return (retType, varlist, reg1)
 
 def FACT1(t): #Gets tree with FACT1 as head
@@ -133,19 +135,14 @@ def FACT1(t): #Gets tree with FACT1 as head
             if not opFlag:
                 type1, varlist1, reg1 = EXP2(child)
                 varlist += varlist1
-            if opFlag:
-                type2, varlist2, reg2 = EXP2(child)
-                varlist += varlist2
-                if (type1 != "INT") or (type2 != "INT"):
-                    raise CompilerError("Semantic Error: Compare operand on non-int")
-                toWrite.append("%s %s, %s, %s\n" % (compareType, reg1, reg1, reg2))
-                if reg2 != "":
-                    registers[reg2] = False
-                opFlag = False
+            # if opFlag:
+
 
         if child.label == "R":
+            print("here")
             try:
                 ROP = child.children[0].label
+                print(ROP)
                 if ROP == "GREATEREQUAL":
                     compareType = "sge"
                 elif ROP == "LESSEQUAL":
@@ -160,11 +157,22 @@ def FACT1(t): #Gets tree with FACT1 as head
                     compareType = "sne"
                 retType = "BOOL"
                 opFlag = True
+
+                print("here1")
+                type2, varlist2, reg2 = EXP2(child.children[1])
+                varlist += varlist2
+                if (type1 != "INT") or (type2 != "INT"):
+                    raise CompilerError("Semantic Error: Compare operand on non-int")
+                toWrite.append("%s %s, %s, %s\n" % (compareType, reg1, reg1, reg2))
+                if reg2 != "":
+                    registers[reg2] = False
+                opFlag = False
             except: #No Comparison
                 pass
 
     if reg2 != "":
         registers[reg2] = False
+    retType = type1
     return (retType, varlist, reg1)
 
 def EXP2(t):
@@ -196,6 +204,7 @@ def EXP2(t):
 
     if reg2 != "":
         registers[reg2] = False
+    retType = type1
     return (retType, varlist, reg1)
 
 def TERM2(t):
@@ -227,6 +236,7 @@ def TERM2(t):
 
     if reg2 != "":
         registers[reg2] = False
+    retType = type1
     return (retType, varlist, reg1)
 
 def TERM3(t):
@@ -258,6 +268,7 @@ def TERM3(t):
 
     if reg2 != "":
         registers[reg2] = False
+    retType = type1
     return (retType, varlist, reg1)
 
 def FACT2(t):
@@ -288,6 +299,7 @@ def FACT2(t):
             opFlag = True
     if reg2 != "":
         registers[reg2] = False
+    retType = type1
     return (retType, varlist, reg1)
 
 def FACT3(t):
@@ -318,6 +330,7 @@ def FACT3(t):
             opFlag = True
     if reg2 != "":
         registers[reg2] = False
+    retType = type1
     return (retType, varlist, reg1)
 
 def PRIMARY(t):
