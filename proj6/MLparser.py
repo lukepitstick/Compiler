@@ -10,7 +10,7 @@ from lexer_sol import lexer
 from tree import tree
 from traceback import print_exc
 
-debug = False
+debug = True
 recursion_level = 0
 
 def add_debug(fn):
@@ -35,8 +35,7 @@ class ParserError(Exception):
 
 #######################################
 # Parsing code
-dict = {None:None} #instantiate symbol table
-del dict[None]
+dict = {} #instantiate symbol table
 typeOfVar = ""
 valOfVar = ""
 varName1 = ""
@@ -47,7 +46,16 @@ def parser(source_file, token_file):
     returns True if the code is syntactically correct.
     Throws a ParserError otherwise.
     """
+    global dict
+    global typeOfVar
+    global valOfVar
+    global varName1
+
     dict.clear() #clear dict
+    typeOfVar = ""
+    valOfVar = ""
+    varName1 = ""
+    
     G = lexer(source_file, token_file)
 
     t = None # this should be changed to the tree
@@ -59,6 +67,7 @@ def parser(source_file, token_file):
 
     if current.name != '$':
         raise ParserError("Syntax Error: File did not end after 'end'")
+    
     return t, dict #return tree and symbol table
 
 @add_debug  
@@ -91,7 +100,8 @@ def STATEMENT_LIST(current, G):
             t2, current = STATEMENT(current, G)
             t.append(t2)
         else:
-            raise ParserError("Syntax Error: no semicolon at line: " + current.line)
+            raise ParserError("Syntax Error: no semicolon at line: " + \
+                              current.line)
     return t, current
 
 @add_debug
@@ -110,7 +120,8 @@ def STATEMENT(current, G):
         varName1 = current.pattern
         try:
             isthereatype = str(dict[current.pattern][1])
-            raise SyntaxError("Semantic error: type declared twice on a variable. " + current.line)
+            raise SyntaxError("Semantic error: type declared twice on a" + \
+                              " variable. " + current.line)
         except KeyError:
             pass
         t1, current = IDENT(current, G)
@@ -122,7 +133,8 @@ def STATEMENT(current, G):
         varName1 = current.pattern
         try:
             isthereatype = str(dict[current.pattern][1])
-            raise SyntaxError("Semantic error: type declared twice on a variable. " + current.line)
+            raise SyntaxError("Semantic error: type declared twice on a " + \
+                              "variable. " + current.line)
         except KeyError:
             pass
         t1, current = IDENT(current, G)
@@ -134,7 +146,8 @@ def STATEMENT(current, G):
         varName1 = current.pattern
         try:
             isthereatype = str(dict[current.pattern][1])
-            raise SyntaxError("Semantic error: type declared twice on a variable. " + current.line)
+            raise SyntaxError("Semantic error: type declared twice on a " + \
+                              "variable. " + current.line)
         except KeyError:
             pass
         t1, current = IDENT(current, G)
@@ -181,18 +194,28 @@ def READ(current, G):
     # t.append(tree("LPAREN"))
     t, current = ID_LIST(next(G), G)
     if current.name != "RPAREN":
-        raise ParserError("Syntax Error: Expected rparen is missing: " + current.line)
+        raise ParserError("Syntax Error: Expected rparen is missing: " + \
+                          current.line)
     # t.append(tree("RPAREN"))
     return t, next(G)
 
 @add_debug
 def WRITE(current, G):
     if current.name != "LPAREN":
-        raise ParserError("Syntax Error: Expected lparen is missing: " + current.line)
+        raise ParserError("Syntax Error: Expected lparen is missing: " + \
+                          current.line)
     # t.append(tree("LPAREN"))
-    t, current = EXPR_LIST(next(G), G)
+    t = tree(None)
+    current = next(G)
+    if current.name == "STRING":
+        t = tree("STRING")
+        t.val = current.pattern
+        current = next(G)
+    else:
+        t, current = EXPR_LIST(current, G)
     if current.name != "RPAREN":
-        raise ParserError("Syntax Error: Expected rparen is missing: " + str(current.line_num) + current.pattern)
+        raise ParserError("Syntax Error: Expected rparen is missing: " + \
+                          str(current.line_num) + current.pattern)
     # t.append(tree("RPAREN"))
     return t, next(G)
 
@@ -202,7 +225,8 @@ def ASSIGNMENT(current, G):
     tident, current = IDENT(current, G)
     t.append(tident)
     if current.name != "ASSIGNOP":
-        raise ParserError("Syntax Error: Expected assignop is missing: " + current.line)
+        raise ParserError("Syntax Error: Expected assignop is missing: " + \
+                          current.line)
     # t.append(tree("ASSIGNOP"))
     texpr, current = EXPRESSION(next(G), G)
     t.append(texpr)
@@ -278,7 +302,9 @@ def FACT1(current, G):
 @add_debug
 def R(current, G):
     t = tree("R")
-    if(current.name == 'GREATEREQUAL') | (current.name == 'LESSEQUAL') | (current.name == 'EQUAL') | (current.name == 'LESSTHAN') | (current.name == 'GREATERTHAN') | (current.name == 'NOTEQUAL'):
+    if(current.name == 'GREATEREQUAL') | (current.name == 'LESSEQUAL') | \
+      (current.name == 'EQUAL') | (current.name == 'LESSTHAN') | \
+      (current.name == 'GREATERTHAN') | (current.name == 'NOTEQUAL'):
         t.append(tree(current.name))
         current = next(G)
         t2, current = EXP2(current, G)
@@ -382,7 +408,8 @@ def PRIMARY(current, G):
     if current.name == 'LPAREN':
         t1, current = EXPRESSION(next(G), G)
         if current.name != 'RPAREN':
-            raise ParserError("Syntax Error: Expected rparen is missing: " + current.line)
+            raise ParserError("Syntax Error: Expected rparen is missing: " + \
+                              current.line)
         t.append(t1)
         return t, next(G)
     t2, current = IDENT(current, G)
@@ -394,7 +421,8 @@ def IDENT(current, G,):
     global varName1
     t = tree('IDENT')
     if current.name != 'ID':
-        raise ParserError("Syntax Error: Error when parsing IDENT: " + current.line)
+        raise ParserError("Syntax Error: Error when parsing IDENT: " + \
+                          current.line)
     tmp = tree('ID')
     tmp.val = current.pattern
     t.append(tmp)
@@ -408,12 +436,12 @@ def IDENT(current, G,):
         gt = dict[current.pattern][1]
     except:
         pass
-    dict[current.pattern] = (g, gt) #add symbol to symbol table, will use different values later.
+    dict[current.pattern] = (g, gt) #add symbol to symbol table
     return t, next(G)
 
 if __name__ == "__main__":
     try:
-        fname = 'example1.txt'
+        fname = 'example3.txt'
         print("Parsing " + fname)
         try:
             sampt, tokk = parser(fname, 'tokens.txt')
@@ -424,7 +452,8 @@ if __name__ == "__main__":
             print_exc()
             print('The source file is not following a valid syntax.')
         finally:
-             print('=========================================================================')
+            print('============================================' + \
+                  '=============================')
     except ImportError:
         print('The sample file does not exist.')
     finally:
