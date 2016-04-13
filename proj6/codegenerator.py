@@ -181,8 +181,7 @@ def FACT1(t): #Gets tree with FACT1 as head
                     compareType = "sne"
                 retType = "BOOL"
                 opFlag = True
-
-]
+                
                 type2, varlist2, reg2 = EXP2(child.children[1])
                 varlist += varlist2
                 if (type1 != "INT") or (type2 != "INT"):
