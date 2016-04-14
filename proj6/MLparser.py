@@ -10,7 +10,7 @@ from lexer_sol import lexer
 from tree import tree
 from traceback import print_exc
 
-debug = False
+debug = True
 recursion_level = 0
 
 def add_debug(fn):
@@ -47,6 +47,14 @@ def parser(source_file, token_file):
     returns True if the code is syntactically correct.
     Throws a ParserError otherwise.
     """
+    global typeOfVar
+    global valOfVar
+    global varName1
+    
+    typeOfVar = ""
+    valOfVar = ""
+    varName1 = ""    
+    
     dict.clear() #clear dict
     G = lexer(source_file, token_file)
 
@@ -110,7 +118,8 @@ def STATEMENT(current, G):
         varName1 = current.pattern
         try:
             isthereatype = str(dict[current.pattern][1])
-            raise SyntaxError("Semantic error: type declared twice on a variable. " + current.line)
+            raise SyntaxError("Semantic error: type declared twice on a variable. "\
+                              + current.line)
         except KeyError:
             pass
         t1, current = IDENT(current, G)
@@ -122,7 +131,8 @@ def STATEMENT(current, G):
         varName1 = current.pattern
         try:
             isthereatype = str(dict[current.pattern][1])
-            raise SyntaxError("Semantic error: type declared twice on a variable. " + current.line)
+            raise SyntaxError("Semantic error: type declared twice on a variable. "\
+                              + current.line)
         except KeyError:
             pass
         t1, current = IDENT(current, G)
@@ -134,7 +144,8 @@ def STATEMENT(current, G):
         varName1 = current.pattern
         try:
             isthereatype = str(dict[current.pattern][1])
-            raise SyntaxError("Semantic error: type declared twice on a variable. " + current.line)
+            raise SyntaxError("Semantic error: type declared twice on a variable. "\
+                              + current.line)
         except KeyError:
             pass
         t1, current = IDENT(current, G)
@@ -177,22 +188,26 @@ def ASSIGNMENTSTR(current, G):
 @add_debug
 def READ(current, G):
     if current.name != "LPAREN":
-        raise ParserError("Syntax Error: Expected lparen is missing: " + current.line)
+        raise ParserError("Syntax Error: Expected lparen is missing: " +\
+                          current.line)
     # t.append(tree("LPAREN"))
     t, current = ID_LIST(next(G), G)
     if current.name != "RPAREN":
-        raise ParserError("Syntax Error: Expected rparen is missing: " + current.line)
+        raise ParserError("Syntax Error: Expected rparen is missing: " +\
+                          current.line)
     # t.append(tree("RPAREN"))
     return t, next(G)
 
 @add_debug
 def WRITE(current, G):
     if current.name != "LPAREN":
-        raise ParserError("Syntax Error: Expected lparen is missing: " + current.line)
+        raise ParserError("Syntax Error: Expected lparen is missing: " +\
+                          current.line)
     # t.append(tree("LPAREN"))
     t, current = EXPR_LIST(next(G), G)
     if current.name != "RPAREN":
-        raise ParserError("Syntax Error: Expected rparen is missing: " + str(current.line_num) + current.pattern)
+        raise ParserError("Syntax Error: Expected rparen is missing: " + \
+                          str(current.line_num) + current.pattern)
     # t.append(tree("RPAREN"))
     return t, next(G)
 
@@ -278,7 +293,9 @@ def FACT1(current, G):
 @add_debug
 def R(current, G):
     t = tree("R")
-    if(current.name == 'GREATEREQUAL') | (current.name == 'LESSEQUAL') | (current.name == 'EQUAL') | (current.name == 'LESSTHAN') | (current.name == 'GREATERTHAN') | (current.name == 'NOTEQUAL'):
+    if(current.name == 'GREATEREQUAL') | (current.name == 'LESSEQUAL') |\
+      (current.name == 'EQUAL') | (current.name == 'LESSTHAN') | \
+      (current.name == 'GREATERTHAN') | (current.name == 'NOTEQUAL'):
         t.append(tree(current.name))
         current = next(G)
         t2, current = EXP2(current, G)

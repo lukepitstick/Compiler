@@ -9,7 +9,7 @@ test3 = range(1, 3)
 test4 = range(1, 4)
 
 if __name__ == "__main__":
-    mode = "example"
+    mode = "proj6"
     j = 0
     if mode == "example":
         for i in expl:
@@ -22,7 +22,7 @@ if __name__ == "__main__":
             oargs = 'java -jar ../mars.jar ' + ofile
             subprocess.call(oargs)
             j += 1
-            input()
+            input("Press enter to continue...")
             
     elif mode == "proj5":
         pass
@@ -38,7 +38,7 @@ if __name__ == "__main__":
             oargs = 'java -jar ../mars.jar ' + ofile
             subprocess.call(oargs)
             j += 1
-            input()
+            input("Press enter to continue...")
         
         print("Test 2")
         for i in test2:
@@ -51,7 +51,7 @@ if __name__ == "__main__":
             oargs = 'java -jar ../mars.jar ' + ofile
             subprocess.call(oargs)
             j += 1
-            input()
+            input("Press enter to continue...")
 
         print("Test 3")
         for i in test3:
@@ -64,7 +64,7 @@ if __name__ == "__main__":
             oargs = 'java -jar ../mars.jar ' + ofile
             subprocess.call(oargs)
             j += 1
-            input()
+            input("Press enter to continue...")
 
         print("Test 4")
         for i in test4:
@@ -77,4 +77,4 @@ if __name__ == "__main__":
             oargs = 'java -jar ../mars.jar ' + ofile
             subprocess.call(oargs)
             j += 1
-            input()
+            input("Press enter to continue...")

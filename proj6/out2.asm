@@ -1,33 +1,44 @@
 .data
+False: .asciiz "False"
+True: .asciiz "True"
+
 .text
 main:
-li $s1, 1
-li $t2, 1
-or $s1, $s1, $t2
-add $a0, $s1,0
-li $v0, 1
+li $s4, 1
+li $s2, 1
+or $s4, $s4, $s2
+la $s0, False
+la $s1, True
+movn $a0,$s1,$s4
+movz $a0,$s0,$s4
+li $v0, 4
 syscall
-
-li $s1, 1
-li $t2, 0
-and $t2, $t2, 
-add $a0, $t2,0
-li $v0, 1
+li $s4, 1
+li $s2, 0
+and $s4, $s4, $s2
+la $s0, False
+la $s1, True
+movn $a0,$s1,$s4
+movz $a0,$s0,$s4
+li $v0, 4
 syscall
-
-li $s1, 0
-li $t2, 1
-or $s1, $s1, $t2
-add $a0, $s1,0
-li $v0, 1
+li $s4, 0
+li $s2, 1
+or $s4, $s4, $s2
+la $s0, False
+la $s1, True
+movn $a0,$s1,$s4
+movz $a0,$s0,$s4
+li $v0, 4
 syscall
-
-li $s1, 0
-li $t2, 0
-and $t2, $t2, 
-add $a0, $t2,0
-li $v0, 1
+li $s4, 0
+li $s2, 0
+and $s4, $s4, $s2
+la $s0, False
+la $s1, True
+movn $a0,$s1,$s4
+movz $a0,$s0,$s4
+li $v0, 4
 syscall
-
 li   $v0, 10
 syscall

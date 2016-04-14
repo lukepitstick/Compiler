@@ -655,9 +655,25 @@ def DEFTYPE(tree):
     #     dict1[val] = ("True",b)
 
 def findGenerateMIPSCode(t, dict): #, fname):
-
+    global datatoWrite
+    global toWrite
     global dict1
+    global dict2
+    global dict3
     global strdict
+    global ineff
+    global ldict
+    global stringnum
+    
+    datatoWrite = [] #data write section
+    toWrite = [] # initialize what to write
+    dict1 = {} #main dict (Initiated, type)
+    dict2 = {} #string dict
+    dict3 = {}
+    strdict = {}
+    ineff = []
+    ldict = {}
+    stringnum = 0    
     strdict = dict
     datatoWrite.append(".data\n") #beginning of our MIP
     datatoWrite.append('False: .asciiz "False"\n')
