@@ -1,9 +1,0 @@
-begin
-bool x;
-x := True;
-if x then
-begin
-write("YES\n");
-end
-write("DONE\n");
-end
