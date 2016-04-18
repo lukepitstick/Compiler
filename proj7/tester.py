@@ -2,31 +2,13 @@ from compiler import compiler
 import subprocess
 from traceback import print_exc
 
-expl = range(1, 7)
-test1 = range(1, 14)
-test2 = range(1, 6)
-test3 = range(1, 3)
-test4 = range(1, 4)
+test1 = range(1,4)
+tesr2 = range(
 
 if __name__ == "__main__":
-    mode = "example"
+    mode = "proj6"
     j = 0
-    if mode == "example":
-        for i in expl:
-            filename = "example%d.txt" % i
-            ofile = "out%d.asm" % j
-            try:
-                compiler(filename, 'tokens.txt', ofile)
-            except Exception:
-                print_exc()
-            oargs = 'java -jar ../mars.jar ' + ofile
-            subprocess.call(oargs)
-            j += 1
-            input()
-            
-    elif mode == "proj5":
-        pass
-    else:
+    if mode == "proj6"
         print("Test 1")
         for i in test1:
             filename = "proj6tester/test.1.%d.ml" % i
