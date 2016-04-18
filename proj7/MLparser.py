@@ -277,6 +277,16 @@ def EXPR_LIST(current, G):
 @add_debug
 def EXPRESSION(current, G):
     t = tree("EXPRESSION")
+    if current.name == 'NOT':
+        t.append(tree(current.name))
+        current = next(G)
+    t1, current = TERM0(current, G)
+    t.append(t1)
+    return t, next(G)
+
+@add_debug
+def TERM0(current, G):
+    t = tree("TERM0")
     t1, current = TERM1(current, G)
     t.append(t1)
 
@@ -325,6 +335,16 @@ def R(current, G):
         return t, current
     else:
         return t, current
+
+@add_debug
+def EXP1(current, G):
+    t = tree("EXP1")
+    if current.name == 'MINUS':
+        t.append(tree(current.name))
+        current = next(G)
+    t1, current = EXP2(current, G)
+    t.append(t1)
+    return t, next(G)
 
 @add_debug
 def EXP2(current, G):
