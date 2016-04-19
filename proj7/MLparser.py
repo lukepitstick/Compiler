@@ -123,7 +123,9 @@ def STATEMENT(current, G):
             raise SyntaxError("must be an ID")
         if ty is not "BOOL":
             raise SyntaxError("must be a bool")
-        thn = next(G)
+        t0, current = EXPRESSION(var1, G)
+        t.append(t0)
+        thn = current
         if thn.name != "THEN":
             raise SyntaxError("must be followed by then")
         current = next(G)
@@ -136,6 +138,13 @@ def STATEMENT(current, G):
             t.append(t2)
             if current.name == "END": #else begin {code} end end ... handles if two ends follow each other
                 return t, current
+    if current.name == "WHILE":
+        t.append(tree("WHILE"))
+        current = next(G)
+        t1, current = EXPRESSION(current, G)
+        t.append(t1)
+        t2, current = PROGRAM(current, G)
+        t.append(t2)
     if current.name == "INTTYPE":
         typeOfVar = "INT"
         t.append(tree("INTTYPE"))
@@ -474,7 +483,7 @@ def IDENT(current, G,):
 
 if __name__ == "__main__":
     try:
-        fname = 'proj7tester/example1.txt'
+        fname = 'proj7tester/example2.txt'
         print("Parsing " + fname)
         try:
             sampt, tokk = parser(fname, 'tokens1.txt')
