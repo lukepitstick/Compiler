@@ -10,7 +10,7 @@ from lexer_sol import lexer
 from tree import tree
 from traceback import print_exc
 
-debug = True
+debug = False
 recursion_level = 0
 
 def add_debug(fn):
@@ -111,6 +111,20 @@ def STATEMENT(current, G):
     t = tree("STATEMENT")
     global typeOfVar
     global varName1
+    if current.name == "IF":
+        t.append(tree("IF"))
+        var1 = next(G)
+        ty = str(dict[var1.pattern][1])
+        if var1.name != "ID":
+            raise SyntaxError("must be an ID")
+        if ty is not "BOOL":
+            raise SyntaxError("must be a bool")
+        thn = next(G)
+        if thn.name != "THEN":
+            raise SyntaxError("must be followed by then")
+        print("tests over")
+        current = next(G)
+        t1, current = PROGRAM(current, G)
     if current.name == "INTTYPE":
         typeOfVar = "INT"
         t.append(tree("INTTYPE"))
@@ -445,10 +459,10 @@ def IDENT(current, G,):
 
 if __name__ == "__main__":
     try:
-        fname = 'example1.txt'
+        fname = 'proj7tester/example1.txt'
         print("Parsing " + fname)
         try:
-            sampt, tokk = parser(fname, 'tokens.txt')
+            sampt, tokk = parser(fname, 'tokens1.txt')
             print('The source file is following a valid syntax.')
             print(str(sampt))
             print("\n"+str(dict))
