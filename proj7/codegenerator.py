@@ -1,49 +1,70 @@
 #import MIPSinstruction
 import tree #from tree?
 import re
-
+import sys
 datatoWrite = [] #data write section
 toWrite = [] # initialize what to write
-dict1 = {}
+dict1 = {} #main dict (Initiated, type)
 dict2 = {} #string dict
 dict3 = {}
 strdict = {}
 ineff = []
 ldict = {}
+stringnum = 0
 
 
 def READ_IDS(args): #was args = []
     for var in args:
-        if dict1[var][1] is "INT":
+        if dict1[var][1] == "INT":
             toWrite.append("li $v0, 5\nsyscall\n")
             toWrite.append("la $t0, %s\n" % var)
             toWrite.append("sw $v0, 0($t0)\n\n")
+            dict1[var] = ("True","INT")
         else:
-            raise CompilerError("Semantic Error: Read on invalid type")
+            raise CompilerError("Semantic Error: Read on invalid type: " + var)
 
 def WRITE_IDS(t): #receives tree with head as expr_list
-    #for child in t.children:
-    #    # reset registers
-    #    for register in registers:
-    #       registers[register] = False
+    global stringnum
+       # reset registers
+    for register in registers:
+        registers[register] = False
     for child in t.children:
-        # reset registers
-        for register in registers:
-            registers[register] = False
-        type, varlist, reg = EXPRESSION(child)
-        print(type)
-        for v in varlist:
-            if ldict[v] != "True":
-                if dict1[v][0] != "True":
-                    raise CompilerError("Semantic Error: Write before a variable is instantiated")
-        if type is "BOOL" or type is "INT":
-            toWrite.append("add $a0, %s,0\n"% reg)
-            toWrite.append("li $v0, 1\nsyscall\n\n")
-        elif type is "STRING":
-            print("here")
-            for x in ineff:
-                toWrite.append(x)
-            toWrite.append("la $a0, %s\nli $v0, 4\nsyscall\n\n"% varlist[0])
+        if child.children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0].label == "STRING":
+            val = child.children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[
+                0].children[0].val
+            stringid = "stringtmptmp" + str(stringnum)
+            stringnum += 1
+            datatoWrite.append("%s: .asciiz %s\n" %(stringid, val))
+            toWrite.append("la $a0, %s\nli $v0, 4\nsyscall\n\n" % stringid)
+        else:
+            # reset registers
+            for register in registers:
+                registers[register] = False
+            type, varlist, reg = EXPRESSION(child)
+            v1 = ""
+            for v in varlist:
+                # if ldict[v] != "True":
+                v1 = v
+                if (v == "FALSE") or (v == "TRUE"):
+                    pass
+                else:
+                    if dict1[v][0] != "True":
+                        raise CompilerError("Semantic Error: Write before a variable is instantiated" + v)
+            if type == "INT":
+                toWrite.append("add $a0, %s,0\n"% reg)
+                toWrite.append("li $v0, 1\nsyscall\n\n")
+            elif type == "BOOL":
+                toWrite.append("la $s0, False\nla $s1, True\nmovn $a0,$s1,%s\nmovz $a0,$s0,%s\nli $v0, 4\n"
+                               "syscall\n"%(reg,reg))
+            elif type == "STRING":
+                try:
+                    if ldict[v] != "True": ##unsure
+                        raise CompilerError("Semantic Error: String mismatch")
+                except:
+                    pass
+                for x in ineff:
+                    toWrite.append(x)
+                toWrite.append("la $a0, %s\nli $v0, 4\nsyscall\n\n"% varlist[0])
 
        # type, varlist, reg = EXPRESSION(child)
        # for v in varlist:
@@ -64,7 +85,7 @@ def otherReg(reg):
     if reg == "$t2":
         return ("$t0", "$t1")
 
-registers = {"$t0":False, "$t1":False, "$t2":False, "$t3":False, "$t4":False, "$t5":False, "$t6":False, "$t7":False,
+registers = {"$t0":False, "$t1":False, "$t2":False, "$t3":False, "$t4":False, "$t5":False, "$t6":False, "$t7":False, 
              "$t8":False, "$t9":False, "$s1":False, "$s2":False, "$s3":False, "$s4":False, "$s5":False, "$s6":False,
              "$s7":False}
 
@@ -79,14 +100,17 @@ def EXPRESSION(t): #Gets tree with EXPRESSION as head
     #Temporary
     try:
         isstring = t.children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0].val
-        print("here")
-        print(isstring)
-        if dict1[isstring][1] is "STRING":
+        if dict1[isstring][1] == "STRING":
             return ("STRING",[isstring], "")
     except:
         pass
-
-
+    varlist = []
+    retType = "INT"
+    type1 = ""
+    type2 = ""
+    reg1 = ""
+    reg2 = ""
+    opFlag = False
 
     for child in t.children:
         if child.label != "OR":
@@ -109,7 +133,8 @@ def EXPRESSION(t): #Gets tree with EXPRESSION as head
 
     if reg2 != "":
         registers[reg2] = False
-    retType = type1
+    if retType != "BOOL":
+        retType = type1
     return (retType, varlist, reg1)
 
 def TERM1(t): #Gets tree with TERM1 as head
@@ -127,7 +152,7 @@ def TERM1(t): #Gets tree with TERM1 as head
                 type1, varlist1, reg1 = FACT1(child)
                 varlist += varlist1
             if opFlag:
-                type2, varlist2, reg1 = FACT1(child)
+                type2, varlist2, reg2 = FACT1(child)
                 varlist += varlist2
                 if (type1 != "BOOL") | (type2 != "BOOL"):
                     raise CompilerError("Semantic Error: 'and' operand on non-bool")
@@ -141,7 +166,8 @@ def TERM1(t): #Gets tree with TERM1 as head
 
     if reg2 != "":
         registers[reg2] = False
-    retType = type1
+    if retType != "BOOL":
+        retType = type1
     return (retType, varlist, reg1)
 
 def FACT1(t): #Gets tree with FACT1 as head
@@ -160,10 +186,7 @@ def FACT1(t): #Gets tree with FACT1 as head
                 type1, varlist1, reg1 = EXP2(child)
                 varlist += varlist1
 
-
-
         if child.label == "R":
-
             try:
                 ROP = child.children[0].label
 
@@ -181,21 +204,23 @@ def FACT1(t): #Gets tree with FACT1 as head
                     compareType = "sne"
                 retType = "BOOL"
                 opFlag = True
-                
                 type2, varlist2, reg2 = EXP2(child.children[1])
                 varlist += varlist2
-                if (type1 != "INT") or (type2 != "INT"):
+                if (type1 != "INT") | (type2 != "INT"):
                     raise CompilerError("Semantic Error: Compare operand on non-int")
                 toWrite.append("%s %s, %s, %s\n" % (compareType, reg1, reg1, reg2))
                 if reg2 != "":
                     registers[reg2] = False
                 opFlag = False
+            except CompilerError:
+                raise CompilerError("Semantic Error in R")
             except: #No Comparison
                 pass
 
     if reg2 != "":
         registers[reg2] = False
-    retType = type1
+    if retType != "BOOL":
+        retType = type1
     return (retType, varlist, reg1)
 
 def EXP2(t):
@@ -361,7 +386,6 @@ def PRIMARY(t):
     retType = ""
     reg = ""
 
-    print(str(registers))
     for register in registers:
         if registers[register] == False:
             reg = register
@@ -370,10 +394,13 @@ def PRIMARY(t):
 
     child = t.children[0]
     if child.label == "EXPRESSION":
+        registers[reg] = False
         retType, varlist1, reg1 = EXPRESSION(child)
         varlist += varlist1
-        toWrite.append("move %s, %s\n"%(reg,reg1))
-        registers[reg1] = False
+        reg = reg1
+        # toWrite.append("move %s, %s\n"%(reg,reg1))
+        # registers[reg1] = False
+
     elif child.label == "INTLIT":
         retType = "INT"
         toWrite.append("li %s, %s\n"%(reg,child.val))
@@ -475,7 +502,6 @@ def ASSIGN(t):
     #recieves a tree with root t being ASSIGNMENT
     var = t.children[0].children[0].val #variable being assigned
     vartype = dict1[var][1]
-    print(var)
     # reset registers
     for register in registers:
         registers[register] = False
@@ -493,21 +519,33 @@ def ASSIGN(t):
         #         raise CompilerError("Semanic Error: not an int")
     #     toWrite.append("li $t0, %s\n" % r.val)
         #Will need to add this back in
-    type, varlist, reg = EXPRESSION(t.children[1])
-    for v in varlist:
-        if dict1[v][0] != "True":
-                raise CompilerError("Semantic Error: ASSIGN before a variable is instantiated")
-    if vartype != type:
-        raise CompilerError("Assignment types do not match")
-    if vartype == "STRING": #Find var line in datatoWrite and make its initial value the dict2 value from varlist[0]
+    # print(str(t.children[1]))
+    # print(str(dict1))
+    if t.children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0].label == "STRING":
+        c =t.children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0]
         find = var + ": .asciiz "
-        replace = var + ": .asciiz " + dict2[varlist[0]]
+        replace = var + ": .asciiz " + c.val
         ind = datatoWrite.index(find)
         datatoWrite[ind] = replace
-    else: #Integer/bool assign
-        toWrite.append("la   $s0, %s\nsw %s, ($s0)\n\n" %(var,reg))  # store value from $t0 into var's address
+    else:
+        type, varlist, reg = EXPRESSION(t.children[1])
+        for v in varlist:
+            # print(v)
+            # print(str(dict1))
+            if dict1[v][0] != "True":
+                    raise CompilerError("Semantic Error: ASSIGN before a variable is instantiated")
+        if vartype != type:
+            # print(vartype + " " + type)
+            raise CompilerError("Assignment types do not match")
+        if vartype == "STRING": #Find var line in datatoWrite and make its initial value the dict2 value from varlist[0]
+            find = var + ": .asciiz "
+            replace = var + ": .asciiz " + dict2[varlist[0]]
+            ind = datatoWrite.index(find)
+            datatoWrite[ind] = replace
+        else: #Integer/bool assign
+            toWrite.append("la   $s0, %s\nsw %s, ($s0)\n\n" %(var,reg))  # store value from $t0 into var's address
 
-    dict1[var][0] = "True"
+    dict1[var] = ("True",dict1[var][1])
 
 # Defines what #infix does
 def INFIX(t):
@@ -553,7 +591,7 @@ def postOrderDFS(tree):
 
     if tree.isLeaf():
         pass
-    if tree.label is "STATEMENT":
+    if tree.label =="STATEMENT":
         if tree.children[0].label is "READ":
             arguments = []
             for child in tree.children[1].children:
@@ -580,24 +618,32 @@ def postOrderDFS(tree):
             if tree.children[2].label is "ASSIGNMENTSTR":
                 ASSIGNSTR(tree)
         except:
+            # print(sys.exc_info())
             pass
     for child in tree.children:
         postOrderDFS(child)
 
 def ASSIGNSTR(tree):
-    print("before")
+    global dict1
     setMe = tree.children[1].children[0].val
-    to = tree.children[2].children[0].children[0].val
-    if strdict[setMe][1] is not "STRING" or strdict[to][1] is not "STRING":
-        raise CompilerError("mismatched types")
+
+    if tree.children[2].children[0].children != []:
+        to = tree.children[2].children[0].children[0].val
+        if strdict[setMe][1] is not "STRING" or strdict[to][1] is not "STRING":
+            raise CompilerError("Semantic Error: mismatched types")
+        # dict1[to][0] = "True"
+        # ldict[setMe] = "True"
+        ldict[to] = "True"
+        le = dict3[to]
+        ineff.append("la $t0, %s\n" % to)
+        ineff.append("la $t1, %s\n" % setMe)
+        for x in range(0, le):
+            ineff.append("lbu $t2, %d($t0)\n" % x)
+            ineff.append("sb $t2, %d($t1)\n" % x)
+
+    dict1[setMe] = ("True", dict1[setMe][1])
     ldict[setMe] = "True"
-    ldict[to] = "True"
-    le = dict3[to]
-    ineff.append("la $t0, %s\n" % to)
-    ineff.append("la $t1, %s\n" % setMe)
-    for x in range(0, le):
-        ineff.append("lbu $t2, %d($t0)\n" % x)
-        ineff.append("sb $t2, %d($t1)\n" % x)
+
 
 def DEFTYPE(tree):
     pass
@@ -609,11 +655,29 @@ def DEFTYPE(tree):
     #     dict1[val] = ("True",b)
 
 def findGenerateMIPSCode(t, dict): #, fname):
-
+    global datatoWrite
+    global toWrite
     global dict1
+    global dict2
+    global dict3
     global strdict
+    global ineff
+    global ldict
+    global stringnum
+    
+    datatoWrite = [] #data write section
+    toWrite = [] # initialize what to write
+    dict1 = {} #main dict (Initiated, type)
+    dict2 = {} #string dict
+    dict3 = {}
+    strdict = {}
+    ineff = []
+    ldict = {}
+    stringnum = 0    
     strdict = dict
     datatoWrite.append(".data\n") #beginning of our MIP
+    datatoWrite.append('False: .asciiz "False"\n')
+    datatoWrite.append('True: .asciiz "True"\n')
     #Generate data section from dict
     for var in dict:
         # print(var)
@@ -639,10 +703,9 @@ def findGenerateMIPSCode(t, dict): #, fname):
             dict2[var] = dict[var][0]
 
 
-    print(dict1)
-    print(dict2)
-
-    toWrite.append(".text\nmain:\n")
+    # print(dict1)
+    # print(dict2)
+    toWrite.append("\n.text\nmain:\n")
     #initiate the actual traversal
     postOrderDFS(t)
     #gracefully exit

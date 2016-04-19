@@ -10,19 +10,17 @@ from lexer_sol import lexer
 from tree import tree
 from traceback import print_exc
 
-debug = False
+debug = True
 recursion_level = 0
 
 def add_debug(fn):
     def debugged_fn(current, G):
         global recursion_level
-        print(" "*recursion_level + "Entering: %s (%s)" % \
-              (fn.__name__, current))
+        print(" "*recursion_level + "Entering: %s (%s)" % (fn.__name__, current))
         recursion_level += 3
         R = fn(current, G)
         recursion_level -= 3
-        print(" "*recursion_level + "Leaving: %s" % \
-              (fn.__name__))
+        print(" "*recursion_level + "Leaving: %s" % (fn.__name__))
         return R
     
     return debugged_fn if debug else fn
@@ -42,14 +40,21 @@ del dict[None]
 typeOfVar = ""
 valOfVar = ""
 varName1 = ""
-strLitCounter = 0
 
-def parser(source_file, token_file):    
+def parser(source_file, token_file):	
     """
     source_file: A program written in the ML langauge.
     returns True if the code is syntactically correct.
     Throws a ParserError otherwise.
     """
+    global typeOfVar
+    global valOfVar
+    global varName1
+    
+    typeOfVar = ""
+    valOfVar = ""
+    varName1 = ""    
+    
     dict.clear() #clear dict
     G = lexer(source_file, token_file)
 
@@ -64,7 +69,7 @@ def parser(source_file, token_file):
         raise ParserError("Syntax Error: File did not end after 'end'")
     return t, dict #return tree and symbol table
 
-@add_debug  
+@add_debug	
 def PROGRAM(current, G):
     t = tree("PROGRAM")
     if current.name == "BEGIN":
@@ -75,19 +80,15 @@ def PROGRAM(current, G):
         if current.name == "END":
             t.append(tree("END"))
             return t, next(G)
-        raise ParserError("Syntax Error: No 'end' at line: " +\
-                          current.line)
-    raise ParserError("Syntax Error: No 'begin' at line: " + \
-                      current.line)
+        raise ParserError("Syntax Error: No 'end' at line: " + current.line)
+    raise ParserError("Syntax Error: No 'begin' at line: " + current.line)
 
 @add_debug
 def STATEMENT_LIST(current, G):
     t = tree("STATEMENT_LIST")
     t1, current = STATEMENT(current, G)
-    
     t.append(t1)
     while True:
-        print(current)
         if current.name == 'SEMICOLON':
             # t.append(tree('SEMICOLON'))
             SEMICOLON(current, G)
@@ -98,8 +99,7 @@ def STATEMENT_LIST(current, G):
             t2, current = STATEMENT(current, G)
             t.append(t2)
         else:
-            raise ParserError("Syntax Error: no semicolon at line: " \
-                              + current.line)
+            raise ParserError("Syntax Error: no semicolon at line: " + current.line)
     return t, current
 
 @add_debug
@@ -124,22 +124,6 @@ def STATEMENT(current, G):
             pass
         t1, current = IDENT(current, G)
         t.append(t1)
-    elif current.name == "IF":
-        t.append(tree("IF"))
-        var1 = next(G)
-        nme = str(var1.name)
-        type = str(dict[var1.pattern][1])
-        if nme != "ID":
-            raise SyntaxError("not in language")
-        if type is not "BOOL":
-            raise SyntaxError("Semantic error: type not bool")
-        thn = next(G)
-        if thn.name != "THEN":
-            raise SyntaxError("Syntax error: must have then")
-        current = next(G)
-        t1, current = PROGRAM(current, G)
-        t.append(t1)
-        return t, current
     elif current.name == "BOOLTYPE":
         typeOfVar = "BOOL"
         t.append(tree("BOOLTYPE"))
@@ -204,32 +188,28 @@ def ASSIGNMENTSTR(current, G):
 @add_debug
 def READ(current, G):
     if current.name != "LPAREN":
-        raise ParserError("Syntax Error: Expected lparen is missing: "\
-                          + current.line)
+        raise ParserError("Syntax Error: Expected lparen is missing: " +\
+                          current.line)
     # t.append(tree("LPAREN"))
     t, current = ID_LIST(next(G), G)
     if current.name != "RPAREN":
-        raise ParserError("Syntax Error: Expected rparen is missing: "\
-                          + current.line)
+        raise ParserError("Syntax Error: Expected rparen is missing: " +\
+                          current.line)
     # t.append(tree("RPAREN"))
     return t, next(G)
 
 @add_debug
 def WRITE(current, G):
     if current.name != "LPAREN":
-        raise ParserError("Syntax Error: Expected lparen is missing: " \
-                          + current.line)
+        raise ParserError("Syntax Error: Expected lparen is missing: " +\
+                          current.line)
     # t.append(tree("LPAREN"))
     t, current = EXPR_LIST(next(G), G)
-#    print("lolol")
-    #print(current.name)
     if current.name != "RPAREN":
-        raise ParserError("Syntax Error: Expected rparen is missing: " \
-                          + str(current.line_num) + current.pattern)
+        raise ParserError("Syntax Error: Expected rparen is missing: " + \
+                          str(current.line_num) + current.pattern)
     # t.append(tree("RPAREN"))
-    xs = next(G)
-#    print(xs)
-    return t, xs
+    return t, next(G)
 
 @add_debug
 def ASSIGNMENT(current, G):
@@ -237,8 +217,7 @@ def ASSIGNMENT(current, G):
     tident, current = IDENT(current, G)
     t.append(tident)
     if current.name != "ASSIGNOP":
-        raise ParserError("Syntax Error: Expected assignop is missing: " \
-                          + current.line)
+        raise ParserError("Syntax Error: Expected assignop is missing: " + current.line)
     # t.append(tree("ASSIGNOP"))
     texpr, current = EXPRESSION(next(G), G)
     t.append(texpr)
@@ -277,16 +256,6 @@ def EXPR_LIST(current, G):
 @add_debug
 def EXPRESSION(current, G):
     t = tree("EXPRESSION")
-    if current.name == 'NOT':
-        t.append(tree(current.name))
-        current = next(G)
-    t1, current = TERM0(current, G)
-    t.append(t1)
-    return t, next(G)
-
-@add_debug
-def TERM0(current, G):
-    t = tree("TERM0")
     t1, current = TERM1(current, G)
     t.append(t1)
 
@@ -324,10 +293,9 @@ def FACT1(current, G):
 @add_debug
 def R(current, G):
     t = tree("R")
-    if(current.name == 'GREATEREQUAL') | (current.name == 'LESSEQUAL') \
-                    | (current.name == 'EQUAL') | (current.name == 'LESSTHAN') \
-                    | (current.name == 'GREATERTHAN') \
-                    | (current.name == 'NOTEQUAL'):
+    if(current.name == 'GREATEREQUAL') | (current.name == 'LESSEQUAL') |\
+      (current.name == 'EQUAL') | (current.name == 'LESSTHAN') | \
+      (current.name == 'GREATERTHAN') | (current.name == 'NOTEQUAL'):
         t.append(tree(current.name))
         current = next(G)
         t2, current = EXP2(current, G)
@@ -335,16 +303,6 @@ def R(current, G):
         return t, current
     else:
         return t, current
-
-@add_debug
-def EXP1(current, G):
-    t = tree("EXP1")
-    if current.name == 'MINUS':
-        t.append(tree(current.name))
-        current = next(G)
-    t1, current = EXP2(current, G)
-    t.append(t1)
-    return t, next(G)
 
 @add_debug
 def EXP2(current, G):
@@ -441,28 +399,34 @@ def PRIMARY(current, G):
     if current.name == 'LPAREN':
         t1, current = EXPRESSION(next(G), G)
         if current.name != 'RPAREN':
-            raise ParserError("Syntax Error: Expected rparen is missing: " \
-                              + current.line)
+            raise ParserError("Syntax Error: Expected rparen is missing: " + current.line)
         t.append(t1)
+        return t, next(G)
+    if current.name == "STRING": #unsure
+        tstrlit = tree("STRING")
+        tstrlit.val = current.pattern
+        t.append(tstrlit)
+        # valOfVar = current.pattern
+        # tuple1 = (valOfVar, typeOfVar)
+        # dict[varName1] = tuple1
         return t, next(G)
     t2, current = IDENT(current, G)
     t.append(t2)
     return t, current
 
+# stringnum = 0
+# def STRINGNAME():
+#     global stringnum
+#     stringnum += 1
+#     return "Stringtmptmptmp" + stringnum
+
+
 @add_debug
 def IDENT(current, G,):
     global varName1
-    global strLitCounter
     t = tree('IDENT')
-    if current.name == "STRING":
-        t.append(tree("STRING"))
-        strLitCounter = strLitCounter + 1
-        dict[current.pattern] = (current.pattern, current.name)
-        current = next(G)
-        return t, current       
     if current.name != 'ID':
-        raise ParserError("Syntax Error: Error when parsing IDENT: " \
-                          + current.line)
+        raise ParserError("Syntax Error: Error when parsing IDENT: " + current.line)
     tmp = tree('ID')
     tmp.val = current.pattern
     t.append(tmp)
@@ -484,7 +448,7 @@ if __name__ == "__main__":
         fname = 'example1.txt'
         print("Parsing " + fname)
         try:
-            sampt, tokk = parser(fname, 'tokens1.txt')
+            sampt, tokk = parser(fname, 'tokens.txt')
             print('The source file is following a valid syntax.')
             print(str(sampt))
             print("\n"+str(dict))
