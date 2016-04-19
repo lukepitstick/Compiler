@@ -614,6 +614,8 @@ def postOrderDFS(tree):
             DEFTYPE(tree)
         elif tree.children[0].label is "INTTYPE":
             DEFTYPE(tree)
+		elif tree.children[0].label is "IF":
+			#do something	
         try:
             if tree.children[2].label is "ASSIGNMENTSTR":
                 ASSIGNSTR(tree)
