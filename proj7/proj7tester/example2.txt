@@ -1,4 +1,9 @@
 begin
-write(5*6/2);
-write(6/2*5);
+   bool x;
+   x := True;
+   if x then
+   begin
+      write("Yes\n");
+   end
+   write("Done\n");
 end

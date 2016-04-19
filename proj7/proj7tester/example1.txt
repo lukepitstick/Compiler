@@ -3,7 +3,10 @@ bool x;
 x := True;
 if x then
 begin
-write("YES\n");
+write("Yes\n");
 end
-write("DONE\n");
+else
+begin
+write("No\n");
+end
 end

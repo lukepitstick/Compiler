@@ -37,6 +37,8 @@ class ParserError(Exception):
 # Parsing code
 dict = {None:None} #instantiate symbol table
 del dict[None]
+strDict = {}
+counter = 0
 typeOfVar = ""
 valOfVar = ""
 varName1 = ""
@@ -94,9 +96,11 @@ def STATEMENT_LIST(current, G):
             SEMICOLON(current, G)
             current = next(G)
             if current.name == "END":
-                #t.append(tree('END'))
                 return t, current
             t2, current = STATEMENT(current, G)
+            if current.name == "END":
+                t.append(t2)
+                return t, current
             t.append(t2)
         else:
             raise ParserError("Syntax Error: no semicolon at line: " + current.line)
@@ -122,9 +126,16 @@ def STATEMENT(current, G):
         thn = next(G)
         if thn.name != "THEN":
             raise SyntaxError("must be followed by then")
-        print("tests over")
         current = next(G)
         t1, current = PROGRAM(current, G)
+        t.append(t1)
+        if current.name == "ELSE":
+            t.append(tree("ELSE"))
+            current = next(G)
+            t2, current = PROGRAM(current, G)
+            t.append(t2)
+            if current.name == "END": #else begin {code} end end ... handles if two ends follow each other
+                return t, current
     if current.name == "INTTYPE":
         typeOfVar = "INT"
         t.append(tree("INTTYPE"))
@@ -395,6 +406,7 @@ def FACT3(current, G):
 
 @add_debug
 def PRIMARY(current, G):
+    global counter
     t = tree('PRIMARY')
     if current.name == 'INTLIT':
         tmp = tree('INTLIT')
@@ -421,9 +433,12 @@ def PRIMARY(current, G):
         tstrlit.val = current.pattern
         t.append(tstrlit)
         # valOfVar = current.pattern
-        # tuple1 = (valOfVar, typeOfVar)
-        # dict[varName1] = tuple1
-        return t, next(G)
+        tuple1 = (current.pattern, "STRING")
+        tname = "lit%i" % counter
+        strDict[tname] = tuple1
+        counter = counter + 1
+        ct = next(G)
+        return t, ct
     t2, current = IDENT(current, G)
     t.append(t2)
     return t, current
