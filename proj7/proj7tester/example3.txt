@@ -3,6 +3,10 @@ begin
    int s;
    int p;
    int i;
+   int nn;
+   int j;
+   j := 1;
+   nn := 4;
    i := 1;
    s := 0;
    p := 1;
@@ -12,6 +16,15 @@ begin
       s := s + i;
       p := p * i;
       i := i + 1;
+      if (i%2) == 1 then
+      begin
+        write("even!");
+      end
+      while j<nn
+      begin
+        write(nn+1);
+        j := j + 1;
+      end
    end
    write(s, "\n", p, "\n");
 end

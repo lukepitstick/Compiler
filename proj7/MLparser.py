@@ -124,11 +124,12 @@ def STATEMENT(current, G):
     if current.name == "IF":
         t.append(tree("IF"))
         var1 = next(G)
-        ty = str(dict[var1.pattern][1])
-        if var1.name != "ID":
-            raise SyntaxError("must be an ID")
-        if ty is not "BOOL":
-            raise SyntaxError("must be a bool")
+        # ty = str(dict[var1.pattern][1])
+        # print(var1.pattern) #can be an expression, check for bool in compiler
+        # if var1.name != "ID":
+        #     raise SyntaxError("must be an ID")
+        # if ty != "BOOL":
+        #     raise SyntaxError("must be a bool")
         t0, current = EXPRESSION(var1, G)
         t.append(t0)
         thn = current
