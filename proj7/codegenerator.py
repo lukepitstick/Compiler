@@ -623,20 +623,34 @@ def IF(tree):
     for child in tree.children[2].children[1].children:
         STATEMENT(child)
 
+labelNum = 1
+def getLabels():
+    global labelNum
+    label1 = "L" + str(labelNum)
+    labelNum += 1
+    label2 = "L" + str(labelNum)
+    labelNum += 1
+    return (label1,label2)
 
 def WHILE(tree):
+    label1, label2 = getLabels()
+    toWrite.append(label1 + ": ")
+    type, varlist, reg = EXPRESSION(tree.children[1])
+    if type != "BOOL":
+        raise CompilerError("Condition of WHILE Statement is not a boolean: " + str(type))
+
+    toWrite.append("blez %s, %s\n"% (reg, label2)) #if false jump past program
+
+    for child in tree.children[2].children[1].children:
+        STATEMENT(child)
+
+    toWrite.append("b %s\n"% label1) #jump back to evaluate expression
+    toWrite.append(label2 + ": ") #Set jump past point to the instruction after the WHILE
+
     # for s in tree.children:
     #     print(" wh + " + s.label)
 
-    # print(str(tree.children[2]))
-    # print(str(tree))
-    #type, varlist, reg = EXPRESSION(tree.children[1])
-    # if type != "BOOL":
-    #     raise CompilerError("Semantic Error: Condition of While statement is not a boolean: " + str(type))
-    # print(str(tree.children[2]))
-    for child in tree.children[2].children[1].children:
-        STATEMENT(child)
-    pass
+
 
 def STATEMENT(tree): #Equivalent of STATEMENT
 
