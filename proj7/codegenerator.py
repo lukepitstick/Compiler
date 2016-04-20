@@ -588,10 +588,11 @@ def INFIX(t):
     return stack, varList
 
 def IF(tree):
-	type = EXPRESSION(tree.children[1])
-	if type != "BOOL":
-		raise CompilerError("Condition of If Statement is not a boolean: " + str(type))
-	global nestedIfCounter #count nested ifs
+    type = EXPRESSION(tree.children[1])
+    if type != "BOOL":
+	raise CompilerError("Condition of If Statement is not a boolean: " + str(type))
+    
+    global nestedIfCounter #count nested ifs
     conditionalTree = tree.children[1] #this holds the conditional of the if statement
     statementListTree = tree.children[2].children[1] #this holds the actual statementList inside the if
     #pass expressionTree to expression, format the if statement in MIPS using branches
@@ -619,7 +620,7 @@ def IF(tree):
     toWrite.append("ENDIF%d\n" % nestedIfCounter)
     nestedIfCounter = nestedIfCounter + 1
 
-	for child in tree.children[2].children[1].children:
+    for child in tree.children[2].children[1].children:
 		STATEMENT(child)
     pass
 
