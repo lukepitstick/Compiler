@@ -11,6 +11,7 @@ strdict = {}
 ineff = []
 ldict = {}
 stringnum = 0
+nestedIfCounter = 0
 
 
 def READ_IDS(args): #was args = []
@@ -587,13 +588,33 @@ def INFIX(t):
     return stack, varList
 
 def IF(tree):
-    #print(tree.children[2].children[1].label)
-    expressionTree = tree.children[1] #this holds the conditional of the if statement
+    global nestedIfCounter #count nested ifs
+    conditionalTree = tree.children[1] #this holds the conditional of the if statement
     statementListTree = tree.children[2].children[1] #this holds the actual statementList inside the if
     #pass expressionTree to expression, format the if statement in MIPS using branches
-    #pass programTree to Statement list?
-    for childX in statementListTree.children:
-        STATEMENT(childX)
+    boolResult = 0 #will eventually hold the result of the bool expression
+    hasElse = 0
+    try: # may or may not have a matching else
+        elseTree = tree.children[3] # just 'else'
+        elseBody = tree.children[4].children[1]
+        toWrite.append("bne $t0, $zero, ELSE%d\nCONSEQUENCE%d:\n" % (nestedIfCounter, nestedIfCounter))
+        for childX in statementListTree.children:
+            STATEMENT(childX)
+        toWrite.append("j ENDIF%d\n\nELSE%d:\n" % (nestedIfCounter, nestedIfCounter))
+        for childY in elseBody.children:
+            STATEMENT(childY)
+        toWrite.append("j ENDIF%d\n\n" % nestedIfCounter)
+        hasElse = 1
+    except:
+        pass
+    if hasElse == 0:
+        toWrite.append("bne $t0, $zero, endif%d\nCONSEQUENCE%d:\n" % (nestedIfCounter, nestedIfCounter)) #assuming the result of the boolResult is stored in $t0
+        #pass programTree to Statement list
+        for childX in statementListTree.children:
+            STATEMENT(childX)
+        toWrite.append("j ENDIF%d\n\n" % nestedIfCounter)
+    toWrite.append("ENDIF%d\n" % nestedIfCounter)
+    nestedIfCounter = nestedIfCounter + 1
     pass
 
 def WHILE(tree):
