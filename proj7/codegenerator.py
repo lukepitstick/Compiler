@@ -587,8 +587,13 @@ def INFIX(t):
     return stack, varList
 
 def IF(tree):
-
-    #add code here
+    #print(tree.children[2].children[1].label)
+    expressionTree = tree.children[1] #this holds the conditional of the if statement
+    statementListTree = tree.children[2].children[1] #this holds the actual statementList inside the if
+    #pass expressionTree to expression, format the if statement in MIPS using branches
+    #pass programTree to Statement list?
+    for childX in statementListTree.children:
+        STATEMENT(childX)
     pass
 
 def WHILE(tree):
@@ -735,7 +740,7 @@ def findGenerateMIPSCode(t, dict): #, fname):
     # print(dict2)
     toWrite.append("\n.text\nmain:\n")
     #initiate the actual traversal
-    # print(t.children[1].label)
+    #print(t.children[1].label)
     for childd in t.children[1].children:
         STATEMENT(childd)
     #gracefully exit
