@@ -586,12 +586,31 @@ def INFIX(t):
                 flag2 = False
     return stack, varList
 
+def IF(tree):
 
-def postOrderDFS(tree):
+    #add code here
+    pass
+
+def WHILE(tree):
+    # for s in tree.children:
+    #     print(" wh + " + s.label)
+
+    # print(str(tree.children[2]))
+    # print(str(tree))
+    #type, varlist, reg = EXPRESSION(tree.children[1])
+    # if type != "BOOL":
+    #     raise CompilerError("Semantic Error: Condition of While statement is not a boolean: " + str(type))
+    # print(str(tree.children[2]))
+    for child in tree.children[2].children[1].children:
+        postOrderDFS(child)
+    pass
+
+def postOrderDFS(tree): #Equivalent of STATEMENT
 
     if tree.isLeaf():
         pass
     if tree.label =="STATEMENT":
+        # print(tree.children[0].label)
         if tree.children[0].label is "READ":
             arguments = []
             for child in tree.children[1].children:
@@ -614,14 +633,21 @@ def postOrderDFS(tree):
             DEFTYPE(tree)
         elif tree.children[0].label is "INTTYPE":
             DEFTYPE(tree)
+        elif tree.children[0].label is "IF":
+            IF(tree)
+        elif tree.children[0].label is "WHILE":
+            WHILE(tree)
         try:
             if tree.children[2].label is "ASSIGNMENTSTR":
                 ASSIGNSTR(tree)
         except:
             # print(sys.exc_info())
             pass
-    for child in tree.children:
-        postOrderDFS(child)
+    # for child in tree.children:
+    #     print("recurse " + child.label)
+    #     postOrderDFS(child)
+    # try:
+    #     postOrderDFS(tree.children[0])
 
 def ASSIGNSTR(tree):
     global dict1
@@ -655,6 +681,8 @@ def DEFTYPE(tree):
     #     dict1[val] = ("True",b)
 
 def findGenerateMIPSCode(t, dict): #, fname):
+
+    # print(str(t))
     global datatoWrite
     global toWrite
     global dict1
@@ -707,7 +735,9 @@ def findGenerateMIPSCode(t, dict): #, fname):
     # print(dict2)
     toWrite.append("\n.text\nmain:\n")
     #initiate the actual traversal
-    postOrderDFS(t)
+    # print(t.children[1].label)
+    for childd in t.children[1].children:
+        postOrderDFS(childd)
     #gracefully exit
     toWrite.append("li   $v0, 10\nsyscall")
     #write the array to the file

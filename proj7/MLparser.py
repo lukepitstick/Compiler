@@ -88,16 +88,21 @@ def PROGRAM(current, G):
 @add_debug
 def STATEMENT_LIST(current, G):
     t = tree("STATEMENT_LIST")
-    t1, current = STATEMENT(current, G)
+    skipSemi2 = False
+    t1, current, skipSemi1 = STATEMENT(current, G)
     t.append(t1)
     while True:
-        if current.name == 'SEMICOLON':
+        if (current.name == 'SEMICOLON') | skipSemi2:
             # t.append(tree('SEMICOLON'))
-            SEMICOLON(current, G)
-            current = next(G)
+            if (current.name == 'SEMICOLON'):
+                SEMICOLON(current, G)
+                current = next(G)
             if current.name == "END":
                 return t, current
-            t2, current = STATEMENT(current, G)
+            skipSemi2 = False
+            t2, current, skipSemi2 = STATEMENT(current, G)
+            # print(str(t2))
+            # print(current.name + " " + str(skipSemi2))
             if current.name == "END":
                 t.append(t2)
                 return t, current
@@ -112,6 +117,7 @@ def SEMICOLON(current, G):
 
 @add_debug
 def STATEMENT(current, G):
+    skipSemi = False
     t = tree("STATEMENT")
     global typeOfVar
     global varName1
@@ -138,14 +144,19 @@ def STATEMENT(current, G):
             t.append(t2)
             if current.name == "END": #else begin {code} end end ... handles if two ends follow each other
                 return t, current
-    if current.name == "WHILE":
+        # print("lalal" + current.name)
+        # print(str(t))
+        skipSemi = True
+    elif current.name == "WHILE":
         t.append(tree("WHILE"))
         current = next(G)
         t1, current = EXPRESSION(current, G)
         t.append(t1)
         t2, current = PROGRAM(current, G)
+        # print(t2.label)
         t.append(t2)
-    if current.name == "INTTYPE":
+        skipSemi = True
+    elif current.name == "INTTYPE":
         typeOfVar = "INT"
         t.append(tree("INTTYPE"))
         current = next(G)
@@ -197,7 +208,7 @@ def STATEMENT(current, G):
     else:
         t3, current = ASSIGNMENT(current, G)
         t.append(t3)
-    return t, current
+    return t, current, skipSemi
 
 @add_debug
 def ASSIGNMENTSTR(current, G):
@@ -486,7 +497,7 @@ if __name__ == "__main__":
         fname = 'proj7tester/example1.txt'
         print("Parsing " + fname)
         try:
-            sampt, tokk = parser(fname, 'tokens1.txt')
+            sampt, tokk = parser(fname, 'tokens.txt')
             print('The source file is following a valid syntax.')
             print(str(sampt))
             print("\n"+str(dict))
