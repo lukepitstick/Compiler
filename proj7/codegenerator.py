@@ -589,7 +589,9 @@ def INFIX(t):
 def IF(tree):
 
     #add code here
-    pass
+    for child in tree.children[2].children[1].children:
+		STATEMENT(child)
+	pass
 
 def WHILE(tree):
     # for s in tree.children:
