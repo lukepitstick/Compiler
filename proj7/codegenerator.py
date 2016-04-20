@@ -588,40 +588,55 @@ def INFIX(t):
     return stack, varList
 
 def IF(tree):
+    # for s in tree.children:
+    #     print(" fi + " + s.label)
+    label1, label2 = getLabels()
     type, varlist, reg = EXPRESSION(tree.children[1])
     if type != "BOOL":
         raise CompilerError("Condition of If Statement is not a boolean: " + str(type))
-    
-    global nestedIfCounter #count nested ifs
-    conditionalTree = tree.children[1] #this holds the conditional of the if statement
-    statementListTree = tree.children[2].children[1] #this holds the actual statementList inside the if
-    #pass expressionTree to expression, format the if statement in MIPS using branches
-    boolResult = 0 #will eventually hold the result of the bool expression
-    hasElse = 0
-    try: # may or may not have a matching else
-        elseTree = tree.children[3] # just 'else'
-        elseBody = tree.children[4].children[1]
-        toWrite.append("bne %s, $zero, ELSE%d\nCONSEQUENCE%d:\n" % (reg, nestedIfCounter, nestedIfCounter))
-        for childX in statementListTree.children:
-            STATEMENT(childX)
-        toWrite.append("j ENDIF%d\n\nELSE%d:\n" % (nestedIfCounter, nestedIfCounter))
-        for childY in elseBody.children:
-            STATEMENT(childY)
-        toWrite.append("j ENDIF%d\n\n" % nestedIfCounter)
-        hasElse = 1
-    except:
-        pass
-    if hasElse == 0:
-        toWrite.append("bne %s, $zero, endif%d\nCONSEQUENCE%d:\n" % (reg, nestedIfCounter, nestedIfCounter)) #assuming the result of the boolResult is stored in $t0
-        #pass programTree to Statement list
-        for childX in statementListTree.children:
-            STATEMENT(childX)
-        toWrite.append("j ENDIF%d\n\n" % nestedIfCounter)
-    toWrite.append("ENDIF%d\n" % nestedIfCounter)
-    nestedIfCounter = nestedIfCounter + 1
 
-    for child in tree.children[2].children[1].children:
+    toWrite.append("blez %s, %s\n" % (reg, label1))  # if false jump past IF program (else)
+
+    for child in tree.children[2].children[1].children: #IF program mips
         STATEMENT(child)
+
+    toWrite.append("b %s\n" % label2)  # if we finish IF program then jump past ELSE program
+    toWrite.append(label1 + ": ") #label1 before else program
+
+    for child in tree.children[4].children[1].children:  # ELSE program mips
+        STATEMENT(child)
+
+    toWrite.append(label2 + ": ") #place label to at the command following the else program
+    
+    # global nestedIfCounter #count nested ifs
+    # conditionalTree = tree.children[1] #this holds the conditional of the if statement
+    # statementListTree = tree.children[2].children[1] #this holds the actual statementList inside the if
+    # #pass expressionTree to expression, format the if statement in MIPS using branches
+    # boolResult = 0 #will eventually hold the result of the bool expression
+    # hasElse = 0
+    # try: # may or may not have a matching else
+    #     elseTree = tree.children[3] # just 'else'
+    #     elseBody = tree.children[4].children[1]
+    #     toWrite.append("bne %s, $zero, ELSE%d\nCONSEQUENCE%d:\n" % (reg, nestedIfCounter, nestedIfCounter))
+    #     for childX in statementListTree.children:
+    #         STATEMENT(childX)
+    #     toWrite.append("j ENDIF%d\n\nELSE%d:\n" % (nestedIfCounter, nestedIfCounter))
+    #     for childY in elseBody.children:
+    #         STATEMENT(childY)
+    #     toWrite.append("j ENDIF%d\n\n" % nestedIfCounter)
+    #     hasElse = 1
+    # except:
+    #     pass
+    # if hasElse == 0:
+    #     toWrite.append("bne %s, $zero, endif%d\nCONSEQUENCE%d:\n" % (reg, nestedIfCounter, nestedIfCounter)) #assuming the result of the boolResult is stored in $t0
+    #     #pass programTree to Statement list
+    #     for childX in statementListTree.children:
+    #         STATEMENT(childX)
+    #     toWrite.append("j ENDIF%d\n\n" % nestedIfCounter)
+    # toWrite.append("ENDIF%d\n" % nestedIfCounter)
+    # nestedIfCounter = nestedIfCounter + 1
+
+
 
 labelNum = 1
 def getLabels():
