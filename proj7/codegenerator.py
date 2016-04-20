@@ -590,6 +590,7 @@ def INFIX(t):
 def IF(tree):
     # for s in tree.children:
     #     print(" fi + " + s.label)
+    doElse = False
     label1, label2 = getLabels()
     type, varlist, reg = EXPRESSION(tree.children[1])
     if type != "BOOL":
@@ -600,13 +601,22 @@ def IF(tree):
     for child in tree.children[2].children[1].children: #IF program mips
         STATEMENT(child)
 
-    toWrite.append("b %s\n" % label2)  # if we finish IF program then jump past ELSE program
-    toWrite.append(label1 + ": ") #label1 before else program
+    try:
+        if tree.children[3].label == "ELSE":
+            doElse = True
+    except IndexError:
+        pass
 
-    for child in tree.children[4].children[1].children:  # ELSE program mips
-        STATEMENT(child)
+    if doElse:
+        toWrite.append("b %s\n" % label2)  # if we finish IF program then jump past ELSE program
 
-    toWrite.append(label2 + ": ") #place label to at the command following the else program
+    toWrite.append(label1 + ": nop\n") #label1 before else program
+
+    if doElse:
+        for child in tree.children[4].children[1].children:  # ELSE program mips
+            STATEMENT(child)
+
+        toWrite.append(label2 + ": nop\n") #place label to at the command following the else program
     
     # global nestedIfCounter #count nested ifs
     # conditionalTree = tree.children[1] #this holds the conditional of the if statement
@@ -649,7 +659,7 @@ def getLabels():
 
 def WHILE(tree):
     label1, label2 = getLabels()
-    toWrite.append(label1 + ": ")
+    toWrite.append(label1 + ": nop\n")
     type, varlist, reg = EXPRESSION(tree.children[1])
     if type != "BOOL":
         raise CompilerError("Condition of WHILE Statement is not a boolean: " + str(type))
@@ -660,7 +670,7 @@ def WHILE(tree):
         STATEMENT(child)
 
     toWrite.append("b %s\n"% label1) #jump back to evaluate expression
-    toWrite.append(label2 + ": ") #Set jump past point to the instruction after the WHILE
+    toWrite.append(label2 + ": nop\n") #Set jump past point to the instruction after the WHILE
 
     # for s in tree.children:
     #     print(" wh + " + s.label)
