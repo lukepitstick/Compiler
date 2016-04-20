@@ -588,9 +588,9 @@ def INFIX(t):
     return stack, varList
 
 def IF(tree):
-    type = EXPRESSION(tree.children[1])
+    type, varlist, reg = EXPRESSION(tree.children[1])
     if type != "BOOL":
-	raise CompilerError("Condition of If Statement is not a boolean: " + str(type))
+        raise CompilerError("Condition of If Statement is not a boolean: " + str(type))
     
     global nestedIfCounter #count nested ifs
     conditionalTree = tree.children[1] #this holds the conditional of the if statement
@@ -601,7 +601,7 @@ def IF(tree):
     try: # may or may not have a matching else
         elseTree = tree.children[3] # just 'else'
         elseBody = tree.children[4].children[1]
-        toWrite.append("bne $t0, $zero, ELSE%d\nCONSEQUENCE%d:\n" % (nestedIfCounter, nestedIfCounter))
+        toWrite.append("bne %s, $zero, ELSE%d\nCONSEQUENCE%d:\n" % (reg, nestedIfCounter, nestedIfCounter))
         for childX in statementListTree.children:
             STATEMENT(childX)
         toWrite.append("j ENDIF%d\n\nELSE%d:\n" % (nestedIfCounter, nestedIfCounter))
@@ -612,7 +612,7 @@ def IF(tree):
     except:
         pass
     if hasElse == 0:
-        toWrite.append("bne $t0, $zero, endif%d\nCONSEQUENCE%d:\n" % (nestedIfCounter, nestedIfCounter)) #assuming the result of the boolResult is stored in $t0
+        toWrite.append("bne %s, $zero, endif%d\nCONSEQUENCE%d:\n" % (reg, nestedIfCounter, nestedIfCounter)) #assuming the result of the boolResult is stored in $t0
         #pass programTree to Statement list
         for childX in statementListTree.children:
             STATEMENT(childX)
@@ -621,8 +621,8 @@ def IF(tree):
     nestedIfCounter = nestedIfCounter + 1
 
     for child in tree.children[2].children[1].children:
-		STATEMENT(child)
-    pass
+        STATEMENT(child)
+
 
 def WHILE(tree):
     # for s in tree.children:
