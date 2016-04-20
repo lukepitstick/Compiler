@@ -602,22 +602,22 @@ def WHILE(tree):
     #     raise CompilerError("Semantic Error: Condition of While statement is not a boolean: " + str(type))
     # print(str(tree.children[2]))
     for child in tree.children[2].children[1].children:
-        postOrderDFS(child)
+        STATEMENT(child)
     pass
 
-def postOrderDFS(tree): #Equivalent of STATEMENT
+def STATEMENT(tree): #Equivalent of STATEMENT
 
     if tree.isLeaf():
         pass
     if tree.label =="STATEMENT":
         # print(tree.children[0].label)
-        if tree.children[0].label is "READ":
+        if tree.children[0].label == "READ":
             arguments = []
             for child in tree.children[1].children:
                 if child.children[0].label is "ID":
                     arguments.append(child.children[0].val)
             READ_IDS(arguments)
-        elif tree.children[0].label is "WRITE":
+        elif tree.children[0].label == "WRITE":
             # arguments = []
             # for child in tree.children[1].children:
             #     if child.children[0].children[0].label is "INTLIT":
@@ -625,29 +625,29 @@ def postOrderDFS(tree): #Equivalent of STATEMENT
             #     elif child.children[0].children[0].children[0].label is "ID":
             #         arguments.append(child.children[0].children[0].children[0].val)
             WRITE_IDS(tree.children[1])
-        elif tree.children[0].label is "ASSIGNMENT":
+        elif tree.children[0].label == "ASSIGNMENT":
             ASSIGN(tree.children[0])
-        elif tree.children[0].label is "BOOLTYPE":
+        elif tree.children[0].label == "BOOLTYPE":
             DEFTYPE(tree)
-        elif tree.children[0].label is "STRINGTYPE":
+        elif tree.children[0].label == "STRINGTYPE":
             DEFTYPE(tree)
-        elif tree.children[0].label is "INTTYPE":
+        elif tree.children[0].label == "INTTYPE":
             DEFTYPE(tree)
-        elif tree.children[0].label is "IF":
+        elif tree.children[0].label == "IF":
             IF(tree)
-        elif tree.children[0].label is "WHILE":
+        elif tree.children[0].label == "WHILE":
             WHILE(tree)
         try:
-            if tree.children[2].label is "ASSIGNMENTSTR":
+            if tree.children[2].label == "ASSIGNMENTSTR":
                 ASSIGNSTR(tree)
         except:
             # print(sys.exc_info())
             pass
     # for child in tree.children:
     #     print("recurse " + child.label)
-    #     postOrderDFS(child)
+    #     STATEMENT(child)
     # try:
-    #     postOrderDFS(tree.children[0])
+    #     STATEMENT(tree.children[0])
 
 def ASSIGNSTR(tree):
     global dict1
@@ -737,7 +737,7 @@ def findGenerateMIPSCode(t, dict): #, fname):
     #initiate the actual traversal
     # print(t.children[1].label)
     for childd in t.children[1].children:
-        postOrderDFS(childd)
+        STATEMENT(childd)
     #gracefully exit
     toWrite.append("li   $v0, 10\nsyscall")
     #write the array to the file
