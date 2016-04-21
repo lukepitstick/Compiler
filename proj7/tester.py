@@ -2,61 +2,34 @@ from compiler import compiler
 import subprocess
 from traceback import print_exc
 
-test1 = range(1,4)
-tesr2 = range(
+projtestfilename = "proj%dtester/test.%d.%d.ml"
+testcases = {"proj5":[5,14,6,3,4],
+             "proj6":[11,5,6,5,1,12,1,7,9,1,6],
+             "proj7":range(1,7)}
+tokfile = 'tokens.txt'
+outfile = 'outputdump/out%d.asm'
+mars = 'java -jar ../mars.jar '
 
 if __name__ == "__main__":
     mode = "proj6"
     j = 0
-    if mode == "proj6"
-        print("Test 1")
-        for i in test1:
-            filename = "proj6tester/test.1.%d.ml" % i
-            ofile = 'outputdumper/out%d.asm' % j
-            try:
-                compiler(filename, 'tokens.txt', ofile)
-            except Exception:
-                print_exc()
-            oargs = 'java -jar ../mars.jar ' + ofile
-            subprocess.call(oargs)
-            j += 1
-            input()
-        
-        print("Test 2")
-        for i in test2:
-            filename = "proj6tester/test.2.%d.ml" % i
-            ofile = 'outputdumper/out%d.asm' % j
-            try:
-                compiler(filename, 'tokens.txt', ofile)
-            except Exception:
-                print_exc()
-            oargs = 'java -jar ../mars.jar ' + ofile
-            subprocess.call(oargs)
-            j += 1
-            input()
-
-        print("Test 3")
-        for i in test3:
-            filename = "proj6tester/test.3.%d.ml" % i
-            ofile = 'outputdumper/out%d.asm' % j
-            try:
-                compiler(filename, 'tokens.txt', ofile)
-            except Exception:
-                print_exc()
-            oargs = 'java -jar ../mars.jar ' + ofile
-            subprocess.call(oargs)
-            j += 1
-            input()
-
-        print("Test 4")
-        for i in test4:
-            filename = "proj6tester/test.4.%d.ml" % i
-            ofile = 'outputdumper/out%d.asm' % j
-            try:
-                compiler(filename, 'tokens.txt', ofile)
-            except Exception:
-                print_exc()
-            oargs = 'java -jar ../mars.jar ' + ofile
-            subprocess.call(oargs)
-            j += 1
-            input()
+    projid = 0
+    if mode == 'proj7':
+        pass
+    else:
+        projid = int(mode[-1])
+        for first in range(1, testcases[mode][0]):
+            for second in range(1, testcases[mode][first]):
+                print("Test %d %d" % (first, second))
+                args = projtestfilename % (projid, first, second)
+                output = outfile % j
+                passfail = False
+                try:
+                    passfail = compiler(args, tokfile, output)
+                except Exception:
+                    print_exc()
+                if passfail:
+                    execute = mars + output
+                    subprocess.call(execute)
+                    j += 1
+                input("Press <ENTER> to continue")
