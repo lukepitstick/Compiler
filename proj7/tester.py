@@ -4,7 +4,7 @@ from traceback import print_exc
 
 projtestfilename = "proj%dtester/test.%d.%d.ml"
 testcases = {"proj5":[5,14,6,3,4],
-             "proj6":[11,5,6,5,1,12,1,7,9,1,6],
+             "proj6":[11,5,6,5,6,12,1,7,9,1,6],
              "proj7":range(1,7)}
 tokfile = 'tokens.txt'
 outfile = 'outputdump/out%d.asm'
