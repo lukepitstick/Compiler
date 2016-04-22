@@ -4,11 +4,11 @@ True: .asciiz "True"
 
 .text
 main:
-li $s3, 1
+li $s7, 1
 la $s0, False
 la $s1, True
-movn $a0,$s1,$s3
-movz $a0,$s0,$s3
+movn $a0,$s1,$s7
+movz $a0,$s0,$s7
 li $v0, 4
 syscall
 li   $v0, 10

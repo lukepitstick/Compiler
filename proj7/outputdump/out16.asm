@@ -14,34 +14,34 @@ stringtmptmp8: .asciiz "The program ended successfully!@#%#!@^$@#^"
 
 .text
 main:
-li $t7, 1
+li $s6, 1
 la   $s0, b
-sw $t7, ($s0)
+sw $s6, ($s0)
 
 la $s0, b
-lw $s2, ($s0)
-blez $s2, L1
+lw $s1, ($s0)
+blez $s1, L1
 la $a0, stringtmptmp0
 li $v0, 4
 syscall
 
 la $s0, b
-lw $t7, ($s0)
-blez $t7, L3
+lw $s6, ($s0)
+blez $s6, L3
 la $a0, stringtmptmp1
 li $v0, 4
 syscall
 
 la $s0, b
-lw $t7, ($s0)
-blez $t7, L5
+lw $s6, ($s0)
+blez $s6, L5
 la $a0, stringtmptmp2
 li $v0, 4
 syscall
 
 la $s0, b
-lw $t7, ($s0)
-blez $t7, L7
+lw $s6, ($s0)
+blez $s6, L7
 la $a0, stringtmptmp3
 li $v0, 4
 syscall

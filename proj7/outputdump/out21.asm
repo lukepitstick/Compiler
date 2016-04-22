@@ -4,12 +4,12 @@ True: .asciiz "True"
 
 .text
 main:
-li $s7, 40
-li $t3, 20
-sub $s7, $s7, $t3
-li $t3, 2
-sub $s7, $s7, $t3
-add $a0, $s7,0
+li $s2, 40
+li $t0, 20
+sub $s2, $s2, $t0
+li $t0, 2
+sub $s2, $s2, $t0
+add $a0, $s2,0
 li $v0, 1
 syscall
 

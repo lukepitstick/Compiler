@@ -5,13 +5,13 @@ x: .word 4
 
 .text
 main:
-li $s3, 1
+li $s2, 1
 la   $s0, x
-sw $s3, ($s0)
+sw $s2, ($s0)
 
 la $s0, x
-lw $s3, ($s0)
-add $a0, $s3,0
+lw $s2, ($s0)
+add $a0, $s2,0
 li $v0, 1
 syscall
 

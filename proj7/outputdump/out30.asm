@@ -4,40 +4,40 @@ True: .asciiz "True"
 
 .text
 main:
-li $t3, 1
-li $t5, 1
-and $t3, $t3, $t5
+li $s7, 1
+li $t1, 1
+and $s7, $s7, $t1
 la $s0, False
 la $s1, True
-movn $a0,$s1,$t3
-movz $a0,$s0,$t3
+movn $a0,$s1,$s7
+movz $a0,$s0,$s7
 li $v0, 4
 syscall
-li $t3, 1
-li $t5, 0
-and $t3, $t3, $t5
+li $s7, 1
+li $t1, 0
+and $s7, $s7, $t1
 la $s0, False
 la $s1, True
-movn $a0,$s1,$t3
-movz $a0,$s0,$t3
+movn $a0,$s1,$s7
+movz $a0,$s0,$s7
 li $v0, 4
 syscall
-li $t3, 0
-li $t5, 1
-and $t3, $t3, $t5
+li $s7, 0
+li $t1, 1
+and $s7, $s7, $t1
 la $s0, False
 la $s1, True
-movn $a0,$s1,$t3
-movz $a0,$s0,$t3
+movn $a0,$s1,$s7
+movz $a0,$s0,$s7
 li $v0, 4
 syscall
-li $t3, 0
-li $t5, 0
-and $t3, $t3, $t5
+li $s7, 0
+li $t1, 0
+and $s7, $s7, $t1
 la $s0, False
 la $s1, True
-movn $a0,$s1,$t3
-movz $a0,$s0,$t3
+movn $a0,$s1,$s7
+movz $a0,$s0,$s7
 li $v0, 4
 syscall
 li   $v0, 10

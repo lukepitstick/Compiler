@@ -9,20 +9,20 @@ stringtmptmp2: .asciiz "PROGRAM DIDN'T FALL INTO PANIC!"
 
 .text
 main:
-li $s2, 4
+li $s4, 4
 la   $s0, a
-sw $s2, ($s0)
+sw $s4, ($s0)
 
-li $s2, 9
+li $s4, 9
 la   $s0, b
-sw $s2, ($s0)
+sw $s4, ($s0)
 
 la $s0, a
-lw $t8, ($s0)
+lw $s1, ($s0)
 la $s0, b
-lw $t0, ($s0)
-slt $t8, $t8, $t0
-blez $t8, L1
+lw $t3, ($s0)
+slt $s1, $s1, $t3
+blez $s1, L1
 la $a0, stringtmptmp0
 li $v0, 4
 syscall

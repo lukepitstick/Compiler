@@ -4,21 +4,21 @@ True: .asciiz "True"
 
 .text
 main:
-li $t9, 2
-li $t2, 3
-add $t9, $t9, $t2
-li $t2, 4
-mul $t9, $t9, $t2
-add $a0, $t9,0
+li $s6, 2
+li $s2, 3
+add $s6, $s6, $s2
+li $s2, 4
+mul $s6, $s6, $s2
+add $a0, $s6,0
 li $v0, 1
 syscall
 
-li $t9, 6
-li $t2, 2
-li $t7, 3
-mul $t2, $t2, $t7
-div $t9, $t9, $t2
-add $a0, $t9,0
+li $s6, 6
+li $s2, 2
+li $s7, 3
+mul $s2, $s2, $s7
+div $s6, $s6, $s2
+add $a0, $s6,0
 li $v0, 1
 syscall
 

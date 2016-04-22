@@ -4,10 +4,10 @@ True: .asciiz "True"
 
 .text
 main:
-li $s7, 6
-li $s5, 7
-mul $s7, $s7, $s5
-add $a0, $s7,0
+li $t6, 6
+li $t9, 7
+mul $t6, $t6, $t9
+add $a0, $t6,0
 li $v0, 1
 syscall
 
