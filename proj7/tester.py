@@ -1,3 +1,4 @@
+import os
 from compiler import compiler
 import subprocess
 from traceback import print_exc
@@ -25,7 +26,9 @@ if __name__ == "__main__":
                 output = outfile % j
                 passfail = False
                 try:
-                    passfail = compiler(args, tokfile, output)
+                    argos = None
+                    if 
+                    subprocess.call()
                 except Exception:
                     print_exc()
                 if passfail:

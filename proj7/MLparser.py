@@ -9,6 +9,7 @@ import argparse
 from lexer_sol import lexer
 from tree import tree
 from traceback import print_exc
+from codegenerator import CompilerError
 
 debug = False
 recursion_level = 0
@@ -134,7 +135,7 @@ def STATEMENT(current, G):
         t.append(t0)
         thn = current
         if thn.name != "THEN":
-            raise SyntaxError("must be followed by then")
+            raise ParserError("must be followed by then")
         current = next(G)
         t1, current = PROGRAM(current, G)
         t.append(t1)
@@ -164,7 +165,7 @@ def STATEMENT(current, G):
         varName1 = current.pattern
         try:
             isthereatype = str(dict[current.pattern][1])
-            raise SyntaxError("Semantic error: type declared twice on a variable. "\
+            raise ParserError("Semantic error: type declared twice on a variable. "\
                               + current.line)
         except KeyError:
             pass
@@ -177,7 +178,7 @@ def STATEMENT(current, G):
         varName1 = current.pattern
         try:
             isthereatype = str(dict[current.pattern][1])
-            raise SyntaxError("Semantic error: type declared twice on a variable. "\
+            raise CompilerError("Semantic error: type declared twice on a variable. "\
                               + current.line)
         except KeyError:
             pass
@@ -190,7 +191,7 @@ def STATEMENT(current, G):
         varName1 = current.pattern
         try:
             isthereatype = str(dict[current.pattern][1])
-            raise SyntaxError("Semantic error: type declared twice on a variable. "\
+            raise CompilerError("Semantic error: type declared twice on a variable. "\
                               + current.line)
         except KeyError:
             pass

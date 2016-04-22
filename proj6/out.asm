@@ -6,21 +6,21 @@ s: .word 4
 
 .text
 main:
-li $s1, 0
+li $t8, 0
 la   $s0, s
-sw $s1, ($s0)
+sw $t8, ($s0)
 
 la $s0, s
-lw $s1, ($s0)
+lw $t8, ($s0)
 la   $s0, b
-sw $s1, ($s0)
+sw $t8, ($s0)
 
 la $s0, b
-lw $s1, ($s0)
+lw $t8, ($s0)
 la $s0, False
 la $s1, True
-movn $a0,$s1,$s1
-movz $a0,$s0,$s1
+movn $a0,$s1,$t8
+movz $a0,$s0,$t8
 li $v0, 4
 syscall
 li   $v0, 10

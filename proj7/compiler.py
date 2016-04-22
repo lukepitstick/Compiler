@@ -20,13 +20,20 @@ def compiler(source, tokens, output):
     MIPScodes = []
     try:
         MIPScodes = codegenerator.findGenerateMIPSCode(mlp[0], mlp[1])
+    except MLparser.ParserError:
+        traceback.print_exc()
+        return False
+    except codegenerator.CompilerError:
+        traceback.print_exc()
+        return False
+
+    try:
+        outFile = open(output, 'w')
+        for line in MIPScodes:
+            outFile.write(line)
     except Exception:
         traceback.print_exc()
         return False
-    
-    outFile = open(output, 'w')
-    for line in MIPScodes:
-        outFile.write(line)
     return True
 
 # This method should be deprecated before submission
