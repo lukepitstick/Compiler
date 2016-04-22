@@ -9,7 +9,8 @@ testcases = {"proj5":[5,14,6,3,4],
              "proj7":range(1,7)}
 tokfile = 'tokens.txt'
 outfile = 'outputdump/out%d.asm'
-mars = 'java -jar ../mars.jar '
+mars = ['java', '-jar', '../mars.jar']
+pycall = '/usr/bin/python3'
 
 if __name__ == "__main__":
     mode = "proj6"
@@ -24,15 +25,13 @@ if __name__ == "__main__":
                 print("Test %d %d" % (first, second))
                 args = projtestfilename % (projid, first, second)
                 output = outfile % j
-                passfail = False
                 try:
-                    argos = None
-                    if 
-                    subprocess.call()
+                    arglst = [pycall, 'compiler.py', '-t', tokfile, args, output]
+                    subprocess.call(arglst)
                 except Exception:
                     print_exc()
-                if passfail:
-                    execute = mars + output
-                    subprocess.call(execute)
-                    j += 1
+                execute = list(mars)
+                execute.append(output)
+                subprocess.call(execute)
+                j += 1
                 input("Press <ENTER> to continue")
