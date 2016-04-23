@@ -1,3 +1,0 @@
-begin
-string x;
-end

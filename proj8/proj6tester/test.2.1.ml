@@ -1,3 +1,0 @@
-begin
-bool x;
-end
