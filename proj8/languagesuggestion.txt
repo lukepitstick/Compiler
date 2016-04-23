@@ -1,0 +1,69 @@
+Suggestion 1:
+
+function int foo(int x) begin
+  int y;
+  y := x + 3;
+  return y;
+end
+
+function bool bar(bool b) begin
+  bool c;
+  c := b and c;
+  return c;
+end
+
+begin
+  int a;
+  bool b;
+  a := foo(a);
+  b := bar(b);
+  write(a);
+  write(b);
+end
+
+Suggestion 2:
+
+begin
+  function int foo(int x) begin
+    int y;
+    y := x + 3;
+    return y;
+  end
+
+  function bool bar(bool b) begin
+    bool c;
+    c := b and c;
+    return c;
+  end
+
+  int a;
+  bool b;
+  a := foo(a);
+  b := bar(b);
+  write(a);
+  write(b);
+end
+
+Suggestion 3:
+
+begin
+  int a;
+  bool b;
+
+  function int foo(int x) begin
+    int y;
+    y := x + 3;
+    return y;
+  end
+
+  function bool bar(bool b) begin
+    bool c;
+    c := b and c;
+    return c;
+  end
+
+  a := foo(a);
+  b := bar(b);
+  write(a);
+  write(b);
+end

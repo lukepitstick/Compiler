@@ -1,0 +1,2 @@
+Suggestion 1: Using jump, branch instructions so that when we hit the function token write those instructions.
+Suggestion 2: Make all functions in-line so that everything works like they are in the main function.
