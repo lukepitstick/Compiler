@@ -13,10 +13,10 @@ la $t0, i
 sw $v0, 0($t0)
 
 la $s0, i
-lw $t3, ($s0)
-li $s4, 15
-slt $t3, $t3, $s4
-blez $t3, L1
+lw $t4, ($s0)
+li $t7, 15
+slt $t4, $t4, $t7
+blez $t4, L1
 la $a0, stringtmptmp0
 li $v0, 4
 syscall

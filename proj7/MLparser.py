@@ -109,7 +109,7 @@ def STATEMENT_LIST(current, G):
                 return t, current
             t.append(t2)
         else:
-            raise ParserError("Syntax Error: no semicolon at line: " + current.line)
+            raise ParserError("Syntax Error: no semicolon at line: " + current.line + " at " + str(current.line_num))
     return t, current
 
 @add_debug

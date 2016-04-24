@@ -7,13 +7,13 @@ stringtmptmp1: .asciiz "Done\n"
 
 .text
 main:
-li $s5, 1
+li $t2, 1
 la   $s0, x
-sw $s5, ($s0)
+sw $t2, ($s0)
 
 la $s0, x
-lw $t7, ($s0)
-blez $t7, L1
+lw $t1, ($s0)
+blez $t1, L1
 la $a0, stringtmptmp0
 li $v0, 4
 syscall

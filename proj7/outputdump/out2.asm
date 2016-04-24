@@ -7,13 +7,13 @@ stringtmptmp1: .asciiz "No\n"
 
 .text
 main:
-li $s7, 1
+li $s5, 1
 la   $s0, x
-sw $s7, ($s0)
+sw $s5, ($s0)
 
 la $s0, x
-lw $t0, ($s0)
-blez $t0, L1
+lw $t8, ($s0)
+blez $t8, L1
 la $a0, stringtmptmp0
 li $v0, 4
 syscall

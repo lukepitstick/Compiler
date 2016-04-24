@@ -1,11 +1,11 @@
 begin
 if True then
 begin
-  if not False then
+  if True then
   begin
     if True or False then
     begin
-      if not (False and False) then
+      if True or True then
       begin
         if True or False and False then
         begin

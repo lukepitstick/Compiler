@@ -13,19 +13,19 @@ la $t0, n
 sw $v0, 0($t0)
 
 la $s0, n
-lw $t5, ($s0)
+lw $t4, ($s0)
 la   $s0, i
-sw $t5, ($s0)
+sw $t4, ($s0)
 
 L1: nop
 la $s0, i
-lw $s4, ($s0)
-li $t4, 0
-sge $s4, $s4, $t4
-blez $s4, L2
+lw $t8, ($s0)
+li $s4, 0
+sge $t8, $t8, $s4
+blez $t8, L2
 la $s0, i
-lw $t5, ($s0)
-add $a0, $t5,0
+lw $t4, ($s0)
+add $a0, $t4,0
 li $v0, 1
 syscall
 
@@ -34,11 +34,11 @@ li $v0, 4
 syscall
 
 la $s0, i
-lw $t5, ($s0)
-li $s4, 2
-sub $t5, $t5, $s4
+lw $t4, ($s0)
+li $t8, 2
+sub $t4, $t4, $t8
 la   $s0, i
-sw $t5, ($s0)
+sw $t4, ($s0)
 
 b L1
 L2: nop
