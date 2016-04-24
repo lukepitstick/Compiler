@@ -1,0 +1,12 @@
+foo1: 100
+foo1: 200
+foo1: 10
+foo1: 20
+main: 10
+foo1: 10
+foo1: 20
+main: 10
+foo2: 10	10	20
+main: 10	10
+foo3: A Lannister always pays his debts.
+main: A Lannister always pays his debts.
