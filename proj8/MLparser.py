@@ -90,7 +90,7 @@ def PROGRAM(current, G):
 def STATEMENT_LIST(current, G):
     t = tree("STATEMENT_LIST")
     skipSemi2 = False
-    t1, current, skipSemi1 = STATEMENT(current, G)
+    t1, current, skipSemi2 = STATEMENT(current, G)
     t.append(t1)
     while True:
         if (current.name == 'SEMICOLON') | skipSemi2:
@@ -109,7 +109,7 @@ def STATEMENT_LIST(current, G):
                 return t, current
             t.append(t2)
         else:
-            raise ParserError("Syntax Error: no semicolon at line: " + current.line)
+            raise ParserError("Syntax Error: no semicolon at line: " + current.line + " at " + str(current.line_num))
     return t, current
 
 @add_debug
