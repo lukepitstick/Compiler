@@ -5,9 +5,9 @@ begin
   begin
     if True or False then
     begin
-      if True or True then
+      if False or True then
       begin
-        if True or False and False then
+        if Ture and True then
         begin
 	   write("Here\n");
 	end
