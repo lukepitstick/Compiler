@@ -1,22 +1,19 @@
 .data
 False: .asciiz "False"
 True: .asciiz "True"
-i: .word 4
+x: .word 4
 stringtmptmp0: .asciiz "Yes\n"
 stringtmptmp1: .asciiz "No\n"
 
 .text
 main:
-li $v0, 5
-syscall
-la $t0, i
-sw $v0, 0($t0)
+li $s7, 0
+la   $s0, x
+sw $s7, ($s0)
 
-la $s0, i
-lw $t3, ($s0)
-li $s4, 15
-slt $t3, $t3, $s4
-blez $t3, L1
+la $s0, x
+lw $s3, ($s0)
+blez $s3, L1
 la $a0, stringtmptmp0
 li $v0, 4
 syscall

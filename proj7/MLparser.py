@@ -145,7 +145,7 @@ def STATEMENT(current, G):
             t2, current = PROGRAM(current, G)
             t.append(t2)
             if current.name == "END": #else begin {code} end end ... handles if two ends follow each other
-                return t, current
+                return t, current, skipSemi
         # print("lalal" + current.name)
         # print(str(t))
         skipSemi = True
