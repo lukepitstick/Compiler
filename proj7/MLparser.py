@@ -90,7 +90,7 @@ def PROGRAM(current, G):
 def STATEMENT_LIST(current, G):
     t = tree("STATEMENT_LIST")
     skipSemi2 = False
-    t1, current, skipSemi1 = STATEMENT(current, G)
+    t1, current, skipSemi2 = STATEMENT(current, G)
     t.append(t1)
     while True:
         if (current.name == 'SEMICOLON') | skipSemi2:
