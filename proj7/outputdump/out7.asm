@@ -13,21 +13,21 @@ la $t0, i
 sw $v0, 0($t0)
 
 la $s0, i
-lw $s7, ($s0)
-li $t3, 5
-sge $s7, $s7, $t3
-blez $s7, L1
+lw $s6, ($s0)
+li $t0, 5
+sge $s6, $s6, $t0
+blez $s6, L1
 la $s0, i
-lw $s7, ($s0)
+lw $s6, ($s0)
 la $s0, i
-lw $t3, ($s0)
-mul $s7, $s7, $t3
+lw $t0, ($s0)
+mul $s6, $s6, $t0
 la   $s0, i
-sw $s7, ($s0)
+sw $s6, ($s0)
 
 la $s0, i
-lw $s7, ($s0)
-add $a0, $s7,0
+lw $s6, ($s0)
+add $a0, $s6,0
 li $v0, 1
 syscall
 

@@ -7,9 +7,9 @@ stringtmptmp1: .asciiz "Done\n"
 
 .text
 main:
-li $t2, 1
+li $s1, 1
 la   $s0, x
-sw $t2, ($s0)
+sw $s1, ($s0)
 
 la $s0, x
 lw $t1, ($s0)
