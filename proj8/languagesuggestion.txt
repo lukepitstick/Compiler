@@ -1,5 +1,7 @@
 Suggestion 1:
 
+global int x;
+
 function int foo(int x) begin
   int y;
   y := x + 3;

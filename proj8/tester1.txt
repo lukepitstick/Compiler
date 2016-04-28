@@ -1,0 +1,22 @@
+global int x;
+
+function int foo(int b;) begin
+  int y;
+  y := x + 3;
+  return y;
+end
+
+function bool bar(bool b) begin
+  bool c;
+  c := b and c;
+  return c;
+end
+
+begin
+  int a;
+  bool b;
+  a := foo(a);
+  b := bar(b);
+  write(a);
+  write(b);
+end

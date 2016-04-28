@@ -39,6 +39,7 @@ class ParserError(Exception):
 dict = {None:None} #instantiate symbol table
 del dict[None]
 strDict = {}
+funcDict = {}
 counter = 0
 typeOfVar = ""
 valOfVar = ""
@@ -64,13 +65,57 @@ def parser(source_file, token_file):
     t = None # this should be changed to the tree
 
     try:
-        t, current = PROGRAM(next(G), G)
+        t, current = CLASS(next(G), G)
     except StopIteration:
         raise ParserError("Syntax Error: File finished before end")
 
     if current.name != '$':
         raise ParserError("Syntax Error: File did not end after 'end'")
     return t, dict #return tree and symbol table
+
+@add_debug
+def CLASS(current, G):
+    t = tree("CLASS")
+    if current.name == "GLOBAL":
+        t1, current = GLOBAL(current, G)
+        t.append(t1)
+    if current.name == "FUNCTION":
+        t2, current = FUNCTIONLST(current, G)
+        t.append(t2)
+    return t, current
+
+@add_debug
+def GLOBAL(current, G):
+    while(True):
+        t = tree("GLOBAL")
+        holder = False
+        t1, current, holder = STATEMENT(next(G), G)
+        t.append(t1)
+        if current.name != "SEMICOLON":
+            raise ParserError("must end with semi-colon")
+        current = next(G)
+        if current.name != "GLOBAL":
+            return t, current
+    return t, current
+
+@add_debug
+def FUNCTIONLST(current, G):
+    while(True):
+        t = tree("FUNCTION")
+        type = next(G)
+        name = next(G)
+        funcDict[name.pattern] = type.name
+        current = next(G)
+        if current.name == "LPAREN":
+            holder = False
+            current = next(G)
+            if current.name == "RPAREN":
+                break;
+            else:
+                print(current)
+                t1, current = STATEMENT_LIST(current, G)
+                if current.name != "RPAREN":
+                    raise ParserError("no matching paren")
 
 @add_debug	
 def PROGRAM(current, G):
@@ -496,7 +541,7 @@ def IDENT(current, G,):
 
 if __name__ == "__main__":
     try:
-        fname = 'proj7tester/example1.txt'
+        fname = 'tester1.txt'
         print("Parsing " + fname)
         try:
             sampt, tokk = parser(fname, 'tokens.txt')
