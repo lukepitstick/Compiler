@@ -82,6 +82,9 @@ def CLASS(current, G):
     if current.name == "FUNCTION":
         t2, current = FUNCTIONLST(current, G)
         t.append(t2)
+    if current.name == "BEGIN":
+        t3, current = PROGRAM(current, G)
+        t.append(t3)
     return t, current
 
 @add_debug
@@ -101,6 +104,8 @@ def GLOBAL(current, G):
 @add_debug
 def FUNCTIONLST(current, G):
     while(True):
+        if current.name != "FUNCTION":
+            break
         t = tree("FUNCTION")
         type = next(G)
         name = next(G)
@@ -109,13 +114,14 @@ def FUNCTIONLST(current, G):
         if current.name == "LPAREN":
             holder = False
             current = next(G)
-            if current.name == "RPAREN":
-                break;
-            else:
-                print(current)
-                t1, current = STATEMENT_LIST(current, G)
-                if current.name != "RPAREN":
-                    raise ParserError("no matching paren")
+            while(True):
+                if current.name == "RPAREN":
+                    break
+                t, current, holder = STATEMENT(current, G)
+        current = next(G)
+        tt, current = PROGRAM(current, G)
+        t.append(tt)
+    return t, current
 
 @add_debug	
 def PROGRAM(current, G):
@@ -203,6 +209,11 @@ def STATEMENT(current, G):
         # print(t2.label)
         t.append(t2)
         skipSemi = True
+    elif current.name == "RETURN":
+        t.append(tree("RETURN"))
+        current = next(G)
+        t1, current = IDENT(current, G)
+        t.append(t1)
     elif current.name == "INTTYPE":
         typeOfVar = "INT"
         t.append(tree("INTTYPE"))
@@ -475,6 +486,15 @@ def FACT3(current, G):
 def PRIMARY(current, G):
     global counter
     t = tree('PRIMARY')
+    if current.pattern in funcDict.keys():
+        tmp = tree("FUNCCALL")
+        paren = next(G)
+        t1, current = ID_LIST(next(G), G)
+        if current.name != "RPAREN":
+            raise ParserError("not matching parens")
+        tmp.append(t1)
+        t.append(tmp)
+        return t, next(G)
     if current.name == 'INTLIT':
         tmp = tree('INTLIT')
         tmp.val = current.pattern

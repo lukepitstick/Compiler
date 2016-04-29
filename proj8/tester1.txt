@@ -1,12 +1,12 @@
 global int x;
 
-function int foo(int b;) begin
+function int foo(int b) begin
   int y;
   y := x + 3;
   return y;
 end
 
-function bool bar(bool b) begin
+function bool bar(bool d) begin
   bool c;
   c := b and c;
   return c;
@@ -14,9 +14,9 @@ end
 
 begin
   int a;
-  bool b;
+  bool q;
   a := foo(a);
-  b := bar(b);
+  q := bar(q);
   write(a);
-  write(b);
+  write(q);
 end
