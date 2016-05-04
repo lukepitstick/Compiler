@@ -1,6 +1,7 @@
 function void foo()
 begin
-    int i := 0;
+    int i;
+	i := 0;
     i := i + 1;
     write("In foo: ",i,".\n");
 end

@@ -1,4 +1,4 @@
-function int foo1(int* x,int* y)
+function int foo1(int ref x,int ref y)
 begin
     ref x := ref x + 1;
     write("foo1: ",ref x," ",ref y,"\n");
@@ -7,11 +7,12 @@ begin
     return ref x + ref y;
 end
 
-function int foo1(int* x)
+function int foo1(int ref x)
 begin
     int b;
     read(b);
-    int a := ref x;
+    int a;
+	a := ref x;
     a := a + b;
     write("foo2: ",ref x," ",a,"\n");
 end
@@ -19,7 +20,8 @@ end
 begin
     int a;
     read(a);
-    int b = foo1(a,a);
+    int b;
+	b := foo1(a,a);
     write("main; ",a," ",b,"\n");
     
     int c;

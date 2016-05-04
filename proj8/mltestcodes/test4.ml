@@ -15,7 +15,8 @@ end
 
 function void foo3()
 begin
-    int x := 300;
+    int x;
+	x := 300;
     write("foo3: ",x,"\n");
 end
 

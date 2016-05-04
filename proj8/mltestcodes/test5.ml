@@ -18,11 +18,13 @@ end
 begin
     foo1(100);
     
-    int a := 10;
+    int a;
+	a := 10;
     foo1(a);
     write("main: ",a,"\n");
     
-    int x := 10;
+    int x;
+	x := 10;
     foo1(x);
     write("main: ",x,"\n");
     

@@ -1,6 +1,7 @@
 function void foo()
 begin
-    int i := 0;
+    int i;
+    i := 0;
     while(i < 5)
     begin
         if(i % 2 == 0)
