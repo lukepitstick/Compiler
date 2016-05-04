@@ -82,6 +82,7 @@ def CLASS(current, G):
     if current.name == "FUNCTION":
         t2, current = FUNCTIONLST(current, G)
         t.append(t2)
+    print("=========")
     if current.name == "BEGIN":
         t3, current = PROGRAM(current, G)
         t.append(t3)
@@ -103,12 +104,14 @@ def GLOBAL(current, G):
 
 @add_debug
 def FUNCTIONLST(current, G):
+    t = tree("Function")
     while(True):
         if current.name != "FUNCTION":
             break
-        t = tree("FUNCTION")
         type = next(G)
+        t.append(tree(type.name))
         name = next(G)
+        t.append(tree(name.name))
         funcDict[name.pattern] = type.name
         current = next(G)
         if current.name == "LPAREN":
@@ -117,10 +120,12 @@ def FUNCTIONLST(current, G):
             while(True):
                 if current.name == "RPAREN":
                     break
-                t, current, holder = STATEMENT(current, G)
+                t1, current, holder = STATEMENT(current, G)
+                t.append(t1)
         current = next(G)
         tt, current = PROGRAM(current, G)
         t.append(tt)
+    print(str(t))
     return t, current
 
 @add_debug	
