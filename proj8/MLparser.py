@@ -335,7 +335,8 @@ def WRITE(current, G):
         raise ParserError("Syntax Error: Expected lparen is missing: " +\
                           current.line)
     # t.append(tree("LPAREN"))
-    t, current = EXPR_LIST(next(G), G)
+    current = next(G)
+    t, current = EXPR_LIST(current, G)
     if current.name != "RPAREN":
         raise ParserError("Syntax Error: Expected rparen is missing: " + \
                           str(current.line_num) + current.pattern)
@@ -517,11 +518,16 @@ def PRIMARY(current, G):
     if current.pattern in funcDict.keys():
         tmp = tree("FUNCCALL")
         paren = next(G)
-        t1, current = ID_LIST(next(G), G)
-        if current.name != "RPAREN":
-            raise ParserError("not matching parens")
-        tmp.append(t1)
-        t.append(tmp)
+        current = next(G)
+        print(current)
+        if current.name == "RPAREN":
+            pass
+        else:
+            t1, current = ID_LIST(next(G), G)
+            if current.name != "RPAREN":
+                raise ParserError("not matching parens")
+                tmp.append(t1)
+            t.append(tmp)
         return t, next(G)
     if current.name == 'INTLIT':
         tmp = tree('INTLIT')
