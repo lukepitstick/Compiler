@@ -22,12 +22,12 @@ end
 begin
     x = 0;
     write("main: ",x,"\n");
-    ~foo1();
+    foo1();
     write("main: ",x,"\n");
-    ~foo1();
+    foo1();
     write("main: ",x,"\n");
-    ~foo2();
+    foo2();
     write("main: ",x,"\n");
-    ~foo3();
+    foo3();
     write("main: ",x,"\n");
 end

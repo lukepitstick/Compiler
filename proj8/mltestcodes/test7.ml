@@ -13,7 +13,7 @@ begin
     read(z);
     ref x = ref x + z;
     write("foo2: ",ref x,"\n");
-    ~foo3(x);
+    foo3(x);
     write("foo3: ",ref x,"\n");
 end
 
@@ -30,9 +30,9 @@ begin
     int x;
     read(x);
     write("main: ",x,"\n");
-    ~foo1(x);
+    foo1(x);
     write("main: ",x,"\n");
     
-    ~foo2(x);
+    foo2(x);
     write("main: ",x,"\n");
 end

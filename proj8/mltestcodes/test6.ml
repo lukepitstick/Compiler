@@ -7,7 +7,7 @@ end
 function void foo2()
 begin
     int y := 2;
-    ~foo1();
+    foo1();
     write("foo2: ",y,"\n");
 end
 
@@ -20,14 +20,14 @@ end
 function void foo4()
 begin
     int x := 2;
-    ~foo3();
+    foo3();
     write("foo4: ",x,"\n");
 end
 
 begin
     int x := 1;
-    ~foo2();
+    foo2();
     write("main: ",x,"\n");
-    ~foo4();
+    foo4();
     write("main: ",x,"\n");
 end

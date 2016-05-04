@@ -14,8 +14,8 @@ end
 
 
 begin
-    ~foo();
+    foo();
     write("Done\n");
-    ~foo();
+    foo();
     write("Done\n");
 end
