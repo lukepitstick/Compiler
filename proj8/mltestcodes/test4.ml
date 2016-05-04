@@ -1,5 +1,5 @@
 
-int x;
+global int x;
 
 function void foo1()
 begin
