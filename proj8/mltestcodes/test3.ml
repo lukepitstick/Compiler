@@ -13,7 +13,7 @@ function string foo3()
 begin
     int x;
     read(x);
-    if(x >= 10)
+    if x >= 10 then
     begin
         return "Yes\n";
     end
@@ -33,7 +33,7 @@ begin
   write(5*foo1()+foo1(),"\n");
   write(foo2());
   write(foo3());
-  if (foo4())
+  if foo4() then
   begin
     write("Yes\n");
   end

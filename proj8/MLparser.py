@@ -230,8 +230,18 @@ def STATEMENT(current, G):
     elif current.name == "RETURN":
         t.append(tree("RETURN"))
         current = next(G)
-        t1, current = IDENT(current, G)
-        t.append(t1)
+        if current.name == "INTLIT":
+            t1, current = PRIMARY(current, G)
+            t.append(t1)
+        elif current.name == "STRING":
+            t1, current = PRIMARY(current, G)
+            t.append(t1)
+        elif current.name == "BOOLLIT":
+            t1, current = PRIMARY(current, G)
+            t.append(t1)
+        else:
+            t1, current = IDENT(current, G)
+            t.append(t1)
     elif current.name == "INTTYPE":
         typeOfVar = "INT"
         t.append(tree("INTTYPE"))
@@ -579,7 +589,7 @@ def IDENT(current, G,):
 
 if __name__ == "__main__":
     try:
-        fname = 'tester1.txt'
+        fname = 'mltestcodes/test3.ml'
         print("Parsing " + fname)
         try:
             sampt, tokk = parser(fname, 'tokens.txt')
