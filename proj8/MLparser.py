@@ -82,7 +82,6 @@ def CLASS(current, G):
     if current.name == "FUNCTION":
         t2, current = FUNCTIONLST(current, G)
         t.append(t2)
-    print("=========")
     if current.name == "BEGIN":
         t3, current = PROGRAM(current, G)
         t.append(t3)
@@ -125,7 +124,6 @@ def FUNCTIONLST(current, G):
         current = next(G)
         tt, current = PROGRAM(current, G)
         t.append(tt)
-    print(str(t))
     return t, current
 
 @add_debug	
@@ -205,6 +203,21 @@ def STATEMENT(current, G):
         # print("lalal" + current.name)
         # print(str(t))
         skipSemi = True
+    elif current.pattern in funcDict.keys():
+        tmp = tree("FUNCCALL")
+        paren = next(G)
+        current = next(G)
+        if current.name == "RPAREN":
+            print("no params")
+            pass
+        else:
+            print("here1")
+            t1, current = ID_LIST(nxt, G)
+            if current.name != "RPAREN":
+                raise ParserError("not matching parens")
+            tmp.append(t1)
+        current = next(G)
+        t.append(tmp)
     elif current.name == "WHILE":
         t.append(tree("WHILE"))
         current = next(G)

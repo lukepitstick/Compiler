@@ -1,22 +1,22 @@
-global int x;
-
-function int foo(int b) begin
-  int y;
-  y := x + 3;
-  return y;
+function void foo()
+begin
+    int i;
+    i := 0;
+    i := i + 1;
+    write("In foo: ",i,".\n");
 end
 
-function bool bar(bool d) begin
-  bool c;
-  c := b and c;
-  return c;
+function void foo2()
+begin
+    write("In foo2.\n");
 end
 
 begin
-  int a;
-  bool q;
-  a := foo(a);
-  q := bar(q);
-  write(a);
-  write(q);
+    write("In main.\n");
+    foo();
+    write("Returned to main.\n");
+    foo();
+    write("Returned to man. (Again.)\n");
+    foo2();
+    write("Returned to main.\n");
 end
