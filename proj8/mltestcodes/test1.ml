@@ -1,6 +1,7 @@
 function void foo()
 begin
-    int i := 0;
+    int i;
+	i := 0;
     i := i + 1;
     write("In foo: ",i,".\n");
 end
@@ -12,11 +13,11 @@ end
 
 begin
     write("In main.\n");
-    ~foo();
+    foo();
     write("Returned to main.\n");
-    ~foo();
+    foo();
     write("Returned to man. (Again.)\n");
-    ~foo2();
+    foo2();
     write("Returned to main.\n");
 end
 

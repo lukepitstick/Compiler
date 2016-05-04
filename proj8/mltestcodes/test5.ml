@@ -16,20 +16,22 @@ begin
 end    
    
 begin
-    ~foo1(100);
+    foo1(100);
     
-    int a := 10;
-    ~foo1(a);
+    int a;
+	a := 10;
+    foo1(a);
     write("main: ",a,"\n");
     
-    int x := 10;
-    ~foo1(x);
+    int x;
+	x := 10;
+    foo1(x);
     write("main: ",x,"\n");
     
-    ~foo2(a,x);
+    foo2(a,x);
     write("main: ",a,"\t",x,"\n");
     
     string s = "A Lannister always pays his debts.";
-    ~foo3(s);
+    foo3(s);
     write("main: ",s,"\n");
 end

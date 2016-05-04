@@ -1,4 +1,4 @@
-function void foo3(int* x)
+function void foo3(int ref x)
 begin
     int y;
     write("foo3: ",ref x,"\n");
@@ -7,17 +7,17 @@ begin
     write("foo3: ",ref x,"\n");
 end
 
-function void foo2(int* x)
+function void foo2(int ref x)
 begin
     int z;
     read(z);
-    ref x = ref x + z;
+    ref x := ref x + z;
     write("foo2: ",ref x,"\n");
-    ~foo3(x);
+    foo3(ref x);
     write("foo3: ",ref x,"\n");
 end
 
-function void foo1(int* x)
+function void foo1(int ref x)
 begin
     int t;
     read(t);
@@ -27,12 +27,12 @@ begin
 end
 
 begin
-    int x;
-    read(x);
-    write("main: ",x,"\n");
-    ~foo1(x);
-    write("main: ",x,"\n");
+    int ref x;
+    read(ref x);
+    write("main: ",ref x,"\n");
+    foo1(ref x);
+    write("main: ",ref x,"\n");
     
-    ~foo2(x);
-    write("main: ",x,"\n");
+    foo2(ref x);
+    write("main: ",ref x,"\n");
 end
