@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="5d1d4365-0ad9-4d3c-89bb-7c6a55d9b0e8" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/proj8/MLparser.py" afterPath="$PROJECT_DIR$/proj8/MLparser.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/proj8/mltestcodes/test7.ml" afterPath="$PROJECT_DIR$/proj8/mltestcodes/test7.ml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/proj8/mltestcodes/test8.ml" afterPath="$PROJECT_DIR$/proj8/mltestcodes/test8.ml" />
     </list>
     <ignored path="compilers_group7.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -17,7 +17,7 @@
   </component>
   <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/compilers_group7$MLparser.coverage" NAME="MLparser Coverage Results" MODIFIED="1462415798296" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/proj8" />
+    <SUITE FILE_PATH="coverage/compilers_group7$MLparser.coverage" NAME="MLparser Coverage Results" MODIFIED="1462416859102" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/proj8" />
   </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
@@ -41,20 +41,20 @@
       <file leaf-file-name="MLparser.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/proj8/MLparser.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="258">
-              <caret line="621" column="34" selection-start-line="621" selection-start-column="34" selection-end-line="621" selection-end-column="34" />
+            <state relative-caret-position="148">
+              <caret line="22" column="21" selection-start-line="22" selection-start-column="21" selection-end-line="22" selection-end-column="21" />
               <folding>
-                <marker date="1462415797462" expanded="false" signature="92:240" placeholder="import ..." />
+                <marker date="1462416845680" expanded="false" signature="92:240" placeholder="import ..." />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="test7.ml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/proj8/mltestcodes/test7.ml">
+      <file leaf-file-name="test8.ml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/proj8/mltestcodes/test8.ml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="335">
-              <caret line="24" column="11" selection-start-line="24" selection-start-column="11" selection-end-line="24" selection-end-column="11" />
+            <state relative-caret-position="198">
+              <caret line="9" column="17" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="17" />
               <folding />
             </state>
           </provider>
@@ -88,6 +88,7 @@
         <option value="$PROJECT_DIR$/proj8/mltestcodes/test5.ml" />
         <option value="$PROJECT_DIR$/proj8/mltestcodes/test7.ml" />
         <option value="$PROJECT_DIR$/proj8/MLparser.py" />
+        <option value="$PROJECT_DIR$/proj8/mltestcodes/test8.ml" />
       </list>
     </option>
   </component>
@@ -524,7 +525,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <marker date="1462415797462" expanded="false" signature="92:240" placeholder="import ..." />
+            <marker date="1462416845680" expanded="false" signature="92:240" placeholder="import ..." />
           </folding>
         </state>
       </provider>
@@ -851,14 +852,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/proj8/mltestcodes/test8.ml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/proj8/tokens.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="154">
@@ -869,18 +862,26 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/proj8/mltestcodes/test7.ml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="335">
+        <state relative-caret-position="71">
           <caret line="24" column="11" selection-start-line="24" selection-start-column="11" selection-end-line="24" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/proj8/mltestcodes/test8.ml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="9" column="17" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="17" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/proj8/MLparser.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="258">
-          <caret line="621" column="34" selection-start-line="621" selection-start-column="34" selection-end-line="621" selection-end-column="34" />
+        <state relative-caret-position="148">
+          <caret line="22" column="21" selection-start-line="22" selection-start-column="21" selection-end-line="22" selection-end-column="21" />
           <folding>
-            <marker date="1462415797462" expanded="false" signature="92:240" placeholder="import ..." />
+            <marker date="1462416845680" expanded="false" signature="92:240" placeholder="import ..." />
           </folding>
         </state>
       </provider>

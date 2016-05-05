@@ -7,7 +7,7 @@ begin
     return ref x + ref y;
 end
 
-function int foo1(int ref x)
+function int foo2(int ref x)
 begin
     int b;
     read(b);

@@ -229,6 +229,7 @@ def STATEMENT(current, G):
             pass
         else:
             while (True):
+
                 if current.name == "RPAREN":
                     break
                 if current.name == "COMMA":
@@ -249,6 +250,9 @@ def STATEMENT(current, G):
     elif current.name == "RETURN":
         t.append(tree("RETURN"))
         current = next(G)
+        if current.name == "REFERENCE":
+            current = next(G)
+            current.pattern = "ref-" + current.pattern
         if current.name == "INTLIT":
             t1, current = PRIMARY(current, G)
             t.append(t1)
@@ -259,7 +263,8 @@ def STATEMENT(current, G):
             t1, current = PRIMARY(current, G)
             t.append(t1)
         else:
-            t1, current = IDENT(current, G)
+            t1, current = EXPRESSION(current, G)
+            print(current)
             t.append(t1)
     elif current.name == "INTTYPE":
         typeOfVar = "INT"
@@ -545,11 +550,10 @@ def PRIMARY(current, G):
         tmp = tree("FUNCCALL")
         paren = next(G)
         current = next(G)
-        print(current)
         if current.name == "RPAREN":
             pass
         else:
-            t1, current = ID_LIST(next(G), G)
+            t1, current = ID_LIST(current, G)
             if current.name != "RPAREN":
                 raise ParserError("not matching parens")
                 tmp.append(t1)
@@ -597,7 +601,6 @@ def IDENT(current, G,):
     if current.name == "REFERENCE":
         current = next(G)
         current.pattern = "ref-" + current.pattern
-    print(current.pattern)
     if current.name != 'ID':
         raise ParserError("Syntax Error: Error when parsing IDENT: " + current.line)
     tmp = tree('ID')
