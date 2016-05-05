@@ -31,7 +31,7 @@ begin
     foo2(a,x);
     write("main: ",a,"\t",x,"\n");
     
-    string s = "A Lannister always pays his debts.";
+    string s := "A Lannister always pays his debts.";
     foo3(s);
     write("main: ",s,"\n");
 end

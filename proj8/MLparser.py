@@ -92,9 +92,11 @@ def CLASS(current, G):
         scope_variate = "MAIN"
         t3, current = PROGRAM(current, G)
         t.append(t3)
+    """
     for x in varScopeDict:
         print(x)
         print(varScopeDict[x])
+    """
     return t, current
 
 @add_debug
@@ -133,6 +135,8 @@ def FUNCTIONLST(current, G):
             while(True):
                 if current.name == "RPAREN":
                     break
+                if current.name == "COMMA":
+                    current = next(G)
                 t1, current, holder = STATEMENT(current, G)
                 t.append(t1)
         current = next(G)
@@ -224,11 +228,13 @@ def STATEMENT(current, G):
         if current.name == "RPAREN":
             pass
         else:
-            print("params - not working yet")
-            t1, current = ID_LIST(nxt, G)
-            if current.name != "RPAREN":
-                raise ParserError("not matching parens")
-            tmp.append(t1)
+            while (True):
+                if current.name == "RPAREN":
+                    break
+                if current.name == "COMMA":
+                    current = next(G)
+                t1, current = EXPRESSION(current, G)
+                t.append(t1)
         current = next(G)
         t.append(tmp)
     elif current.name == "WHILE":
@@ -262,6 +268,8 @@ def STATEMENT(current, G):
         varName1 = current.pattern
         try:
             isthereatype = str(dict[current.pattern][1])
+            #checks to see if there is the current variable has already been declared in the current scope!
+            hmm = str(varScopeDict[scope_variate][current.pattern][1])
             varInScope = str(varScopeDict[scope_variate])
             raise ParserError("Semantic error: type declared twice on a variable. "\
                               + current.line)
@@ -276,6 +284,8 @@ def STATEMENT(current, G):
         varName1 = current.pattern
         try:
             isthereatype = str(dict[current.pattern][1])
+            hmm = str(varScopeDict[scope_variate][current.pattern][1])
+            varInScope = str(varScopeDict[scope_variate])
             raise CompilerError("Semantic error: type declared twice on a variable. "\
                               + current.line)
         except KeyError:
@@ -289,6 +299,8 @@ def STATEMENT(current, G):
         varName1 = current.pattern
         try:
             isthereatype = str(dict[current.pattern][1])
+            hmm = str(varScopeDict[scope_variate][current.pattern][1])
+            varInScope = str(varScopeDict[scope_variate])
             raise CompilerError("Semantic error: type declared twice on a variable. "\
                               + current.line)
         except KeyError:
@@ -578,13 +590,6 @@ def PRIMARY(current, G):
     t.append(t2)
     return t, current
 
-# stringnum = 0
-# def STRINGNAME():
-#     global stringnum
-#     stringnum += 1
-#     return "Stringtmptmptmp" + stringnum
-
-
 @add_debug
 def IDENT(current, G,):
     global varName1
@@ -610,7 +615,7 @@ def IDENT(current, G,):
 
 if __name__ == "__main__":
     try:
-        fname = 'mltestcodes/test4.ml'
+        fname = 'mltestcodes/test5.ml'
         print("Parsing " + fname)
         try:
             sampt, tokk = parser(fname, 'tokens.txt')
