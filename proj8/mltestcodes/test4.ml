@@ -21,7 +21,7 @@ begin
 end
 
 begin
-    x = 0;
+    x := 0;
     write("main: ",x,"\n");
     foo1();
     write("main: ",x,"\n");

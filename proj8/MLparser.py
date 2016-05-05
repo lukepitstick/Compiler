@@ -40,10 +40,15 @@ dict = {None:None} #instantiate symbol table
 del dict[None]
 strDict = {}
 funcDict = {}
+# the new dictionary of dictionaries for scope. The key is the scope_variate, the
+# value is a another dictionary containing variable name as key and tuple as value
+varScopeDict = {}
 counter = 0
 typeOfVar = ""
 valOfVar = ""
 varName1 = ""
+# keeps track of the scope
+scope_variate = None
 
 def parser(source_file, token_file):	
     """
@@ -75,6 +80,7 @@ def parser(source_file, token_file):
 
 @add_debug
 def CLASS(current, G):
+    global scope_variate
     t = tree("CLASS")
     if current.name == "GLOBAL":
         t1, current = GLOBAL(current, G)
@@ -83,12 +89,18 @@ def CLASS(current, G):
         t2, current = FUNCTIONLST(current, G)
         t.append(t2)
     if current.name == "BEGIN":
+        scope_variate = "MAIN"
         t3, current = PROGRAM(current, G)
         t.append(t3)
+    for x in varScopeDict:
+        print(x)
+        print(varScopeDict[x])
     return t, current
 
 @add_debug
 def GLOBAL(current, G):
+    global scope_variate
+    scope_variate = "GLOBAL"
     while(True):
         t = tree("GLOBAL")
         holder = False
@@ -103,6 +115,7 @@ def GLOBAL(current, G):
 
 @add_debug
 def FUNCTIONLST(current, G):
+    global scope_variate
     t = tree("Function")
     while(True):
         if current.name != "FUNCTION":
@@ -112,6 +125,7 @@ def FUNCTIONLST(current, G):
         name = next(G)
         t.append(tree(name.name))
         funcDict[name.pattern] = type.name
+        scope_variate = name.pattern
         current = next(G)
         if current.name == "LPAREN":
             holder = False
@@ -208,10 +222,9 @@ def STATEMENT(current, G):
         paren = next(G)
         current = next(G)
         if current.name == "RPAREN":
-            print("no params")
             pass
         else:
-            print("here1")
+            print("params - not working yet")
             t1, current = ID_LIST(nxt, G)
             if current.name != "RPAREN":
                 raise ParserError("not matching parens")
@@ -249,6 +262,7 @@ def STATEMENT(current, G):
         varName1 = current.pattern
         try:
             isthereatype = str(dict[current.pattern][1])
+            varInScope = str(varScopeDict[scope_variate])
             raise ParserError("Semantic error: type declared twice on a variable. "\
                               + current.line)
         except KeyError:
@@ -591,11 +605,12 @@ def IDENT(current, G,):
     except:
         pass
     dict[current.pattern] = (g, gt) #add symbol to symbol table, will use different values later.
+    varScopeDict[scope_variate] = {current.pattern:(g, gt)}
     return t, next(G)
 
 if __name__ == "__main__":
     try:
-        fname = 'mltestcodes/test3.ml'
+        fname = 'mltestcodes/test4.ml'
         print("Parsing " + fname)
         try:
             sampt, tokk = parser(fname, 'tokens.txt')
