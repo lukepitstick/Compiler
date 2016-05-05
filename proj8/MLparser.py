@@ -594,6 +594,10 @@ def PRIMARY(current, G):
 def IDENT(current, G,):
     global varName1
     t = tree('IDENT')
+    if current.name == "REFERENCE":
+        current = next(G)
+        current.pattern = "ref-" + current.pattern
+    print(current.pattern)
     if current.name != 'ID':
         raise ParserError("Syntax Error: Error when parsing IDENT: " + current.line)
     tmp = tree('ID')
@@ -615,7 +619,7 @@ def IDENT(current, G,):
 
 if __name__ == "__main__":
     try:
-        fname = 'mltestcodes/test5.ml'
+        fname = 'mltestcodes/test8.ml'
         print("Parsing " + fname)
         try:
             sampt, tokk = parser(fname, 'tokens.txt')

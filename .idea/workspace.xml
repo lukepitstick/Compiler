@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5d1d4365-0ad9-4d3c-89bb-7c6a55d9b0e8" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/proj8/MLparser.py" afterPath="$PROJECT_DIR$/proj8/MLparser.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/proj8/mltestcodes/test5.ml" afterPath="$PROJECT_DIR$/proj8/mltestcodes/test5.ml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/proj8/mltestcodes/test7.ml" afterPath="$PROJECT_DIR$/proj8/mltestcodes/test7.ml" />
     </list>
     <ignored path="compilers_group7.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -18,7 +17,7 @@
   </component>
   <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/compilers_group7$MLparser.coverage" NAME="MLparser Coverage Results" MODIFIED="1462414548219" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/proj8" />
+    <SUITE FILE_PATH="coverage/compilers_group7$MLparser.coverage" NAME="MLparser Coverage Results" MODIFIED="1462415798296" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/proj8" />
   </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
@@ -42,20 +41,30 @@
       <file leaf-file-name="MLparser.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/proj8/MLparser.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="170">
-              <caret line="309" column="20" selection-start-line="309" selection-start-column="20" selection-end-line="309" selection-end-column="20" />
+            <state relative-caret-position="258">
+              <caret line="621" column="34" selection-start-line="621" selection-start-column="34" selection-end-line="621" selection-end-column="34" />
               <folding>
-                <marker date="1462414518817" expanded="false" signature="92:240" placeholder="import ..." />
+                <marker date="1462415797462" expanded="false" signature="92:240" placeholder="import ..." />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="test5.ml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/proj8/mltestcodes/test5.ml">
+      <file leaf-file-name="test7.ml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/proj8/mltestcodes/test7.ml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="396">
-              <caret line="33" column="14" selection-start-line="33" selection-start-column="14" selection-end-line="33" selection-end-column="14" />
+            <state relative-caret-position="335">
+              <caret line="24" column="11" selection-start-line="24" selection-start-column="11" selection-end-line="24" selection-end-column="11" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="tokens.txt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/proj8/tokens.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="154">
+              <caret line="7" column="32" selection-start-line="7" selection-start-column="32" selection-end-line="7" selection-end-column="32" />
               <folding />
             </state>
           </provider>
@@ -76,8 +85,9 @@
         <option value="$PROJECT_DIR$/proj8/tokens.txt" />
         <option value="$PROJECT_DIR$/proj8/tester1.txt" />
         <option value="$PROJECT_DIR$/proj8/mltestcodes/test4.ml" />
-        <option value="$PROJECT_DIR$/proj8/MLparser.py" />
         <option value="$PROJECT_DIR$/proj8/mltestcodes/test5.ml" />
+        <option value="$PROJECT_DIR$/proj8/mltestcodes/test7.ml" />
+        <option value="$PROJECT_DIR$/proj8/MLparser.py" />
       </list>
     </option>
   </component>
@@ -488,35 +498,11 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="9" />
+      <option name="time" value="10" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/proj8/lexer_sol.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1276">
-          <caret line="59" column="29" selection-start-line="59" selection-start-column="29" selection-end-line="59" selection-end-column="29" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/proj8/tokens.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="110">
-          <caret line="5" column="32" selection-start-line="5" selection-start-column="32" selection-end-line="5" selection-end-column="32" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/proj8/languagesuggestion.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="44">
-          <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="23" selection-end-column="3" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/proj8/tester1.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="44">
@@ -538,7 +524,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <marker date="1462414518817" expanded="false" signature="92:240" placeholder="import ..." />
+            <marker date="1462415797462" expanded="false" signature="92:240" placeholder="import ..." />
           </folding>
         </state>
       </provider>
@@ -793,14 +779,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/proj8/tokens.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="22">
-          <caret line="7" column="32" selection-start-line="7" selection-start-column="32" selection-end-line="7" selection-end-column="32" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/proj8/languagesuggestion.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="44">
@@ -859,18 +837,50 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/proj8/mltestcodes/test5.ml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="396">
+        <state relative-caret-position="726">
           <caret line="33" column="14" selection-start-line="33" selection-start-column="14" selection-end-line="33" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/proj8/mltestcodes/test6.ml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/proj8/mltestcodes/test8.ml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/proj8/tokens.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="154">
+          <caret line="7" column="32" selection-start-line="7" selection-start-column="32" selection-end-line="7" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/proj8/mltestcodes/test7.ml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="335">
+          <caret line="24" column="11" selection-start-line="24" selection-start-column="11" selection-end-line="24" selection-end-column="11" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/proj8/MLparser.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="309" column="20" selection-start-line="309" selection-start-column="20" selection-end-line="309" selection-end-column="20" />
+        <state relative-caret-position="258">
+          <caret line="621" column="34" selection-start-line="621" selection-start-column="34" selection-end-line="621" selection-end-column="34" />
           <folding>
-            <marker date="1462414518817" expanded="false" signature="92:240" placeholder="import ..." />
+            <marker date="1462415797462" expanded="false" signature="92:240" placeholder="import ..." />
           </folding>
         </state>
       </provider>

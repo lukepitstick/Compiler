@@ -22,7 +22,7 @@ begin
     int t;
     read(t);
     write("foo1: ",ref x,"\n");
-    ref x = t*(ref x);
+    ref x := t*ref x;
     write("foo1: ",ref x,"\n");
 end
 
