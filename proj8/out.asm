@@ -29,24 +29,14 @@ syscall
 
 
 
-func2:
-li $s4, 0
-la   $s0, i
-sw $s4, ($s0)
-
-
-
-func1:
-
-
 func4:
 la $a0, stringtmptmp0
 li $v0, 4
 syscall
 
 la $s0, i
-lw $s4, ($s0)
-add $a0, $s4,0
+lw $s3, ($s0)
+add $a0, $s3,0
 li $v0, 1
 syscall
 
@@ -56,18 +46,25 @@ syscall
 
 
 
+func3:
+la $s0, i
+lw $s3, ($s0)
+li $t0, 1
+add $s3, $s3, $t0
+la   $s0, i
+sw $s3, ($s0)
+
+
+
+func2:
+li $s3, 0
+la   $s0, i
+sw $s3, ($s0)
+
+
+
 func5:
 la $a0, stringtmptmp2
 li $v0, 4
 syscall
-
-
-
-func3:
-la $s0, i
-lw $s4, ($s0)
-li $t3, 1
-add $s4, $s4, $t3
-la   $s0, i
-sw $s4, ($s0)
 

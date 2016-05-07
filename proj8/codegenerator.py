@@ -841,14 +841,15 @@ def findGenerateMIPSCode(t, dict): #, fname):
     #gracefully exit
     #textToWrite[subroutine].append("li   $v0, 10\nsyscall")
     #write the array to the file
-    print(textToWrite)
+    #print(textToWrite)
     mainToWrite = textToWrite.pop("main", None)    
     for text in mainToWrite:
         toWrite.append(text)
     for s in textToWrite:
-        print(s)
-        for k in textToWrite[s]:
-            toWrite.append(k)
+        #print(s)
+        if (len(textToWrite[s]) > 1):
+            for k in textToWrite[s]:
+                toWrite.append(k)
     return datatoWrite + toWrite
 
 class CompilerError(Exception):
