@@ -1,0 +1,19 @@
+begin
+bool x;
+x := False;
+bool y;
+y := True;
+if x then
+begin
+write("Yes\n");
+end
+else
+begin
+write("No\n");
+if y then
+begin
+write(7>4);
+end
+end
+write("noo");
+end

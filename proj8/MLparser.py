@@ -76,7 +76,10 @@ def parser(source_file, token_file):
 
     if current.name != '$':
         raise ParserError("Syntax Error: File did not end after 'end'")
-    return t, dict #return tree and symbol table
+
+    retdict = dict
+    #print(retdict)
+    return t, retdict #return tree and symbol table
 
 @add_debug
 def CLASS(current, G):
@@ -118,7 +121,7 @@ def GLOBAL(current, G):
 @add_debug
 def FUNCTIONLST(current, G):
     global scope_variate
-    t = tree("Function")
+    t = tree("FUNCTION")
     while(True):
         if current.name != "FUNCTION":
             break
@@ -622,13 +625,16 @@ def IDENT(current, G,):
 
 if __name__ == "__main__":
     try:
-        fname = 'mltestcodes/test7.ml'
+        fname = 'mltestcodes/test1.ml'
         print("Parsing " + fname)
         try:
             sampt, tokk = parser(fname, 'tokens.txt')
             print('The source file is following a valid syntax.')
             print(str(sampt))
             print("\n"+str(dict))
+            print('=========================================================================')
+            print("The list of child:")
+            sampt.getChildLabel()
         except ParserError:
             print_exc()
             print('The source file is not following a valid syntax.')

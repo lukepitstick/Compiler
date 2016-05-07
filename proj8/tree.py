@@ -8,7 +8,7 @@ class tree:
     with zero or more trees as children
     """
 
-    def __init__(self, label,val = None, children = None ):
+    def __init__(self, label, val = None, children = None):
         """
         Tree constructor
         """
@@ -58,6 +58,10 @@ class tree:
         ret = tmp + ret
         ret = "(" + ret
         return ret
+
+    def getChildLabel(self):
+        for i in self.children:
+            print(i.label)
 
     def __repr__(self):
         return "Tree: " + str(self)
