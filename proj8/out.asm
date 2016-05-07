@@ -9,6 +9,8 @@ stringtmptmp3: .asciiz "In main.\n"
 stringtmptmp4: .asciiz "Returned to main.\n"
 stringtmptmp5: .asciiz "Returned to man. (Again.)\n"
 stringtmptmp6: .asciiz "Returned to main.\n"
+
+
 .text
 main:
 la $a0, stringtmptmp3
@@ -28,6 +30,25 @@ li $v0, 4
 syscall
 
 
+j close
+
+
+func3:
+la $s0, i
+lw $t0, ($s0)
+li $t1, 1
+add $t0, $t0, $t1
+la   $s0, i
+sw $t0, ($s0)
+
+
+
+func5:
+la $a0, stringtmptmp2
+li $v0, 4
+syscall
+
+
 
 func4:
 la $a0, stringtmptmp0
@@ -35,8 +56,8 @@ li $v0, 4
 syscall
 
 la $s0, i
-lw $s3, ($s0)
-add $a0, $s3,0
+lw $t0, ($s0)
+add $a0, $t0,0
 li $v0, 1
 syscall
 
@@ -46,25 +67,12 @@ syscall
 
 
 
-func3:
-la $s0, i
-lw $s3, ($s0)
-li $t0, 1
-add $s3, $s3, $t0
-la   $s0, i
-sw $s3, ($s0)
-
-
-
 func2:
-li $s3, 0
+li $t0, 0
 la   $s0, i
-sw $s3, ($s0)
+sw $t0, ($s0)
 
 
-
-func5:
-la $a0, stringtmptmp2
-li $v0, 4
+close:
+li $v0, 10
 syscall
-

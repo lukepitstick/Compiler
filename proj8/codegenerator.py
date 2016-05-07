@@ -3,7 +3,7 @@ import tree #from tree?
 import re
 import sys
 datatoWrite = [] #data write section
-textToWrite = {"main":[".text\nmain:\n"]} # initialize main section what to write, will also add subroutines
+textToWrite = {"close":["\nclose:\nli $v0, 10\nsyscall\n"], "main":[".text\nmain:\n"]} # initialize main section what to write, will also add subroutines
 toWrite = [] # initialize what to write (remained for compatibility)
 dict1 = {} #main dict (Initiated, type)
 dict2 = {} #string dict
@@ -17,7 +17,8 @@ nestedIfCounter = 0
 def READ_IDS(args, subroutine="main"): #was args = []
     for var in args:
         if dict1[var][1] == "INT":
-            textToWrite[subroutine].append("li $v0, 5\nsyscall\n")
+            textToWrite[subroutine].append("li $v0, 5\n")
+            textToWrite[subroutine].append("syscall\n")
             textToWrite[subroutine].append("la $t0, %s\n" % var)
             textToWrite[subroutine].append("sw $v0, 0($t0)\n\n")
             dict1[var] = ("True","INT")
@@ -788,7 +789,7 @@ def findGenerateMIPSCode(t, dict): #, fname):
     
     datatoWrite = [] #data write section
     toWrite = [] # initialize what to write
-    textToWrite = {"main":[".text\nmain:\n"]}
+    textToWrite = {"close":["\nclose:\nli $v0, 10\nsyscall\n"], "main":[".text\nmain:\n"]}
     dict1 = {} #main dict (Initiated, type)
     dict2 = {} #string dict
     dict3 = {}
@@ -842,14 +843,20 @@ def findGenerateMIPSCode(t, dict): #, fname):
     #textToWrite[subroutine].append("li   $v0, 10\nsyscall")
     #write the array to the file
     #print(textToWrite)
-    mainToWrite = textToWrite.pop("main", None)    
+    mainToWrite = textToWrite.pop("main", None)
+    toWrite.append("\n\n")
     for text in mainToWrite:
         toWrite.append(text)
+    toWrite.append("\nj close\n")
     for s in textToWrite:
         #print(s)
         if (len(textToWrite[s]) > 1):
             for k in textToWrite[s]:
                 toWrite.append(k)
+    closeToWrite = textToWrite.pop("close", None)
+    for text in closeToWrite:
+        toWrite.append(text)
+    # print(toWrite)
     return datatoWrite + toWrite
 
 class CompilerError(Exception):
