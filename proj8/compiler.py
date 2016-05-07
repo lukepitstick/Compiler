@@ -16,7 +16,7 @@ import traceback
 
 def compiler(source, tokens, output):
     mlp = MLparser.parser(source, tokens)
-    # print(mlp)
+    #print(mlp[1])
     # mlp will have tree struct and dict
     MIPScodes = []
     try:

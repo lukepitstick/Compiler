@@ -41,7 +41,7 @@ def WRITE_IDS(t, subroutine="main"): #receives tree with head as expr_list
             # reset registers
             for register in registers:
                 registers[register] = False
-            type, varlist, reg = EXPRESSION(child)
+            type, varlist, reg = EXPRESSION(child, subroutine)
             v1 = ""
             for v in varlist:
                 # if ldict[v] != "True":
@@ -116,10 +116,10 @@ def EXPRESSION(t, subroutine="main"): #Gets tree with EXPRESSION as head
     for child in t.children:
         if child.label != "OR":
             if not opFlag:
-                type1, varlist1, reg1 = TERM1(child)
+                type1, varlist1, reg1 = TERM1(child, subroutine)
                 varlist += varlist1
             if opFlag:
-                type2, varlist2, reg2 = TERM1(child)
+                type2, varlist2, reg2 = TERM1(child, subroutine)
                 varlist += varlist2
                 if (type1 != "BOOL") | (type2 != "BOOL"):
                     raise CompilerError("Semantic Error: 'or' operand on non-bool")
@@ -150,10 +150,10 @@ def TERM1(t, subroutine="main"): #Gets tree with TERM1 as head
     for child in t.children:
         if child.label != "AND":
             if not opFlag:
-                type1, varlist1, reg1 = FACT1(child)
+                type1, varlist1, reg1 = FACT1(child, subroutine)
                 varlist += varlist1
             if opFlag:
-                type2, varlist2, reg2 = FACT1(child)
+                type2, varlist2, reg2 = FACT1(child, subroutine)
                 varlist += varlist2
                 if (type1 != "BOOL") | (type2 != "BOOL"):
                     raise CompilerError("Semantic Error: 'and' operand on non-bool")
@@ -184,7 +184,7 @@ def FACT1(t, subroutine="main"): #Gets tree with FACT1 as head
     for child in t.children:
         if child.label == "EXP2":
             if not opFlag:
-                type1, varlist1, reg1 = EXP2(child)
+                type1, varlist1, reg1 = EXP2(child, subroutine)
                 varlist += varlist1
 
         if child.label == "R":
@@ -205,7 +205,7 @@ def FACT1(t, subroutine="main"): #Gets tree with FACT1 as head
                     compareType = "sne"
                 retType = "BOOL"
                 opFlag = True
-                type2, varlist2, reg2 = EXP2(child.children[1])
+                type2, varlist2, reg2 = EXP2(child.children[1], subroutine)
                 varlist += varlist2
                 if (type1 != "INT") | (type2 != "INT"):
                     raise CompilerError("Semantic Error: Compare operand on non-int")
@@ -236,10 +236,10 @@ def EXP2(t, subroutine="main"):
     for child in t.children:
         if child.label == "TERM2":
             if not opFlag:
-                type1, varlist1, reg1 = TERM2(child)
+                type1, varlist1, reg1 = TERM2(child, subroutine)
                 varlist += varlist1
             if opFlag:
-                type2, varlist2, reg2 = TERM2(child)
+                type2, varlist2, reg2 = TERM2(child, subroutine)
                 varlist += varlist2
                 if (type1 != "INT") or (type2 != "INT"):
                     raise CompilerError("Semantic Error: Compare operand on non-int")
@@ -268,10 +268,10 @@ def TERM2(t, subroutine="main"):
     for child in t.children:
         if child.label == "TERM3":
             if not opFlag:
-                type1, varlist1, reg1 = TERM3(child)
+                type1, varlist1, reg1 = TERM3(child, subroutine)
                 varlist += varlist1
             if opFlag:
-                type2, varlist2, reg2 = TERM3(child)
+                type2, varlist2, reg2 = TERM3(child, subroutine)
                 varlist += varlist2
                 if (type1 != "INT") or (type2 != "INT"):
                     raise CompilerError("Semantic Error: Compare operand on non-int")
@@ -300,10 +300,10 @@ def TERM3(t, subroutine="main"):
     for child in t.children:
         if child.label == "FACT2":
             if not opFlag:
-                type1, varlist1, reg1 = FACT2(child)
+                type1, varlist1, reg1 = FACT2(child, subroutine)
                 varlist += varlist1
             if opFlag:
-                type2, varlist2, reg2 = FACT2(child)
+                type2, varlist2, reg2 = FACT2(child, subroutine)
                 varlist += varlist2
                 if (type1 != "INT") or (type2 != "INT"):
                     raise CompilerError("Semantic Error: Compare operand on non-int")
@@ -332,10 +332,10 @@ def FACT2(t, subroutine="main"):
     for child in t.children:
         if child.label == "FACT3":
             if not opFlag:
-                type1, varlist1, reg1 = FACT3(child)
+                type1, varlist1, reg1 = FACT3(child, subroutine)
                 varlist += varlist1
             if opFlag:
-                type2, varlist2, reg2 = FACT3(child)
+                type2, varlist2, reg2 = FACT3(child, subroutine)
                 varlist += varlist2
                 if (type1 != "INT") or (type2 != "INT"):
                     raise CompilerError("Semantic Error: Compare operand on non-int")
@@ -363,10 +363,10 @@ def FACT3(t, subroutine="main"):
     for child in t.children:
         if child.label == "PRIMARY":
             if not opFlag:
-                type1, varlist1, reg1 = PRIMARY(child)
+                type1, varlist1, reg1 = PRIMARY(child, subroutine)
                 varlist += varlist1
             if opFlag:
-                type2, varlist2, reg2 = PRIMARY(child)
+                type2, varlist2, reg2 = PRIMARY(child, subroutine)
                 varlist += varlist2
                 if (type1 != "INT") or (type2 != "INT"):
                     raise CompilerError("Semantic Error: Compare operand on non-int")
@@ -396,7 +396,7 @@ def PRIMARY(t, subroutine="main"):
     child = t.children[0]
     if child.label == "EXPRESSION":
         registers[reg] = False
-        retType, varlist1, reg1 = EXPRESSION(child)
+        retType, varlist1, reg1 = EXPRESSION(child, subroutine)
         varlist += varlist1
         reg = reg1
         # textToWrite[subroutine].append("move %s, %s\n"%(reg,reg1))
@@ -529,7 +529,7 @@ def ASSIGN(t, subroutine="main"):
         ind = datatoWrite.index(find)
         datatoWrite[ind] = replace
     else:
-        type, varlist, reg = EXPRESSION(t.children[1])
+        type, varlist, reg = EXPRESSION(t.children[1], subroutine)
         for v in varlist:
             # print(v)
             # print(str(dict1))
@@ -563,7 +563,7 @@ def INFIX(t, subroutine="main"):
         except IndexError:
             CC = "-"
         if CC == "EXPRESSION":
-            s,VV = INFIX(child.children[0])
+            s,VV = INFIX(child.children[0], subroutine)
             varList = varList + VV
             stack = stack + s
         elif child.label == "PLUS":
@@ -592,14 +592,14 @@ def IF(tree, subroutine="main"):
     #     print(" fi + " + s.label)
     doElse = False
     label1, label2 = getLabels()
-    type, varlist, reg = EXPRESSION(tree.children[1])
+    type, varlist, reg = EXPRESSION(tree.children[1], subroutine)
     if type != "BOOL":
         raise CompilerError("Condition of If Statement is not a boolean: " + str(type))
 
     textToWrite[subroutine].append("blez %s, %s\n" % (reg, label1))  # if false jump past IF program (else)
 
     for child in tree.children[2].children[1].children: #IF program mips
-        STATEMENT(child)
+        STATEMENT(child, subroutine)
 
     try:
         if tree.children[3].label == "ELSE":
@@ -614,7 +614,7 @@ def IF(tree, subroutine="main"):
 
     if doElse:
         for child in tree.children[4].children[1].children:  # ELSE program mips
-            STATEMENT(child)
+            STATEMENT(child, subroutine)
 
         textToWrite[subroutine].append(label2 + ": nop\n") #place label to at the command following the else program
     
@@ -667,7 +667,7 @@ def WHILE(tree, subroutine="main"):
     textToWrite[subroutine].append("blez %s, %s\n"% (reg, label2)) #if false jump past program
 
     for child in tree.children[2].children[1].children:
-        STATEMENT(child)
+        STATEMENT(child, subroutine)
 
     textToWrite[subroutine].append("b %s\n"% label1) #jump back to evaluate expression
     textToWrite[subroutine].append(label2 + ": nop\n") #Set jump past point to the instruction after the WHILE
@@ -688,7 +688,7 @@ def STATEMENT(tree, subroutine="main"): #Equivalent of STATEMENT
             for child in tree.children[1].children:
                 if child.children[0].label is "ID":
                     arguments.append(child.children[0].val)
-            READ_IDS(arguments)
+            READ_IDS(arguments, subroutine)
         elif tree.children[0].label == "WRITE":
             # arguments = []
             # for child in tree.children[1].children:
@@ -696,22 +696,22 @@ def STATEMENT(tree, subroutine="main"): #Equivalent of STATEMENT
             #         arguments.append(child.children[0].children[0].val)
             #     elif child.children[0].children[0].children[0].label is "ID":
             #         arguments.append(child.children[0].children[0].children[0].val)
-            WRITE_IDS(tree.children[1])
+            WRITE_IDS(tree.children[1], subroutine)
         elif tree.children[0].label == "ASSIGNMENT":
-            ASSIGN(tree.children[0])
+            ASSIGN(tree.children[0], subroutine)
         elif tree.children[0].label == "BOOLTYPE":
-            DEFTYPE(tree)
+            DEFTYPE(tree, subroutine)
         elif tree.children[0].label == "STRINGTYPE":
-            DEFTYPE(tree)
+            DEFTYPE(tree, subroutine)
         elif tree.children[0].label == "INTTYPE":
-            DEFTYPE(tree)
+            DEFTYPE(tree, subroutine)
         elif tree.children[0].label == "IF":
-            IF(tree)
+            IF(tree, subroutine)
         elif tree.children[0].label == "WHILE":
-            WHILE(tree)
+            WHILE(tree, subroutine)
         try:
             if tree.children[2].label == "ASSIGNMENTSTR":
-                ASSIGNSTR(tree)
+                ASSIGNSTR(tree, subroutine)
         except:
             # print(sys.exc_info())
             pass
@@ -753,7 +753,24 @@ def DEFTYPE(tree, subroutine="main"):
     #     dict1[val] = ("True",b)
 
 def FUNCTION(tr, subroutine=None):
-    print(">>> SUBROUTINE FOR FUNCTION CALL SHOULD BE IMPLEMENTED. <<<")
+    global textToWrite
+    # print(tr.label)
+    # tr.getChildLabel()
+    funcidx = 1
+    for childd in tr.children:
+        if childd.label == "ID":
+            pass
+            # print(childd.val)
+        elif childd.label == "PROGRAM":
+            for child2 in childd.children[1].children:
+                funcidtag = "func%d" % funcidx
+                textToWrite[funcidtag] = [("\n\n%s:\n" % funcidtag)]
+                STATEMENT(child2, subroutine=funcidtag)
+                funcidx += 1
+            # childd.getChildLabel()
+        else:
+            raise CompilerError("Inappropriate token detected: %s" % childd.label)
+    #print(">>> SUBROUTINE FOR FUNCTION CALL SHOULD BE IMPLEMENTED. <<<")
 
 def findGenerateMIPSCode(t, dict): #, fname):
 
@@ -813,19 +830,23 @@ def findGenerateMIPSCode(t, dict): #, fname):
     # textToWrite[subroutine].append("\n.text\nmain:\n")
     #initiate the actual traversal
     #print(t.children[1].label)
+    # t.getChildLabel()
     mainIdx = 0
     while t.children[mainIdx].label != 'PROGRAM':
         FUNCTION(t.children[mainIdx])
         mainIdx += 1
+    assert(t.children[mainIdx].label == 'PROGRAM')
     for childd in t.children[mainIdx].children[1].children:
         STATEMENT(childd)
     #gracefully exit
     #textToWrite[subroutine].append("li   $v0, 10\nsyscall")
     #write the array to the file
+    print(textToWrite)
     mainToWrite = textToWrite.pop("main", None)    
     for text in mainToWrite:
         toWrite.append(text)
     for s in textToWrite:
+        print(s)
         for k in textToWrite[s]:
             toWrite.append(k)
     return datatoWrite + toWrite
