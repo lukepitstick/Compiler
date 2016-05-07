@@ -625,7 +625,7 @@ def IDENT(current, G,):
 
 if __name__ == "__main__":
     try:
-        fname = 'mltestcodes/test1.ml'
+        fname = 'mltestcodes/test8.ml'
         print("Parsing " + fname)
         try:
             sampt, tokk = parser(fname, 'tokens.txt')

@@ -1,4 +1,3 @@
-
 function int foo1()
 begin
     return 10;

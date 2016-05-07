@@ -30,7 +30,7 @@ def WRITE_IDS(t, subroutine="main"): #receives tree with head as expr_list
     for register in registers:
         registers[register] = False
     for child in t.children:
-        child.children[0].children[0].children[0].children[0].children[0].children[0].children[0].getChildLabel()
+        # child.children[0].children[0].children[0].children[0].children[0].children[0].children[0].getChildLabel()
         if child.children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0].label == "STRING":
             val = child.children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0].val
             stringid = "stringtmptmp" + str(stringnum)
@@ -534,10 +534,10 @@ def ASSIGN(t, subroutine="main"):
             # print(v)
             # print(str(dict1))
             if dict1[v][0] != "True":
-                    raise CompilerError("Semantic Error: ASSIGN before a variable is instantiated")
+                    raise CompilerError("Semantic Error: ASSIGN before a variable is instantiated: %s" % t.children[1])
         if vartype != type:
             # print(vartype + " " + type)
-            raise CompilerError("Assignment types do not match")
+            raise CompilerError("Assignment types do not match: %s" % t.children[1])
         if vartype == "STRING": #Find var line in datatoWrite and make its initial value the dict2 value from varlist[0]
             find = var + ": .asciiz "
             replace = var + ": .asciiz " + dict2[varlist[0]]
