@@ -17,13 +17,19 @@ la $a0, stringtmptmp3
 li $v0, 4
 syscall
 
+j func3
+
 la $a0, stringtmptmp4
 li $v0, 4
 syscall
 
+j func2
+
 la $a0, stringtmptmp5
 li $v0, 4
 syscall
+
+j func5
 
 la $a0, stringtmptmp6
 li $v0, 4

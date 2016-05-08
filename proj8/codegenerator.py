@@ -854,6 +854,8 @@ def findGenerateMIPSCode(t, dict): #, fname):
             for k in textToWrite[s]:
                 toWrite.append(k)
     closeToWrite = textToWrite.pop("close", None)
+    # if errorOccurred():
+    #     toWrite.append("\n\nclose:\nli $v0, 11\nsyscall")
     for text in closeToWrite:
         toWrite.append(text)
     # print(toWrite)
