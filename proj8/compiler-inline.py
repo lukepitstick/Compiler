@@ -11,7 +11,7 @@ import argparse
 import tree
 import lexer_sol
 import MLparser
-import codegenerator
+import codegenerator2
 import traceback
 
 def compiler(source, tokens, output):
@@ -23,7 +23,7 @@ def compiler(source, tokens, output):
 
     MIPScodes = []
     try:
-        MIPScodes = codegenerator.findGenerateMIPSCode(mlp[0], mlp[1], mlp[2])
+        MIPScodes = codegenerator2.findGenerateMIPSCode(mlp[0], mlp[1], mlp[2])
     except MLparser.ParserError:
         traceback.print_exc()
         return False

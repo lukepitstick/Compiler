@@ -36,12 +36,12 @@ class ParserError(Exception):
 
 #######################################
 # Parsing code
-dict = {None:None} #instantiate symbol table
-del dict[None]
+dict_ = {} #instantiate symbol table
 strDict = {}
 funcDict = {}
-# the new dictionary of dictionaries for scope. The key is the scope_variate, the
-# value is a another dictionary containing variable name as key and tuple as value
+# the new dictionary of dictionaries for scope. The key is the scope_variate, 
+# the value is a another dictionary containing variable name as key and tuple 
+# as value
 varScopeDict = {}
 counter = 0
 typeOfVar = ""
@@ -59,12 +59,24 @@ def parser(source_file, token_file):
     global typeOfVar
     global valOfVar
     global varName1
+    global strDict
+    global funcDict
+    global varScopeDict
+    global counter
+    global dict_
+    global scope_variate
     
     typeOfVar = ""
     valOfVar = ""
     varName1 = ""    
     
-    dict.clear() #clear dict
+    dict_.clear() #clear dict
+    strDict.clear()
+    funcDict.clear()
+    varScopeDict.clear()
+    count = 0
+    scope_variate = None
+    
     G = lexer(source_file, token_file)
 
     t = None # this should be changed to the tree
@@ -77,9 +89,14 @@ def parser(source_file, token_file):
     if current.name != '$':
         raise ParserError("Syntax Error: File did not end after 'end'")
 
-    retdict = dict
+    retdict = dict_
+    retdict2 = {}
+    retdict2["dict"] = dict_
+    retdict2["strDict"] = strDict
+    retdict2["funcDict"] = funcDict
+    retdict2["varScopeDict"] = varScopeDict
     #print(retdict)
-    return t, retdict #return tree and symbol table
+    return t, retdict, retdict2 #return tree and symbol table
 
 @add_debug
 def CLASS(current, G):
@@ -200,7 +217,7 @@ def STATEMENT(current, G):
     if current.name == "IF":
         t.append(tree("IF"))
         var1 = next(G)
-        # ty = str(dict[var1.pattern][1])
+        # ty = str(dict_[var1.pattern][1])
         # print(var1.pattern) #can be an expression, check for bool in compiler
         # if var1.name != "ID":
         #     raise SyntaxError("must be an ID")
@@ -275,7 +292,7 @@ def STATEMENT(current, G):
         current = next(G)
         varName1 = current.pattern
         try:
-            isthereatype = str(dict[current.pattern][1])
+            isthereatype = str(dict_[current.pattern][1])
             #checks to see if there is the current variable has already been declared in the current scope!
             hmm = str(varScopeDict[scope_variate][current.pattern][1])
             varInScope = str(varScopeDict[scope_variate])
@@ -291,7 +308,7 @@ def STATEMENT(current, G):
         current = next(G)
         varName1 = current.pattern
         try:
-            isthereatype = str(dict[current.pattern][1])
+            isthereatype = str(dict_[current.pattern][1])
             hmm = str(varScopeDict[scope_variate][current.pattern][1])
             varInScope = str(varScopeDict[scope_variate])
             raise CompilerError("Semantic error: type declared twice on a variable. "\
@@ -306,7 +323,7 @@ def STATEMENT(current, G):
         current = next(G)
         varName1 = current.pattern
         try:
-            isthereatype = str(dict[current.pattern][1])
+            isthereatype = str(dict_[current.pattern][1])
             hmm = str(varScopeDict[scope_variate][current.pattern][1])
             varInScope = str(varScopeDict[scope_variate])
             raise CompilerError("Semantic error: type declared twice on a variable. "\
@@ -341,7 +358,7 @@ def ASSIGNMENTSTR(current, G):
         tstrlit.val = current.pattern
         valOfVar = current.pattern
         tuple1 = (valOfVar, typeOfVar)
-        dict[varName1] = tuple1
+        dict_[varName1] = tuple1
         t.append(tstrlit)
         return t, next(G)
 
@@ -559,27 +576,28 @@ def PRIMARY(current, G):
             t1, current = ID_LIST(current, G)
             if current.name != "RPAREN":
                 raise ParserError("not matching parens")
-                tmp.append(t1)
+            tmp.append(t1)
             t.append(tmp)
         return t, next(G)
     if current.name == 'INTLIT':
         tmp = tree('INTLIT')
         tmp.val = current.pattern
         tuple1 = ("False", typeOfVar)
-        dict[varName1] = tuple1 #do we need this?
+        dict_[varName1] = tuple1 #do we need this?
         t.append(tmp)
         return t, next(G)
     if current.name == 'BOOLLIT':
         tmp = tree('BOOLLIT')
         tmp.val = current.pattern
         tuple1 = ("False", typeOfVar)
-        dict[varName1] = tuple1 #do we need this?
+        dict_[varName1] = tuple1 #do we need this?
         t.append(tmp)
         return t, next(G)
     if current.name == 'LPAREN':
         t1, current = EXPRESSION(next(G), G)
         if current.name != 'RPAREN':
-            raise ParserError("Syntax Error: Expected rparen is missing: " + current.line)
+            raise ParserError("Syntax Error: Expected rparen is missing: " \
+                              + current.line)
         t.append(t1)
         return t, next(G)
     if current.name == "STRING": #unsure
@@ -605,43 +623,59 @@ def IDENT(current, G,):
         current = next(G)
         current.pattern = "ref-" + current.pattern
     if current.name != 'ID':
-        raise ParserError("Syntax Error: Error when parsing IDENT: " + current.line)
+        raise ParserError("Syntax Error: Error when parsing IDENT: " \
+                          + current.line)
     tmp = tree('ID')
     tmp.val = current.pattern
     t.append(tmp)
     g = ""
     try:
-        g = dict[current.pattern][0]
+        g = dict_[current.pattern][0]
     except:
         pass
     gt = typeOfVar
     try:
-        gt = dict[current.pattern][1]
+        gt = dict_[current.pattern][1]
     except:
         pass
-    dict[current.pattern] = (g, gt) #add symbol to symbol table, will use different values later.
+    dict_[current.pattern] = (g, gt) #add symbol to symbol table, will use different values later.
     varScopeDict[scope_variate] = {current.pattern:(g, gt)}
     return t, next(G)
 
 if __name__ == "__main__":
-    for i in range(1, 9):
+    global dict_
+    global strDict
+    global funcDict
+    global varScopeDict
+    
+    for i in range(1,9):
         try:
             fname = 'mltestcodes/test%d.ml' % i
             print("Parsing " + fname)
             try:
-                sampt, tokk = parser(fname, 'tokens.txt')
+                sampt, tokk, tokk2 = parser(fname, 'tokens.txt')
                 print('The source file is following a valid syntax.')
                 print("\n" + repr(sampt))
-                print('=========================================================================')
-                print("\nSymbol Table:\n" + str(dict))
-                print('=========================================================================')
+                print('=======================================================')
+                assert(tokk2["dict"] == dict_)
+                print("\nSymbol Table:\n" + str(tokk2["dict"]))
+                assert(tokk2["strDict"] == strDict)
+                print("\nString Table:\n" + str(strDict))
+                assert(tokk2["funcDict"] == funcDict)
+                print("\nFunction Table:\n" + str(funcDict))
+                assert(tokk2["varScopeDict"] == varScopeDict)
+                print("\nVariable Scope Table:\n" + str(varScopeDict))
+                print('=======================================================')
                 print("\nThe list of child:")
                 sampt.getChildLabel()
             except ParserError:
                 print_exc()
                 print('The source file is not following a valid syntax.')
-            finally:
-                 print('=========================================================================')
         except ImportError:
             print('The sample file does not exist.')
+        finally:
+            print('======================================================')
+            end = input('Press <ENTER> to continue... (or QUIT to exit)')
+            if end == 'QUIT':
+                break
     print('Personal tester is over.')
