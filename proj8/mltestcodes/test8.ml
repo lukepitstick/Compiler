@@ -12,7 +12,7 @@ begin
     int b;
     read(b);
     int a;
-	a := ref x;
+    a := ref x;
     a := a + b;
     write("foo2: ",ref x," ",a,"\n");
 end
@@ -21,9 +21,8 @@ begin
     int a;
     read(a);
     int b;
-	b := foo1(a,a);
-    write("main; ",a," ",b,"\n");
-    
+    b := foo1(a,a);
+    write("main; ",a," ",b,"\n"); 
     int c;
     read(c);
     foo2(c);

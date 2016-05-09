@@ -624,23 +624,24 @@ def IDENT(current, G,):
     return t, next(G)
 
 if __name__ == "__main__":
-    try:
-        fname = 'mltestcodes/test8.ml'
-        print("Parsing " + fname)
+    for i in range(1, 9):
         try:
-            sampt, tokk = parser(fname, 'tokens.txt')
-            print('The source file is following a valid syntax.')
-            print(str(sampt))
-            print("\n"+str(dict))
-            print('=========================================================================')
-            print("The list of child:")
-            sampt.getChildLabel()
-        except ParserError:
-            print_exc()
-            print('The source file is not following a valid syntax.')
-        finally:
-             print('=========================================================================')
-    except ImportError:
-        print('The sample file does not exist.')
-    finally:
-        print('Personal tester is over.')
+            fname = 'mltestcodes/test%d.ml' % i
+            print("Parsing " + fname)
+            try:
+                sampt, tokk = parser(fname, 'tokens.txt')
+                print('The source file is following a valid syntax.')
+                print("\n" + repr(sampt))
+                print('=========================================================================')
+                print("\nSymbol Table:\n" + str(dict))
+                print('=========================================================================')
+                print("\nThe list of child:")
+                sampt.getChildLabel()
+            except ParserError:
+                print_exc()
+                print('The source file is not following a valid syntax.')
+            finally:
+                 print('=========================================================================')
+        except ImportError:
+            print('The sample file does not exist.')
+    print('Personal tester is over.')
