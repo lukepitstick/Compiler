@@ -16,7 +16,7 @@ begin
     foo();
     write("Returned to main.\n");
     foo();
-    write("Returned to man. (Again.)\n");
+    write("Returned to main. (Again.)\n");
     foo2();
     write("Returned to main.\n");
 end
