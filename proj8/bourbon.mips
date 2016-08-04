@@ -1,0 +1,130 @@
+.data
+False: .asciiz "False"
+True: .asciiz "True"
+x: .word 4
+stringtmptmp0: .asciiz "foo1: "
+stringtmptmp1: .asciiz "\n"
+stringtmptmp2: .asciiz "foo1: "
+stringtmptmp3: .asciiz "\n"
+stringtmptmp4: .asciiz "foo2: "
+stringtmptmp5: .asciiz "\n"
+stringtmptmp6: .asciiz "foo3: "
+stringtmptmp7: .asciiz "\n"
+stringtmptmp8: .asciiz "main: "
+stringtmptmp9: .asciiz "\n"
+stringtmptmp10: .asciiz "main: "
+stringtmptmp11: .asciiz "\n"
+stringtmptmp12: .asciiz "main: "
+stringtmptmp13: .asciiz "\n"
+stringtmptmp14: .asciiz "main: "
+stringtmptmp15: .asciiz "\n"
+stringtmptmp16: .asciiz "main: "
+stringtmptmp17: .asciiz "\n"
+
+
+.text
+main:
+li $s6, 0
+la   $s0, x
+sw $s6, ($s0)
+
+la $a0, stringtmptmp8
+li $v0, 4
+syscall
+
+la $s0, x
+lw $s6, ($s0)
+add $a0, $s6,0
+li $v0, 1
+syscall
+
+la $a0, stringtmptmp9
+li $v0, 4
+syscall
+
+la $a0, stringtmptmp10
+li $v0, 4
+syscall
+
+la $s0, x
+lw $s6, ($s0)
+add $a0, $s6,0
+li $v0, 1
+syscall
+
+la $a0, stringtmptmp11
+li $v0, 4
+syscall
+
+la $a0, stringtmptmp12
+li $v0, 4
+syscall
+
+la $s0, x
+lw $s6, ($s0)
+add $a0, $s6,0
+li $v0, 1
+syscall
+
+la $a0, stringtmptmp13
+li $v0, 4
+syscall
+
+la $a0, stringtmptmp14
+li $v0, 4
+syscall
+
+la $s0, x
+lw $s6, ($s0)
+add $a0, $s6,0
+li $v0, 1
+syscall
+
+la $a0, stringtmptmp15
+li $v0, 4
+syscall
+
+la $a0, stringtmptmp16
+li $v0, 4
+syscall
+
+la $s0, x
+lw $s6, ($s0)
+add $a0, $s6,0
+li $v0, 1
+syscall
+
+la $a0, stringtmptmp17
+li $v0, 4
+syscall
+
+
+j close
+
+
+func3:
+la $a0, stringtmptmp6
+li $v0, 4
+syscall
+
+la $s0, x
+lw $s6, ($s0)
+add $a0, $s6,0
+li $v0, 1
+syscall
+
+la $a0, stringtmptmp7
+li $v0, 4
+syscall
+
+
+
+func2:
+li $s6, 300
+la   $s0, x
+sw $s6, ($s0)
+
+
+close:
+li $v0, 10
+syscall

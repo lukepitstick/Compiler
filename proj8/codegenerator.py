@@ -10,6 +10,7 @@ dict3 = {}
 strdict = {}
 ineff = []
 ldict = {}
+notGlobal = {}
 stringnum = 0
 nestedIfCounter = 0
 
@@ -75,11 +76,14 @@ def WRITE_IDS(t, subroutine="main"): #receives tree with head as expr_list
             for v in varlist:
                 # if ldict[v] != "True":
                 v1 = v
+                globalv = "global" + v[len(v)-1:len(v)]
+                # print("V: " + globalv)
                 if (v == "FALSE") or (v == "TRUE"):
                     pass
                 else:
                     if dict1[v][0] != "True":
-                        raise CompilerError("Semantic Error: Write before a variable is instantiated" + v)
+                        if dict1[globalv][0] != "True":
+                            raise CompilerError("Semantic Error: Write before a variable is instantiated" + v)
             if type == "INT":
                 textToWrite[subroutine].append("add $a0, %s,0\n"% reg)
                 textToWrite[subroutine].append("li $v0, 1\nsyscall\n\n")
@@ -103,6 +107,7 @@ registers = {"$t0":False, "$t1":False, "$t2":False, "$t3":False, "$t4":False, "$
 
 @add_debug
 def EXPRESSION(t, subroutine="main"): #Gets tree with EXPRESSION as head
+
     try:
         isstring = t.children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0].val
         if dict1[isstring][1] == "STRING":
@@ -178,6 +183,7 @@ def TERM1(t, subroutine="main"): #Gets tree with TERM1 as head
 
 @add_debug
 def FACT1(t, subroutine="main"): #Gets tree with FACT1 as head
+    # print("sub: " + subroutine)
     opFlag = False
     type1 = ""
     type2 = ""
@@ -431,6 +437,20 @@ def PRIMARY(t, subroutine="main"):
     elif child.label == "IDENT":
         var = child.children[0].val
         retType = dict1[var][1]
+        if retType == "INT":
+            globalvar = 'global' + var
+            # print(str(dict1))
+            if subroutine in notGlobal:
+                if var in notGlobal[subroutine]:
+                    var = subroutine + var
+                elif globalvar in dict1:
+                    var = globalvar
+                else:#ahahahaha
+                    var = subroutine + var
+            elif globalvar in dict1:
+                var = globalvar
+            else:
+                var = subroutine + var
         varlist.append(var)
         textToWrite[subroutine].append("la $s0, %s\n"%var)
         textToWrite[subroutine].append("lw %s, ($s0)\n"%reg)
@@ -443,6 +463,20 @@ def ASSIGN(t, subroutine="main"):
     #recieves a tree with root t being ASSIGNMENT
     var = t.children[0].children[0].val #variable being assigned
     vartype = dict1[var][1]
+    if vartype == "INT":
+        skip = False
+        vtmp = var
+        var = subroutine + var
+
+        if subroutine in notGlobal:
+            if vtmp in notGlobal[subroutine]:
+                var = subroutine + vtmp
+                skip = True
+
+
+        if (dict1[var][0] == 'False') & (not skip):
+            # print(subroutine + str(notGlobal))
+            var = 'global' + vtmp
     # reset registers
     for register in registers:
         registers[register] = False
@@ -471,10 +505,16 @@ def ASSIGN(t, subroutine="main"):
     else:
         type, varlist, reg = EXPRESSION(t.children[1], subroutine)
         for v in varlist:
+            globalv = "global" + v[len(v) - 1:len(v)]
             # print(v)
             # print(str(dict1))
+            # if vartype == 'INT':
+            #     if dict1[subroutine + v][0] != "True":
+            #         raise CompilerError("Semantic Error: ASSIGN before a variable is instantiated: %s" % t.children[1])
+            # else:
             if dict1[v][0] != "True":
-                    raise CompilerError("Semantic Error: ASSIGN before a variable is instantiated: %s" % t.children[1])
+                if dict1[globalv][0] != "True":
+                        raise CompilerError("Semantic Error: ASSIGN before a variable is instantiated: %s" % t.children[1])
         if vartype != type:
             # print(vartype + " " + type)
             raise CompilerError("Assignment types do not match: %s" % t.children[1])
@@ -486,7 +526,10 @@ def ASSIGN(t, subroutine="main"):
         else: #Integer/bool assign
             textToWrite[subroutine].append("la   $s0, %s\nsw %s, ($s0)\n\n" %(var,reg))  # store value from $t0 into var's address
 
-    dict1[var] = ("True",dict1[var][1])
+    # if vartype == 'INT':
+    #     dict1[subroutine + var] = ("True", dict1[subroutine + var][1])
+    # else:
+        dict1[var] = ("True",dict1[var][1])
 
 
 @add_debug
@@ -538,7 +581,7 @@ def getLabels():
 def WHILE(tree, subroutine="main"):
     label1, label2 = getLabels()
     textToWrite[subroutine].append(label1 + ": nop\n")
-    type, varlist, reg = EXPRESSION(tree.children[1])
+    type, varlist, reg = EXPRESSION(tree.children[1],subroutine)
     if type != "BOOL":
         raise CompilerError("Condition of WHILE Statement is not a boolean: " + str(type))
 
@@ -572,11 +615,16 @@ def STATEMENT(tree, subroutine="main"): #Equivalent of STATEMENT
         elif tree.children[0].label == "STRINGTYPE":
             DEFTYPE(tree, subroutine)
         elif tree.children[0].label == "INTTYPE":
+            global notGlobal
+            notGlobal[subroutine] = {tree.children[1].children[0].val:  "True"}
+            # print(str(tree.children[0]
             DEFTYPE(tree, subroutine)
         elif tree.children[0].label == "IF":
             IF(tree, subroutine)
         elif tree.children[0].label == "WHILE":
             WHILE(tree, subroutine)
+        elif tree.children[0].label == "FUNCCALL":
+            FUNCCALL(tree,subroutine)
         try:
             if tree.children[2].label == "ASSIGNMENTSTR":
                 ASSIGNSTR(tree, subroutine)
@@ -623,24 +671,38 @@ def DEFTYPE(tree, subroutine="main"):
 def FUNCTION(tr,mainIdx, subroutine=None):
     global textToWrite
     # print(tr.label)
-    # tr.getChildLabel()
-    funcidx = 1
-
-    for childd in tr.children:
-        if childd.label == "ID":
-            pass
-            # print(childd.val)
-        elif childd.label == "PROGRAM":
-            funcidtag = "func%d" % funcidx
-            textToWrite[funcidtag] = [("\n\n%s:\n" % funcidtag)]
-            funcidx += 1
-            for child2 in childd.children[1].children:
-                STATEMENT(child2, subroutine=funcidtag)
-
-            # childd.getChildLabel()
-        else:
-            raise CompilerError("Inappropriate token detected: %s" % childd.label)
+    setFuncReturn = True
+    funcReturn = ""
+    funcidtag = ""
+    if tr.label == "GLOBAL":
+        # print("todo")
+        pass
+    else:
+        for childFuncs in tr.children:  # gets the functions
+            for childd in childFuncs.children:
+                # print(childd.label)
+                if childd.label == "ID":
+                    if setFuncReturn:
+                        funcReturn = childd.val
+                        setFuncReturn = False
+                    else:
+                        funcidtag = childd.val
+                        # print(funcidtag)
+                        setFuncReturn = True
+                elif childd.label == "PROGRAM":
+                    textToWrite[funcidtag] = [("\n\n%s:\n" % funcidtag)]
+                    for child2 in childd.children[1].children:
+                        STATEMENT(child2, subroutine=funcidtag)
+                    textToWrite[funcidtag].append("\njr $ra\n")
+                else:
+                    raise CompilerError("Inappropriate token detected: %s" % childd.label)
     #print(">>> SUBROUTINE FOR FUNCTION CALL SHOULD BE IMPLEMENTED. <<<")
+
+@add_debug
+def FUNCCALL(t,subroutine = "main"):
+    textToWrite[subroutine].append("jal %s\n"%t.children[0].val)
+    # print(str(t))
+    # print(str(t.children[0].val))
 
 
 def findGenerateMIPSCode(t, dict_, dict2_): #, fname):
@@ -655,6 +717,7 @@ def findGenerateMIPSCode(t, dict_, dict2_): #, fname):
     global ineff
     global ldict
     global stringnum
+    global scopedict
     
     datatoWrite = [] #data write section
     toWrite = [] # initialize what to write
@@ -662,6 +725,7 @@ def findGenerateMIPSCode(t, dict_, dict2_): #, fname):
     dict1 = {} #main dict (Initiated, type)
     dict2 = {} #string dict
     dict3 = {}
+    scopedict = {}
     strdict = {}
     ineff = []
     ldict = {}
@@ -671,6 +735,19 @@ def findGenerateMIPSCode(t, dict_, dict2_): #, fname):
     datatoWrite.append('False: .asciiz "False"\n')
     datatoWrite.append('True: .asciiz "True"\n')
     #Generate data section from dict
+    # print(str(dict2_["varScopeDict"]))
+    for fun in dict2_["varScopeDict"]:
+        for funvar in dict2_["varScopeDict"][fun]:
+            newname = fun + funvar
+            if(fun == "global"):
+                scopedict[newname] = ('True', dict2_["varScopeDict"][fun][funvar][1])
+            else:
+                scopedict[newname] = ('False',dict2_["varScopeDict"][fun][funvar][1])
+        # print(funname)
+    # print(str(scopedict));
+    for newvar in scopedict:
+        datatoWrite.append("%s: .word 4\n" % newvar)
+
     for var in dict_:
         if dict_[var][1] == 'STRING':
             datatoWrite.append("%s: .asciiz " % var)
@@ -683,14 +760,17 @@ def findGenerateMIPSCode(t, dict_, dict2_): #, fname):
             # else:
             #     raise CompilerError("Semanic Error: Variable not declared correctly!")
         elif dict_[var][1] == 'INT':
-            datatoWrite.append("%s: .word 4\n" % var)
+            pass
+            # datatoWrite.append("%s: .word 4\n" % var)
             # sync dictionaries
         if var != "":
-            dict1[var] = ("False", dict_[var][1])
+            # if dict_[var][1] != 'INT':
+                dict1[var] = ("False", dict_[var][1])
         if dict_[var][0] != "True" and dict_[var][0] != "False" and var != "":
             dict2[var] = dict1[var][0]
 
-
+    for scope in scopedict:
+        dict1[scope] = scopedict[scope]
     # print(dict1)
     # print(dict2)
     # textToWrite[subroutine].append("\n.text\nmain:\n")
@@ -698,10 +778,7 @@ def findGenerateMIPSCode(t, dict_, dict2_): #, fname):
     #print(t.children[1].label)
     # t.getChildLabel()
     mainIdx = 0
-    for kid in t.children[0].children:
-        print(str(kid.label))
     while t.children[mainIdx].label != 'PROGRAM':
-        print("what: " + t.children[mainIdx].label)
         FUNCTION(t.children[mainIdx],mainIdx)
         mainIdx += 1
     assert(t.children[mainIdx].label == 'PROGRAM')

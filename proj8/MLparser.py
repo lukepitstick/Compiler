@@ -109,7 +109,7 @@ def CLASS(current, G):
         t2, current = FUNCTIONLST(current, G)
         t.append(t2)
     if current.name == "BEGIN":
-        scope_variate = "MAIN"
+        scope_variate = "main"
         t3, current = PROGRAM(current, G)
         t.append(t3)
     """
@@ -122,7 +122,8 @@ def CLASS(current, G):
 @add_debug
 def GLOBAL(current, G):
     global scope_variate
-    scope_variate = "GLOBAL"
+    scope_variate = "global"
+    t1 = tree("GLOBALLIST")
     while(True):
         t = tree("GLOBAL")
         holder = False
@@ -133,19 +134,25 @@ def GLOBAL(current, G):
         current = next(G)
         if current.name != "GLOBAL":
             return t, current
-    return t, current
+        t1.append(t)
+    return t1, current
 
 @add_debug
 def FUNCTIONLST(current, G):
     global scope_variate
-    t = tree("FUNCTION")
+    t1 = tree("FUNCLIST")
     while(True):
+        t = tree("FUNCTION")
         if current.name != "FUNCTION":
             break
         type = next(G)
-        t.append(tree(type.name))
+        funcReturn = tree(type.name)
+        funcReturn.val = type.pattern
+        t.append(funcReturn)
         name = next(G)
-        t.append(tree(name.name))
+        funcName = tree(name.name)
+        funcName.val = name.pattern
+        t.append(funcName)
         funcDict[name.pattern] = type.name
         scope_variate = name.pattern
         current = next(G)
@@ -162,9 +169,10 @@ def FUNCTIONLST(current, G):
         current = next(G)
         tt, current = PROGRAM(current, G)
         t.append(tt)
-    return t, current
+        t1.append(t)
+    return t1, current
 
-@add_debug	
+@add_debug
 def PROGRAM(current, G):
     t = tree("PROGRAM")
     if current.name == "BEGIN":
@@ -243,6 +251,7 @@ def STATEMENT(current, G):
         skipSemi = True
     elif current.pattern in funcDict.keys():
         tmp = tree("FUNCCALL")
+        tmp.val = current.pattern
         paren = next(G)
         current = next(G)
         if current.name == "RPAREN":
@@ -365,7 +374,7 @@ def ASSIGNMENTSTR(current, G):
     tident2, current = IDENT(current, G)
     t.append(tident2)
     return t, current
-    
+
 
 @add_debug
 def READ(current, G):
@@ -568,6 +577,7 @@ def PRIMARY(current, G):
     t = tree('PRIMARY')
     if current.pattern in funcDict.keys():
         tmp = tree("FUNCCALL")
+        tmp.val = current.pattern
         paren = next(G)
         current = next(G)
         if current.name == "RPAREN":
@@ -643,39 +653,22 @@ def IDENT(current, G,):
     return t, next(G)
 
 if __name__ == "__main__":
-    global dict_
-    global strDict
-    global funcDict
-    global varScopeDict
-    
-    for i in range(1,9):
+
+    try:
+        fname = 'mltestcodes/test4.ml'
+        print("Parsing " + fname)
         try:
-            fname = 'mltestcodes/test%d.ml' % i
-            print("Parsing " + fname)
-            try:
-                sampt, tokk, tokk2 = parser(fname, 'tokens.txt')
-                print('The source file is following a valid syntax.')
-                print("\n" + repr(sampt))
-                print('=======================================================')
-                assert(tokk2["dict"] == dict_)
-                print("\nSymbol Table:\n" + str(tokk2["dict"]))
-                assert(tokk2["strDict"] == strDict)
-                print("\nString Table:\n" + str(strDict))
-                assert(tokk2["funcDict"] == funcDict)
-                print("\nFunction Table:\n" + str(funcDict))
-                assert(tokk2["varScopeDict"] == varScopeDict)
-                print("\nVariable Scope Table:\n" + str(varScopeDict))
-                print('=======================================================')
-                print("\nThe list of child:")
-                sampt.getChildLabel()
-            except ParserError:
-                print_exc()
-                print('The source file is not following a valid syntax.')
-        except ImportError:
-            print('The sample file does not exist.')
-        finally:
-            print('======================================================')
-            end = input('Press <ENTER> to continue... (or QUIT to exit)')
-            if end == 'QUIT':
-                break
+            sampt, tokk, tokk2 = parser(fname, 'tokens.txt')
+            print('The source file is following a valid syntax.')
+            print("\n" + repr(sampt))
+            print('=======================================================')
+            assert(tokk2["dict"] == dict_)
+
+            sampt.getChildLabel()
+        except ParserError:
+            print_exc()
+            print('The source file is not following a valid syntax.')
+    except ImportError:
+        print('The sample file does not exist.')
+
     print('Personal tester is over.')
